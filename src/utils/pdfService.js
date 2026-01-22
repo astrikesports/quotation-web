@@ -334,7 +334,7 @@ import { parseSizes } from "../utils/sizeHelper";
   ]
   },
   layout: GRID,
-  fontSize: 7
+  fontSize: 8
   }
   ]]
   : []),
