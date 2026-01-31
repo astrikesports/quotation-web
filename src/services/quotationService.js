@@ -111,7 +111,7 @@ export async function fetchQuotations() {
   const { data, error } = await supabase
     .from("quotations")
     .select("*")
-    .order("created_at", { descending: false });
+    .order("created_at", { descending: true });
 
   if (error) throw error;
   return data;
