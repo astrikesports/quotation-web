@@ -187,7 +187,8 @@ import {
 
 
   /* HANDLE DELETE */
-  const handleDelete = (quotation) => {
+  const handleDelete = async (quotation) => {
+  return new Promise((resolve, reject) => {
   setConfirm({
   open: true,
   title: "Delete Quotation",
@@ -196,21 +197,26 @@ import {
   try {
   setConfirm({ open: false });
   setLoading(true);
-  setLoadingText("Deleting Quotation...");
-
-  // 1️⃣ delete quotation row & get image urls
+  setLoadingText("Deleting quotation...");
+  
+  // delete quotation
   const imageUrls = await deleteQuotation(quotation.id);
-
-  // 2️⃣ delete images from storage
+  
+  // delete images
   await deletePaymentImages(imageUrls);
-
+  
   setLoading(false);
+  resolve();   // 🔥 IMPORTANT
   } catch (err) {
   setLoading(false);
-  console.error("DELETE ERROR:", err);
+  console.error(err);
+  reject(err);
   }
-  }});
+  }
+  });
+  });
   };
+
 
 
 
