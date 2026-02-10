@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function ItemsTable({ items, onDelete, onEdit }) {
+export default function ItemsTable({ items, onDelete, onEdit, onUpdateItem  }) {
   const [editIndex, setEditIndex] = useState(null);
   const [editSize, setEditSize] = useState("");
   const [editRate, setEditRate] = useState("");
@@ -59,10 +59,10 @@ export default function ItemsTable({ items, onDelete, onEdit }) {
   }
 
   return (
-    <div className="flex-1 p-4">
+    <div className="flex-1 p-4 overflow-y-auto max-h-[calc(100vh-140px)]">
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-blue-50 text-blue-700">
+          <thead className="bg-blue-50 text-blue-700 sticky top-0 z-10">
             <tr>
               {["Description", "Size (Boxes)", "PCS", "Rate", "Amount", "Action"].map(h => (
                 <th key={h} className="px-4 py-3 text-center font-semibold">
@@ -100,7 +100,7 @@ export default function ItemsTable({ items, onDelete, onEdit }) {
                         className="w-full px-2 py-1 border rounded text-sm"
                         value={editSize}
                         onChange={e => setEditSize(e.target.value)}
-                        placeholder="S-5, M-3"
+                        placeholder="S-5, M-3 (boxes)"
                       />
                     ) : (
                       item.size || "-"
