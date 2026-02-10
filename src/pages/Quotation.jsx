@@ -273,6 +273,7 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   items={items}
   onDelete={deleteItem}
   onEdit={startEdit}
+  onUpdateItem={handleUpdateItem}   // 👈 YE LINE ADD KARO
   />
   </div>
 
