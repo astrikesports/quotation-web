@@ -211,10 +211,10 @@ export default function Quotation() {
 
   /* ================= UI ================= */
   return (
-  <div className="h-screen bg-blue-50 overflow-hidden">
+  <div className="relative h-screen w-screen bg-blue-50 overflow-hidden">
 
     {/* 🔥 FIXED HEADER */}
-    <div className="fixed top-0 left-0 right-0 z-50">
+    <div className="fixed top-0 left-0 right-0 z-[100] bg-white shadow">
       <Header
         onNewQuotation={newQuotation}
         onRefreshSku={refreshSkuData}
@@ -226,12 +226,14 @@ export default function Quotation() {
       />
     </div>
 
-    {/* 🔥 MAIN SCROLL AREA */}
+    {/* 🔥 SCROLLABLE CONTENT */}
     <div
       className="
-        pt-[64px]          /* header height */
-        pb-[90px]          /* summary height */
-        h-full
+        absolute
+        top-[64px]
+        bottom-[90px]
+        left-0
+        right-0
         flex
         flex-col
         md:flex-row
@@ -240,7 +242,7 @@ export default function Quotation() {
     >
 
       {/* SIDEBAR */}
-      <div className="w-full md:w-[360px] flex-shrink-0 overflow-y-auto">
+      <div className="w-full md:w-[360px] overflow-y-auto border-r">
         <Sidebar
           pdfData={pdfData}
           setPdfData={setPdfData}
@@ -266,7 +268,7 @@ export default function Quotation() {
     </div>
 
     {/* 🔥 FIXED BOTTOM SUMMARY */}
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-lg">
+    <div className="fixed bottom-0 left-0 right-0 z-[100] bg-white shadow">
       <Summary
         pcs={totalPCS}
         amount={totalAmount}
@@ -298,3 +300,4 @@ export default function Quotation() {
 
   </div>
 );
+
