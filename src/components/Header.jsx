@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { deletePaymentImages } from "../services/paymentImageService";
 import {
-  deleteQuotation,
-  fetchQuotationById,
   createQuotation,
-  updateQuotation
+  updateQuotation,
+  fetchQuotationById,
+  deleteQuotation
 } from "../services/quotationService";
+import { deletePaymentImages } from "../services/paymentImageService";
 import { generateQuotationPDF } from "../utils/pdfService";
 import LoadQuotationModal from "./LoadQuotationModal";
 
@@ -19,7 +19,7 @@ export default function Header({
   setConfirm,
 }) {
   const [showLoad, setShowLoad] = useState(false);
-  const [openDrawer, setOpenDrawer] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   /* ================= SAVE ================= */
   const handleSave = async () => {
@@ -37,7 +37,7 @@ export default function Header({
       if (!pdfData.items?.length) {
         setConfirm({
           open: true,
-          title: "No Items Added",
+          title: "No Items",
           message: "Please add at least one item.",
           onConfirm: () => setConfirm({ open: false })
         });
@@ -67,8 +67,8 @@ export default function Header({
         paymentImages: pdfData.paymentImages
       });
 
-    } catch (err) {
-      console.error(err);
+    } catch (e) {
+      console.error(e);
       setConfirm({
         open: true,
         title: "Save Failed",
@@ -80,7 +80,6 @@ export default function Header({
     }
   };
 
-  /* ================= OTHER ACTIONS ================= */
   const handleRefresh = () => {
     setConfirm({
       open: true,
@@ -96,53 +95,72 @@ export default function Header({
     });
   };
 
-  const handleNewQuotation = () => {
-    setOpenDrawer(false);
-    onNewQuotation();
+  const handleLoadSelect = async (id) => {
+    setLoading(true);
+    setLoadingText("Loading Quotation...");
+    const data = await fetchQuotationById(id);
+    setPdfData({ ...data, paymentImages: data.paymentImages || [] });
+    setLoading(false);
+    setShowLoad(false);
   };
 
   /* ================= UI ================= */
   return (
     <>
-      {/* 🔥 HEADER BAR */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 flex justify-between items-center shadow">
+      {/* 🔥 HEADER */}
+      <div className="bg-blue-700 text-white px-4 py-3 flex justify-between items-center shadow">
 
         {/* LEFT */}
         <div>
-          <h1 className="text-lg md:text-xl font-bold">ASTRIKE SPORTSWEAR</h1>
-          <p className="text-xs md:text-sm text-blue-100 hidden md:block">
+          <h1 className="text-lg font-bold">ASTRIKE SPORTSWEAR</h1>
+          <p className="text-xs text-blue-200 hidden md:block">
             Quotation Management System
           </p>
         </div>
 
-        {/* RIGHT DESKTOP */}
-        <div className="hidden md:flex gap-2 items-center">
-          <button onClick={handleNewQuotation} className="btn-white">
-            + New Quotation
+        {/* DESKTOP ACTIONS */}
+        <div className="hidden md:flex gap-2">
+          <button
+            onClick={onNewQuotation}
+            className="px-3 py-2 rounded bg-white text-blue-700 text-sm font-semibold"
+          >
+            + New
           </button>
-          <button onClick={() => setShowLoad(true)} className="btn-dark">
-            Load Old
+
+          <button
+            onClick={() => setShowLoad(true)}
+            className="px-3 py-2 rounded bg-blue-900 text-sm"
+          >
+            Load
           </button>
-          <button onClick={handleRefresh} className="btn-yellow">
-            🔄 Refresh
+
+          <button
+            onClick={handleRefresh}
+            className="px-3 py-2 rounded bg-yellow-400 text-black text-sm font-semibold"
+          >
+            Refresh
           </button>
-          <button onClick={handleSave} className="btn-dark">
-            💾 Save & PDF
+
+          <button
+            onClick={handleSave}
+            className="px-3 py-2 rounded bg-blue-900 text-sm"
+          >
+            💾 Save PDF
           </button>
         </div>
 
-        {/* RIGHT MOBILE */}
-        <div className="flex md:hidden gap-2 items-center">
+        {/* MOBILE ACTIONS */}
+        <div className="flex md:hidden gap-2">
           <button
             onClick={handleSave}
-            className="px-3 py-2 rounded bg-white text-blue-700 font-semibold text-sm"
+            className="px-3 py-2 rounded bg-white text-blue-700 text-sm font-semibold"
           >
             💾 PDF
           </button>
 
           <button
-            onClick={() => setOpenDrawer(true)}
-            className="px-3 py-2 rounded bg-blue-900/40 text-white text-lg"
+            onClick={() => setDrawerOpen(true)}
+            className="px-3 py-2 rounded bg-blue-900 text-sm"
           >
             ☰
           </button>
@@ -150,50 +168,54 @@ export default function Header({
       </div>
 
       {/* 🔥 MOBILE DRAWER */}
-      {openDrawer && (
-        <div className="fixed inset-0 z-[200] bg-black/40">
-          <div className="absolute right-0 top-0 h-full w-[260px] bg-white shadow-lg p-4 space-y-3">
+      {drawerOpen && (
+        <div className="fixed inset-0 z-[999] bg-black/40">
+          <div className="absolute right-0 top-0 h-full w-[260px] bg-white p-4 space-y-3 shadow-lg">
 
             <button
-              onClick={() => setOpenDrawer(false)}
+              onClick={() => setDrawerOpen(false)}
               className="text-right w-full text-gray-500"
             >
               ✕ Close
             </button>
 
-            <button onClick={handleNewQuotation} className="drawer-btn">
-              ➕ New Quotation
+            <button
+              onClick={() => {
+                setDrawerOpen(false);
+                onNewQuotation();
+              }}
+              className="w-full px-3 py-2 rounded bg-blue-600 text-white text-sm"
+            >
+              + New Quotation
             </button>
 
             <button
               onClick={() => {
+                setDrawerOpen(false);
                 setShowLoad(true);
-                setOpenDrawer(false);
               }}
-              className="drawer-btn"
+              className="w-full px-3 py-2 rounded bg-gray-100 text-sm"
             >
-              📂 Load Old Quotation
+              Load Old Quotation
             </button>
 
-            <button onClick={handleRefresh} className="drawer-btn">
-              🔄 Refresh Sheet
+            <button
+              onClick={() => {
+                setDrawerOpen(false);
+                handleRefresh();
+              }}
+              className="w-full px-3 py-2 rounded bg-yellow-400 text-black text-sm font-semibold"
+            >
+              Refresh Sheet
             </button>
           </div>
         </div>
       )}
 
-      {/* LOAD MODAL */}
       {showLoad && (
         <LoadQuotationModal
           onClose={() => setShowLoad(false)}
-          onSelect={async (id) => {
-            setLoading(true);
-            setLoadingText("Loading...");
-            const data = await fetchQuotationById(id);
-            setPdfData({ ...data, paymentImages: data.paymentImages || [] });
-            setLoading(false);
-            setShowLoad(false);
-          }}
+          onSelect={handleLoadSelect}
           onDelete={async (q) => {
             const urls = await deleteQuotation(q.id);
             await deletePaymentImages(urls);
@@ -203,6 +225,3 @@ export default function Header({
     </>
   );
 }
-
-/* 🔥 BUTTON STYLES */
-const btn = "px-3 py-2 text-sm rounded font-semibold";
