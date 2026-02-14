@@ -211,8 +211,10 @@ export default function Quotation() {
 
   /* ================= UI ================= */
   return (
-    <div className="min-h-screen flex flex-col bg-blue-50">
+  <div className="h-screen bg-blue-50 overflow-hidden">
 
+    {/* 🔥 FIXED HEADER */}
+    <div className="fixed top-0 left-0 right-0 z-50">
       <Header
         onNewQuotation={newQuotation}
         onRefreshSku={refreshSkuData}
@@ -222,63 +224,77 @@ export default function Quotation() {
         setLoadingText={setLoadingText}
         setConfirm={setConfirm}
       />
+    </div>
 
-      <div className="flex flex-1 flex-col md:flex-row overflow-hidden">
+    {/* 🔥 MAIN SCROLL AREA */}
+    <div
+      className="
+        pt-[64px]          /* header height */
+        pb-[90px]          /* summary height */
+        h-full
+        flex
+        flex-col
+        md:flex-row
+        overflow-hidden
+      "
+    >
 
-        <div className="w-full md:w-[360px] flex-shrink-0 overflow-auto">
-          <Sidebar
-            pdfData={pdfData}
-            setPdfData={setPdfData}
-            onAddItem={addItem}
-            editIndex={editIndex}
-            editItem={editItem}
-            onUpdateItem={updateItem}
-            onCancelEdit={cancelEdit}
-            handlePaymentImage={handlePaymentImage}
-            paymentImages={pdfData.paymentImages}
-            removePaymentImage={removePaymentImage}
-          />
-        </div>
-
-        <div className="flex-1 overflow-auto">
-          <ItemsTable
-            items={items}
-            onDelete={deleteItem}
-            onEdit={startEdit}
-          />
-        </div>
-      </div>
-
-      <div className="sticky bottom-0 bg-white shadow-md md:static">
-        <Summary
-          pcs={totalPCS}
-          amount={totalAmount}
-          billDiscount={billDiscount}
-          setBillDiscount={(v) =>
-            setPdfData(prev => ({ ...prev, billDiscount: v }))
-          }
-          shipping={shipping}
-          setShipping={(v) =>
-            setPdfData(prev => ({ ...prev, shipping: v }))
-          }
-          advance={advance}
-          setAdvance={(v) =>
-            setPdfData(prev => ({ ...prev, advance: v }))
-          }
-          net={net}
+      {/* SIDEBAR */}
+      <div className="w-full md:w-[360px] flex-shrink-0 overflow-y-auto">
+        <Sidebar
+          pdfData={pdfData}
+          setPdfData={setPdfData}
+          onAddItem={addItem}
+          editIndex={editIndex}
+          editItem={editItem}
+          onUpdateItem={updateItem}
+          onCancelEdit={cancelEdit}
+          handlePaymentImage={handlePaymentImage}
+          paymentImages={pdfData.paymentImages}
+          removePaymentImage={removePaymentImage}
         />
       </div>
 
-      {loading && <LoaderOverlay text={loadingText} />}
-
-      <ConfirmDialog
-        open={confirm.open}
-        title={confirm.title}
-        message={confirm.message}
-        onConfirm={confirm.onConfirm}
-        onCancel={() => setConfirm({ open: false })}
-      />
-
+      {/* ITEMS TABLE */}
+      <div className="flex-1 overflow-y-auto">
+        <ItemsTable
+          items={items}
+          onDelete={deleteItem}
+          onEdit={startEdit}
+        />
+      </div>
     </div>
-  );
-}
+
+    {/* 🔥 FIXED BOTTOM SUMMARY */}
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-lg">
+      <Summary
+        pcs={totalPCS}
+        amount={totalAmount}
+        billDiscount={billDiscount}
+        setBillDiscount={(v) =>
+          setPdfData(prev => ({ ...prev, billDiscount: v }))
+        }
+        shipping={shipping}
+        setShipping={(v) =>
+          setPdfData(prev => ({ ...prev, shipping: v }))
+        }
+        advance={advance}
+        setAdvance={(v) =>
+          setPdfData(prev => ({ ...prev, advance: v }))
+        }
+        net={net}
+      />
+    </div>
+
+    {loading && <LoaderOverlay text={loadingText} />}
+
+    <ConfirmDialog
+      open={confirm.open}
+      title={confirm.title}
+      message={confirm.message}
+      onConfirm={confirm.onConfirm}
+      onCancel={() => setConfirm({ open: false })}
+    />
+
+  </div>
+);
