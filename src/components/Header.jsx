@@ -2,280 +2,207 @@ import { useState } from "react";
 import { deletePaymentImages } from "../services/paymentImageService";
 import {
   deleteQuotation,
-  fetchQuotationById
+  fetchQuotationById,
+  createQuotation,
+  updateQuotation
 } from "../services/quotationService";
 import { generateQuotationPDF } from "../utils/pdfService";
 import LoadQuotationModal from "./LoadQuotationModal";
 
-import {
-  createQuotation,
-  updateQuotation
-} from "../services/quotationService";
-
-  export default function Header({
+export default function Header({
   onNewQuotation,
   onRefreshSku,
-  pdfData = {},          // ✅ default
+  pdfData = {},
   setPdfData,
   setLoading,
   setLoadingText,
   setConfirm,
-  }) {
-
+}) {
   const [showLoad, setShowLoad] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
+
+  /* ================= SAVE ================= */
   const handleSave = async () => {
-  try {
-  /* ================= VALIDATION (DIALOG BASED) ================= */
+    try {
+      if (!pdfData.party?.trim()) {
+        setConfirm({
+          open: true,
+          title: "Missing Party Name",
+          message: "Party name is required.",
+          onConfirm: () => setConfirm({ open: false })
+        });
+        return;
+      }
 
-  if (!pdfData.party || pdfData.party.trim() === "") {
-  setConfirm({
-  open: true,
-  title: "Missing Party Name",
-  message: "Party name is required to save quotation.",
-  onConfirm: () => setConfirm({ open: false }) // 👈 ONLY OK
-  });
-  return;
-  }
+      if (!pdfData.items?.length) {
+        setConfirm({
+          open: true,
+          title: "No Items Added",
+          message: "Please add at least one item.",
+          onConfirm: () => setConfirm({ open: false })
+        });
+        return;
+      }
 
-  if (!Array.isArray(pdfData.items) || pdfData.items.length === 0) {
-  setConfirm({
-  open: true,
-  title: "No Items Added",
-  message: "Please add at least one item before saving.",
-  onConfirm: () => setConfirm({ open: false }) // 👈 ONLY OK
-  });
-  return;
-  }
+      setLoading(true);
+      setLoadingText("Saving & generating PDF...");
 
-  const hasValidItem = pdfData.items.some(it =>
-  it &&
-  it.desc &&
-  String(it.desc).trim() !== "" &&
-  Number(it.pcs || 0) > 0 &&
-  Number(it.rate || 0) > 0
-  );
+      const payload = {
+        ...pdfData,
+        items: pdfData.items.map(it => ({
+          ...it,
+          size: typeof it.size === "string" ? it.size : ""
+        })),
+        paymentImages: []
+      };
 
-  if (!hasValidItem) {
-  setConfirm({
-  open: true,
-  title: "Invalid Items",
-  message: "Each item must have description, PCS and rate.",
-  onConfirm: () => setConfirm({ open: false }) // 👈 ONLY OK
-  });
-  return;
-  }
+      const saved = pdfData.id
+        ? await updateQuotation(pdfData.id, payload)
+        : await createQuotation(payload);
 
-  /* ================= ORIGINAL CODE (UNCHANGED) ================= */
+      setPdfData(saved);
 
-  setLoading(true);
-  setLoadingText("Saving quotation & generating PDF...");
+      await generateQuotationPDF({
+        ...saved,
+        paymentImages: pdfData.paymentImages
+      });
 
-  // ✅ 1️⃣ CLEAN DATA
-  const cleanItems = pdfData.items.map(it => ({
-  ...it,
-  size: typeof it.size === "string" ? it.size : ""
-  }));
-
-  const payload = {
-  ...pdfData,
-  items: cleanItems,
-  paymentImages: []
+    } catch (err) {
+      console.error(err);
+      setConfirm({
+        open: true,
+        title: "Save Failed",
+        message: "Something went wrong.",
+        onConfirm: () => setConfirm({ open: false })
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // ✅ 2️⃣ SAVE
-  const saved = pdfData.id
-  ? await updateQuotation(pdfData.id, payload)
-  : await createQuotation(payload);
-
-  // ✅ 3️⃣ SYNC STATE
-  setPdfData(saved);
-
-  // ✅ 4️⃣ GENERATE PDF (with images)
-  await generateQuotationPDF({
-  ...saved,
-  paymentImages: pdfData.paymentImages
-  });
-
-  } catch (err) {
-  console.error("SAVE ERROR:", err);
-  setConfirm({
-  open: true,
-  title: "Save Failed",
-  message: "Something went wrong while saving quotation.",
-  onConfirm: () => setConfirm({ open: false }) // 👈 ONLY OK
-  });
-  } finally {
-  setLoading(false);
-  }
-  };
-
-
+  /* ================= OTHER ACTIONS ================= */
   const handleRefresh = () => {
-  setConfirm({
-  open: true,
-  title: "Refresh Sheet",
-  message: "Refresh Google Sheet data? This may update item rates.",
-  onConfirm: async () => {
-  try {
-  setConfirm({ open: false });
-  setLoading(true);
-  setLoadingText("Refreshing Sheet...");
-
-  await onRefreshSku();
-
-  setLoading(false);
-
-  // ✅ SUCCESS DIALOG (NO ALERT)
-  setConfirm({
-  open: true,
-  title: "Refresh Complete",
-  message: "Google Sheet data refreshed successfully.",
-  onConfirm: () => setConfirm({ open: false })
-  });
-
-  } catch (err) {
-  setLoading(false);
-
-  // ❌ ERROR DIALOG (NO ALERT)
-  setConfirm({
-  open: true,
-  title: "Refresh Failed",
-  message: "Failed to refresh Google Sheet data.",
-  onConfirm: () => setConfirm({ open: false })
-  });
-
-  console.error("REFRESH ERROR:", err);
-  }
-  }
-  });
+    setConfirm({
+      open: true,
+      title: "Refresh Sheet",
+      message: "Refresh Google Sheet data?",
+      onConfirm: async () => {
+        setConfirm({ open: false });
+        setLoading(true);
+        setLoadingText("Refreshing...");
+        await onRefreshSku();
+        setLoading(false);
+      }
+    });
   };
-
-  /* LOAD SELECT */
-  const handleLoadSelect = async (id) => {
-  try {
-  setLoading(true);
-  setLoadingText("Loading Quotation...");
-
-  const data = await fetchQuotationById(id);
-  setPdfData(prev => ({
-  ...prev,
-  ...data,
-  paymentImages: data.paymentImages || [] // 🔥 URLs only
-  }));
-
-
-  setTimeout(() => {
-  setLoading(false);
-  setShowLoad(false);
-  }, 300);
-  } catch {
-  setLoading(false);
-  }
-  };
-
 
   const handleNewQuotation = () => {
-  setLoading(true);
-  setLoadingText("Creating New Quotation...");
-
-  setTimeout(() => {
-  onNewQuotation();
-  setLoading(false);
-  }, 300);
+    setOpenDrawer(false);
+    onNewQuotation();
   };
 
-
-
-  /* HANDLE DELETE */
-  const handleDelete = async (quotation) => {
-  return new Promise((resolve, reject) => {
-  setConfirm({
-  open: true,
-  title: "Delete Quotation",
-  message: "This quotation will be permanently deleted.",
-  onConfirm: async () => {
-  try {
-  setConfirm({ open: false });
-  setLoading(true);
-  setLoadingText("Deleting quotation...");
-  
-  // delete quotation
-  const imageUrls = await deleteQuotation(quotation.id);
-  
-  // delete images
-  await deletePaymentImages(imageUrls);
-  
-  setLoading(false);
-  resolve();   // 🔥 IMPORTANT
-  } catch (err) {
-  setLoading(false);
-  console.error(err);
-  reject(err);
-  }
-  }
-  });
-  });
-  };
-
-
-
-
-
+  /* ================= UI ================= */
   return (
-  <>
-  <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 flex justify-between items-center shadow">
+    <>
+      {/* 🔥 HEADER BAR */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 flex justify-between items-center shadow">
 
-  {/* LEFT */}
-  <div>
-  <h1 className="text-xl font-bold">ASTRIKE SPORTSWEAR</h1>
-  <p className="text-sm text-blue-100">
-  Quotation Management System
-  </p>
-  </div>
+        {/* LEFT */}
+        <div>
+          <h1 className="text-lg md:text-xl font-bold">ASTRIKE SPORTSWEAR</h1>
+          <p className="text-xs md:text-sm text-blue-100 hidden md:block">
+            Quotation Management System
+          </p>
+        </div>
 
-  {/* RIGHT */}
-  <div className="flex gap-2 items-center">
+        {/* RIGHT DESKTOP */}
+        <div className="hidden md:flex gap-2 items-center">
+          <button onClick={handleNewQuotation} className="btn-white">
+            + New Quotation
+          </button>
+          <button onClick={() => setShowLoad(true)} className="btn-dark">
+            Load Old
+          </button>
+          <button onClick={handleRefresh} className="btn-yellow">
+            🔄 Refresh
+          </button>
+          <button onClick={handleSave} className="btn-dark">
+            💾 Save & PDF
+          </button>
+        </div>
 
-  <button
-  onClick={handleNewQuotation}
-  className="px-3 py-2 text-sm rounded bg-white text-blue-700 font-semibold"
-  >
-  + New Quotation
-  </button>
+        {/* RIGHT MOBILE */}
+        <div className="flex md:hidden gap-2 items-center">
+          <button
+            onClick={handleSave}
+            className="px-3 py-2 rounded bg-white text-blue-700 font-semibold text-sm"
+          >
+            💾 PDF
+          </button>
 
-  <button
-  onClick={() => setShowLoad(true)}
-  className="px-3 py-2 text-sm rounded bg-blue-900/40 font-semibold"
-  >
-  Load Old Quotation
-  </button>
+          <button
+            onClick={() => setOpenDrawer(true)}
+            className="px-3 py-2 rounded bg-blue-900/40 text-white text-lg"
+          >
+            ☰
+          </button>
+        </div>
+      </div>
 
-  <button
-  onClick={handleRefresh}
-  className="px-4 py-2 text-sm rounded bg-yellow-400 text-black font-semibold"
-  >
-  🔄 Refresh Sheet
-  </button>
+      {/* 🔥 MOBILE DRAWER */}
+      {openDrawer && (
+        <div className="fixed inset-0 z-[200] bg-black/40">
+          <div className="absolute right-0 top-0 h-full w-[260px] bg-white shadow-lg p-4 space-y-3">
 
-  <button
-  onClick={handleSave}
-  className="px-4 py-2 text-sm rounded bg-blue-900/40 font-semibold"
-  >
-  💾 Save & Download PDF
-  </button>
+            <button
+              onClick={() => setOpenDrawer(false)}
+              className="text-right w-full text-gray-500"
+            >
+              ✕ Close
+            </button>
 
-  </div>
-  </div>
+            <button onClick={handleNewQuotation} className="drawer-btn">
+              ➕ New Quotation
+            </button>
 
-  {/* LOAD POPUP */}
-  {showLoad && (
-  <LoadQuotationModal
-  onClose={() => setShowLoad(false)}
-  onSelect={handleLoadSelect}
-  onDelete={handleDelete}
-  />
+            <button
+              onClick={() => {
+                setShowLoad(true);
+                setOpenDrawer(false);
+              }}
+              className="drawer-btn"
+            >
+              📂 Load Old Quotation
+            </button>
 
-  )}
-  </>
+            <button onClick={handleRefresh} className="drawer-btn">
+              🔄 Refresh Sheet
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* LOAD MODAL */}
+      {showLoad && (
+        <LoadQuotationModal
+          onClose={() => setShowLoad(false)}
+          onSelect={async (id) => {
+            setLoading(true);
+            setLoadingText("Loading...");
+            const data = await fetchQuotationById(id);
+            setPdfData({ ...data, paymentImages: data.paymentImages || [] });
+            setLoading(false);
+            setShowLoad(false);
+          }}
+          onDelete={async (q) => {
+            const urls = await deleteQuotation(q.id);
+            await deletePaymentImages(urls);
+          }}
+        />
+      )}
+    </>
   );
-  }
+}
+
+/* 🔥 BUTTON STYLES */
+const btn = "px-3 py-2 text-sm rounded font-semibold";
