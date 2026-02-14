@@ -48,7 +48,7 @@ export default function Quotation() {
   const [editIndex, setEditIndex] = useState(null);
   const [editItem, setEditItem] = useState(null);
 
-  /* ================= CORE RATE LOGIC ================= */
+  /* ================= RATE LOGIC ================= */
   function applyAutoRates(list) {
     return list.map(item => {
       if (item.isSample || item.isManual || !item.mrp) return item;
@@ -116,7 +116,7 @@ export default function Quotation() {
     if (!file) return;
 
     if (pdfData.paymentImages.length >= 2) {
-      alert("Maximum 2 payment images allowed");
+      alert("Maximum 2 images allowed");
       return;
     }
 
@@ -137,6 +137,67 @@ export default function Quotation() {
       ...prev,
       paymentImages: prev.paymentImages.filter((_, i) => i !== index)
     }));
+  }
+
+  /* ================= REFRESH SKU ================= */
+  async function refreshSkuData() {
+    try {
+      setLoading(true);
+      setLoadingText("Refreshing Google Sheet...");
+
+      clearSkuCache();
+      await loadSkuDB(true);
+
+      setConfirm({
+        open: true,
+        title: "Sheet Refreshed",
+        message: "Google Sheet updated successfully."
+      });
+    } catch (e) {
+      console.error(e);
+      setConfirm({
+        open: true,
+        title: "Refresh Failed",
+        message: "Failed to refresh Google Sheet."
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  /* ================= NEW QUOTATION ================= */
+  function newQuotation() {
+    setConfirm({
+      open: true,
+      title: "New Quotation",
+      message: "Create new quotation? Current data will be cleared.",
+      onConfirm: () => {
+        setConfirm({ open: false });
+
+        setLoading(true);
+        setLoadingText("Creating New Quotation...");
+
+        setTimeout(() => {
+          setPdfData({
+            party: "",
+            phone: "",
+            address: "",
+            salesPerson: "",
+            remark: "",
+            rateDiscount: 57,
+            spDiscount: 0,
+            billDiscount: 0,
+            shipping: 0,
+            advance: 0,
+            items: [],
+            paymentImages: []
+          });
+
+          cancelEdit();
+          setLoading(false);
+        }, 300);
+      }
+    });
   }
 
   /* ================= TOTALS ================= */
@@ -162,11 +223,9 @@ export default function Quotation() {
         setConfirm={setConfirm}
       />
 
-      {/* 🔥 MAIN CONTENT */}
       <div className="flex flex-1 flex-col md:flex-row overflow-hidden">
 
-        {/* 🔥 SIDEBAR */}
-        <div className="w-full md:w-[320px] flex-shrink-0 overflow-auto">
+        <div className="w-full md:w-[360px] flex-shrink-0 overflow-auto">
           <Sidebar
             pdfData={pdfData}
             setPdfData={setPdfData}
@@ -181,7 +240,6 @@ export default function Quotation() {
           />
         </div>
 
-        {/* 🔥 ITEMS TABLE */}
         <div className="flex-1 overflow-auto">
           <ItemsTable
             items={items}
@@ -191,7 +249,6 @@ export default function Quotation() {
         </div>
       </div>
 
-      {/* 🔥 SUMMARY (STICKY ON MOBILE) */}
       <div className="sticky bottom-0 bg-white shadow-md md:static">
         <Summary
           pcs={totalPCS}
