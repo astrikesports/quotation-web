@@ -1,236 +1,281 @@
 import { useState } from "react";
-import ItemForm from "./ItemForm";
+import { deletePaymentImages } from "../services/paymentImageService";
+import {
+  deleteQuotation,
+  fetchQuotationById
+} from "../services/quotationService";
+import { generateQuotationPDF } from "../utils/pdfService";
+import LoadQuotationModal from "./LoadQuotationModal";
 
+import {
+  createQuotation,
+  updateQuotation
+} from "../services/quotationService";
 
-  export default function Sidebar({
-  onAddItem,
-  /* EDIT FLOW */
-  editIndex,
-  editItem,
-  onUpdateItem,
-  onCancelEdit,
-  /* 🔥 SINGLE SOURCE OF TRUTH */
-  pdfData,
+  export default function Header({
+  onNewQuotation,
+  onRefreshSku,
+  pdfData = {},          // ✅ default
   setPdfData,
-
-  handlePaymentImage,
-  paymentImages,
-  removePaymentImage,
+  setLoading,
+  setLoadingText,
+  setConfirm,
   }) {
 
-  const {
-  party = "",
-  phone = "",
-  address = "",
-  salesPerson = "",
-  remark = "",
-  rateDiscount = 0,
-  spDiscount = 0,
-  } = pdfData;
+  const [showLoad, setShowLoad] = useState(false);
+  const handleSave = async () => {
+  try {
+  /* ================= VALIDATION (DIALOG BASED) ================= */
 
-  const [previewMap, setPreviewMap] = useState({});
-  
-  return (
-  <div className="w-[360px] bg-blue-50/50 p-4 space-y-4 overflow-y-auto">
-
-  {/* CUSTOMER CARD */}
-  <div className="bg-white rounded-xl shadow-sm p-4">
-  <h3 className="text-sm font-semibold text-blue-700 mb-3">
-  Customer Details
-  </h3>
-
-  {/* PARTY */}
-  <input
-  className="w-full mb-2 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
-  placeholder="Party Name"
-  value={party}
-  onChange={(e) =>
-  setPdfData(prev => ({
-  ...prev,
-  party: e.target.value
-  }))
+  if (!pdfData.party || pdfData.party.trim() === "") {
+  setConfirm({
+  open: true,
+  title: "Missing Party Name",
+  message: "Party name is required to save quotation.",
+  onConfirm: () => setConfirm({ open: false }) // 👈 ONLY OK
+  });
+  return;
   }
-  />
 
-  {/* PHONE */}
-  <input
-  className="w-full mb-2 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
-  placeholder="Phone"
-  value={phone}
-  onChange={(e) =>
-  setPdfData(prev => ({
-  ...prev,
-  phone: e.target.value
-  }))
+  if (!Array.isArray(pdfData.items) || pdfData.items.length === 0) {
+  setConfirm({
+  open: true,
+  title: "No Items Added",
+  message: "Please add at least one item before saving.",
+  onConfirm: () => setConfirm({ open: false }) // 👈 ONLY OK
+  });
+  return;
   }
-  />
 
-  {/* ADDRESS */}
-  <input
-  className="w-full mb-2 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
-  placeholder="Address"
-  value={address}
-  onChange={(e) =>
-  setPdfData(prev => ({
-  ...prev,
-  address: e.target.value
-  }))
+  const hasValidItem = pdfData.items.some(it =>
+  it &&
+  it.desc &&
+  String(it.desc).trim() !== "" &&
+  Number(it.pcs || 0) > 0 &&
+  Number(it.rate || 0) > 0
+  );
+
+  if (!hasValidItem) {
+  setConfirm({
+  open: true,
+  title: "Invalid Items",
+  message: "Each item must have description, PCS and rate.",
+  onConfirm: () => setConfirm({ open: false }) // 👈 ONLY OK
+  });
+  return;
   }
-  />
 
-  {/* SALES PERSON */}
-  <input
-  className="w-full mb-2 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
-  placeholder="Sales Person"
-  value={salesPerson}
-  onChange={(e) =>
-  setPdfData(prev => ({
-  ...prev,
-  salesPerson: e.target.value
-  }))
-  }
-  />
+  /* ================= ORIGINAL CODE (UNCHANGED) ================= */
 
-  {/* REMARK */}
-  <div className="mt-1">
-  <label className="text-sm font-semibold text-blue-700 mb-3">
-  Remark / Note
-  </label>
+  setLoading(true);
+  setLoadingText("Saving quotation & generating PDF...");
 
-  <textarea
-  rows={2}
-  className="w-full mt-1 px-3 py-2 border rounded text-sm"
-  placeholder="Any special instruction, payment note, delivery remark..."
-  value={remark}
-  onChange={(e) =>
-  setPdfData(prev => ({
-  ...prev,
-  remark: e.target.value
-  }))
-  }
-  />
-  </div>
-  </div>
-
-  {/* DISCOUNT CARD */}
-  <div className="bg-white rounded-xl shadow-sm p-4">
-  <h3 className="text-sm font-semibold text-blue-700 mb-3">
-  Discounts
-  </h3>
-
-  <div className="flex gap-4 text-sm mb-3">
-  <label className="flex items-center gap-1">
-  <input
-  type="radio"
-  checked={rateDiscount === 55}
-  onChange={() =>
-  setPdfData(prev => ({
-  ...prev,
-  rateDiscount: 55
-  }))
-  }
-  />
-  55%
-  </label>
-
-  <label className="flex items-center gap-1">
-  <input
-  type="radio"
-  checked={rateDiscount === 57}
-  onChange={() =>
-  setPdfData(prev => ({
-  ...prev,
-  rateDiscount: 57
-  }))
-  }
-  />
-  57%
-  </label>
-  </div>
-
-  <h3 className="text-sm font-semibold text-blue-700 mb-3">
-  SP Discounts
-  </h3>
-
-  <input
-  className="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
-  placeholder="SP Discount (%)"
-  type="number"
-  min={0}
-  max={10}
-  value={spDiscount}
-  onChange={(e) => {
-  let val = Number(e.target.value);
-  if (val > 10) val = 10;
-  if (val < 0) val = 0;
-
-  setPdfData(prev => ({
-  ...prev,
-  spDiscount: val
+  // ✅ 1️⃣ CLEAN DATA
+  const cleanItems = pdfData.items.map(it => ({
+  ...it,
+  size: typeof it.size === "string" ? it.size : ""
   }));
-  }}
-  />
 
-  <p className="text-xs text-gray-500 mt-1">
-  * SP Discount maximum{" "}
-  <span className="font-semibold text-blue-600">10%</span> allowed
+  const payload = {
+  ...pdfData,
+  items: cleanItems,
+  paymentImages: []
+  };
+
+  // ✅ 2️⃣ SAVE
+  const saved = pdfData.id
+  ? await updateQuotation(pdfData.id, payload)
+  : await createQuotation(payload);
+
+  // ✅ 3️⃣ SYNC STATE
+  setPdfData(saved);
+
+  // ✅ 4️⃣ GENERATE PDF (with images)
+  await generateQuotationPDF({
+  ...saved,
+  paymentImages: pdfData.paymentImages
+  });
+
+  } catch (err) {
+  console.error("SAVE ERROR:", err);
+  setConfirm({
+  open: true,
+  title: "Save Failed",
+  message: "Something went wrong while saving quotation.",
+  onConfirm: () => setConfirm({ open: false }) // 👈 ONLY OK
+  });
+  } finally {
+  setLoading(false);
+  }
+  };
+
+
+  const handleRefresh = () => {
+  setConfirm({
+  open: true,
+  title: "Refresh Sheet",
+  message: "Refresh Google Sheet data? This may update item rates.",
+  onConfirm: async () => {
+  try {
+  setConfirm({ open: false });
+  setLoading(true);
+  setLoadingText("Refreshing Sheet...");
+
+  await onRefreshSku();
+
+  setLoading(false);
+
+  // ✅ SUCCESS DIALOG (NO ALERT)
+  setConfirm({
+  open: true,
+  title: "Refresh Complete",
+  message: "Google Sheet data refreshed successfully.",
+  onConfirm: () => setConfirm({ open: false })
+  });
+
+  } catch (err) {
+  setLoading(false);
+
+  // ❌ ERROR DIALOG (NO ALERT)
+  setConfirm({
+  open: true,
+  title: "Refresh Failed",
+  message: "Failed to refresh Google Sheet data.",
+  onConfirm: () => setConfirm({ open: false })
+  });
+
+  console.error("REFRESH ERROR:", err);
+  }
+  }
+  });
+  };
+
+  /* LOAD SELECT */
+  const handleLoadSelect = async (id) => {
+  try {
+  setLoading(true);
+  setLoadingText("Loading Quotation...");
+
+  const data = await fetchQuotationById(id);
+  setPdfData(prev => ({
+  ...prev,
+  ...data,
+  paymentImages: data.paymentImages || [] // 🔥 URLs only
+  }));
+
+
+  setTimeout(() => {
+  setLoading(false);
+  setShowLoad(false);
+  }, 300);
+  } catch {
+  setLoading(false);
+  }
+  };
+
+
+  const handleNewQuotation = () => {
+  setLoading(true);
+  setLoadingText("Creating New Quotation...");
+
+  setTimeout(() => {
+  onNewQuotation();
+  setLoading(false);
+  }, 300);
+  };
+
+
+
+  /* HANDLE DELETE */
+  const handleDelete = async (quotation) => {
+  return new Promise((resolve, reject) => {
+  setConfirm({
+  open: true,
+  title: "Delete Quotation",
+  message: "This quotation will be permanently deleted.",
+  onConfirm: async () => {
+  try {
+  setConfirm({ open: false });
+  setLoading(true);
+  setLoadingText("Deleting quotation...");
+  
+  // delete quotation
+  const imageUrls = await deleteQuotation(quotation.id);
+  
+  // delete images
+  await deletePaymentImages(imageUrls);
+  
+  setLoading(false);
+  resolve();   // 🔥 IMPORTANT
+  } catch (err) {
+  setLoading(false);
+  console.error(err);
+  reject(err);
+  }
+  }
+  });
+  });
+  };
+
+
+
+
+
+  return (
+  <>
+  <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 flex justify-between items-center shadow">
+
+  {/* LEFT */}
+  <div>
+  <h1 className="text-xl font-bold">ASTRIKE SPORTSWEAR</h1>
+  <p className="text-sm text-blue-100">
+  Quotation Management System
   </p>
   </div>
 
-  {/* PAYMENT CARD */}
-  <div className="bg-white rounded-xl shadow-sm p-4">
-  <h3 className="text-sm font-semibold text-blue-700 mb-3">
-  Payment Proof ( 2 Images Allow)
-  </h3>
-
-  {paymentImages.length < 2 && (
-  <input
-  type="file"
-  accept="image/*"
-  onChange={handlePaymentImage}
-  className="text-sm mb-2"
-  />
-  )}
-
-  <div className="grid grid-cols-2 gap-2">
-  {paymentImages.map((_, idx) => (
-  <div key={idx} className="border rounded p-1">
-  {previewMap[idx] ? (
-  <img
-  src={previewMap[idx]}
-  className="h-28 w-full object-contain mb-1"
-  alt="Payment Proof"
-  />
-  ) : (
-  <div className="h-28 flex items-center justify-center text-xs text-gray-400">
-  Image not available
-  </div>
-  )}
+  {/* RIGHT */}
+  <div className="flex gap-2 items-center">
 
   <button
-  onClick={() => removePaymentImage(idx)}
-  className="w-full text-xs py-1 rounded bg-red-500 text-white"
+  onClick={handleNewQuotation}
+  className="px-3 py-2 text-sm rounded bg-white text-blue-700 font-semibold"
   >
-  Remove
+  + New Quotation
   </button>
+
+  <button
+  onClick={() => setShowLoad(true)}
+  className="px-3 py-2 text-sm rounded bg-blue-900/40 font-semibold"
+  >
+  Load Old Quotation
+  </button>
+
+  <button
+  onClick={handleRefresh}
+  className="px-4 py-2 text-sm rounded bg-yellow-400 text-black font-semibold"
+  >
+  🔄 Refresh Sheet
+  </button>
+
+  <button
+  onClick={handleSave}
+  className="px-4 py-2 text-sm rounded bg-blue-900/40 font-semibold"
+  >
+  💾 Save & Download PDF
+  </button>
+
   </div>
-  ))}
   </div>
 
-  <p className="text-xs text-gray-500 mt-2">
-  * Only 2 images allowed. Both will appear in PDF.
-  </p>
-  </div>
-
-
-  {/* ITEM CARD */}
-  <ItemForm
-  onAddItem={onAddItem}
-  editIndex={editIndex}
-  editItem={editItem}
-  onUpdateItem={onUpdateItem}
-  onCancelEdit={onCancelEdit}
+  {/* LOAD POPUP */}
+  {showLoad && (
+  <LoadQuotationModal
+  onClose={() => setShowLoad(false)}
+  onSelect={handleLoadSelect}
+  onDelete={handleDelete}
   />
-  </div>
+
+  )}
+  </>
   );
   }
