@@ -1,227 +1,236 @@
 import { useState } from "react";
-import {
-  createQuotation,
-  updateQuotation,
-  fetchQuotationById,
-  deleteQuotation
-} from "../services/quotationService";
-import { deletePaymentImages } from "../services/paymentImageService";
-import { generateQuotationPDF } from "../utils/pdfService";
-import LoadQuotationModal from "./LoadQuotationModal";
+import ItemForm from "./ItemForm";
 
-export default function Header({
-  onNewQuotation,
-  onRefreshSku,
-  pdfData = {},
+
+  export default function Sidebar({
+  onAddItem,
+  /* EDIT FLOW */
+  editIndex,
+  editItem,
+  onUpdateItem,
+  onCancelEdit,
+  /* 🔥 SINGLE SOURCE OF TRUTH */
+  pdfData,
   setPdfData,
-  setLoading,
-  setLoadingText,
-  setConfirm,
-}) {
-  const [showLoad, setShowLoad] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  /* ================= SAVE ================= */
-  const handleSave = async () => {
-    try {
-      if (!pdfData.party?.trim()) {
-        setConfirm({
-          open: true,
-          title: "Missing Party Name",
-          message: "Party name is required.",
-          onConfirm: () => setConfirm({ open: false })
-        });
-        return;
-      }
+  handlePaymentImage,
+  paymentImages,
+  removePaymentImage,
+  }) {
 
-      if (!pdfData.items?.length) {
-        setConfirm({
-          open: true,
-          title: "No Items",
-          message: "Please add at least one item.",
-          onConfirm: () => setConfirm({ open: false })
-        });
-        return;
-      }
+  const {
+  party = "",
+  phone = "",
+  address = "",
+  salesPerson = "",
+  remark = "",
+  rateDiscount = 0,
+  spDiscount = 0,
+  } = pdfData;
 
-      setLoading(true);
-      setLoadingText("Saving & generating PDF...");
-
-      const payload = {
-        ...pdfData,
-        items: pdfData.items.map(it => ({
-          ...it,
-          size: typeof it.size === "string" ? it.size : ""
-        })),
-        paymentImages: []
-      };
-
-      const saved = pdfData.id
-        ? await updateQuotation(pdfData.id, payload)
-        : await createQuotation(payload);
-
-      setPdfData(saved);
-
-      await generateQuotationPDF({
-        ...saved,
-        paymentImages: pdfData.paymentImages
-      });
-
-    } catch (e) {
-      console.error(e);
-      setConfirm({
-        open: true,
-        title: "Save Failed",
-        message: "Something went wrong.",
-        onConfirm: () => setConfirm({ open: false })
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRefresh = () => {
-    setConfirm({
-      open: true,
-      title: "Refresh Sheet",
-      message: "Refresh Google Sheet data?",
-      onConfirm: async () => {
-        setConfirm({ open: false });
-        setLoading(true);
-        setLoadingText("Refreshing...");
-        await onRefreshSku();
-        setLoading(false);
-      }
-    });
-  };
-
-  const handleLoadSelect = async (id) => {
-    setLoading(true);
-    setLoadingText("Loading Quotation...");
-    const data = await fetchQuotationById(id);
-    setPdfData({ ...data, paymentImages: data.paymentImages || [] });
-    setLoading(false);
-    setShowLoad(false);
-  };
-
-  /* ================= UI ================= */
+  const [previewMap, setPreviewMap] = useState({});
+  
   return (
-    <>
-      {/* 🔥 HEADER */}
-      <div className="bg-blue-700 text-white px-4 py-3 flex justify-between items-center shadow">
+  <div className="w-[360px] bg-blue-50/50 p-4 space-y-4 overflow-y-auto">
 
-        {/* LEFT */}
-        <div>
-          <h1 className="text-lg font-bold">ASTRIKE SPORTSWEAR</h1>
-          <p className="text-xs text-blue-200 hidden md:block">
-            Quotation Management System
-          </p>
-        </div>
+  {/* CUSTOMER CARD */}
+  <div className="bg-white rounded-xl shadow-sm p-4">
+  <h3 className="text-sm font-semibold text-blue-700 mb-3">
+  Customer Details
+  </h3>
 
-        {/* DESKTOP ACTIONS */}
-        <div className="hidden md:flex gap-2">
-          <button
-            onClick={onNewQuotation}
-            className="px-3 py-2 rounded bg-white text-blue-700 text-sm font-semibold"
-          >
-            + New
-          </button>
+  {/* PARTY */}
+  <input
+  className="w-full mb-2 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+  placeholder="Party Name"
+  value={party}
+  onChange={(e) =>
+  setPdfData(prev => ({
+  ...prev,
+  party: e.target.value
+  }))
+  }
+  />
 
-          <button
-            onClick={() => setShowLoad(true)}
-            className="px-3 py-2 rounded bg-blue-900 text-sm"
-          >
-            Load
-          </button>
+  {/* PHONE */}
+  <input
+  className="w-full mb-2 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+  placeholder="Phone"
+  value={phone}
+  onChange={(e) =>
+  setPdfData(prev => ({
+  ...prev,
+  phone: e.target.value
+  }))
+  }
+  />
 
-          <button
-            onClick={handleRefresh}
-            className="px-3 py-2 rounded bg-yellow-400 text-black text-sm font-semibold"
-          >
-            Refresh
-          </button>
+  {/* ADDRESS */}
+  <input
+  className="w-full mb-2 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+  placeholder="Address"
+  value={address}
+  onChange={(e) =>
+  setPdfData(prev => ({
+  ...prev,
+  address: e.target.value
+  }))
+  }
+  />
 
-          <button
-            onClick={handleSave}
-            className="px-3 py-2 rounded bg-blue-900 text-sm"
-          >
-            💾 Save PDF
-          </button>
-        </div>
+  {/* SALES PERSON */}
+  <input
+  className="w-full mb-2 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+  placeholder="Sales Person"
+  value={salesPerson}
+  onChange={(e) =>
+  setPdfData(prev => ({
+  ...prev,
+  salesPerson: e.target.value
+  }))
+  }
+  />
 
-        {/* MOBILE ACTIONS */}
-        <div className="flex md:hidden gap-2">
-          <button
-            onClick={handleSave}
-            className="px-3 py-2 rounded bg-white text-blue-700 text-sm font-semibold"
-          >
-            💾 PDF
-          </button>
+  {/* REMARK */}
+  <div className="mt-1">
+  <label className="text-sm font-semibold text-blue-700 mb-3">
+  Remark / Note
+  </label>
 
-          <button
-            onClick={() => setDrawerOpen(true)}
-            className="px-3 py-2 rounded bg-blue-900 text-sm"
-          >
-            ☰
-          </button>
-        </div>
-      </div>
+  <textarea
+  rows={2}
+  className="w-full mt-1 px-3 py-2 border rounded text-sm"
+  placeholder="Any special instruction, payment note, delivery remark..."
+  value={remark}
+  onChange={(e) =>
+  setPdfData(prev => ({
+  ...prev,
+  remark: e.target.value
+  }))
+  }
+  />
+  </div>
+  </div>
 
-      {/* 🔥 MOBILE DRAWER */}
-      {drawerOpen && (
-        <div className="fixed inset-0 z-[999] bg-black/40">
-          <div className="absolute right-0 top-0 h-full w-[260px] bg-white p-4 space-y-3 shadow-lg">
+  {/* DISCOUNT CARD */}
+  <div className="bg-white rounded-xl shadow-sm p-4">
+  <h3 className="text-sm font-semibold text-blue-700 mb-3">
+  Discounts
+  </h3>
 
-            <button
-              onClick={() => setDrawerOpen(false)}
-              className="text-right w-full text-gray-500"
-            >
-              ✕ Close
-            </button>
+  <div className="flex gap-4 text-sm mb-3">
+  <label className="flex items-center gap-1">
+  <input
+  type="radio"
+  checked={rateDiscount === 55}
+  onChange={() =>
+  setPdfData(prev => ({
+  ...prev,
+  rateDiscount: 55
+  }))
+  }
+  />
+  55%
+  </label>
 
-            <button
-              onClick={() => {
-                setDrawerOpen(false);
-                onNewQuotation();
-              }}
-              className="w-full px-3 py-2 rounded bg-blue-600 text-white text-sm"
-            >
-              + New Quotation
-            </button>
+  <label className="flex items-center gap-1">
+  <input
+  type="radio"
+  checked={rateDiscount === 57}
+  onChange={() =>
+  setPdfData(prev => ({
+  ...prev,
+  rateDiscount: 57
+  }))
+  }
+  />
+  57%
+  </label>
+  </div>
 
-            <button
-              onClick={() => {
-                setDrawerOpen(false);
-                setShowLoad(true);
-              }}
-              className="w-full px-3 py-2 rounded bg-gray-100 text-sm"
-            >
-              Load Old Quotation
-            </button>
+  <h3 className="text-sm font-semibold text-blue-700 mb-3">
+  SP Discounts
+  </h3>
 
-            <button
-              onClick={() => {
-                setDrawerOpen(false);
-                handleRefresh();
-              }}
-              className="w-full px-3 py-2 rounded bg-yellow-400 text-black text-sm font-semibold"
-            >
-              Refresh Sheet
-            </button>
-          </div>
-        </div>
-      )}
+  <input
+  className="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+  placeholder="SP Discount (%)"
+  type="number"
+  min={0}
+  max={10}
+  value={spDiscount}
+  onChange={(e) => {
+  let val = Number(e.target.value);
+  if (val > 10) val = 10;
+  if (val < 0) val = 0;
 
-      {showLoad && (
-        <LoadQuotationModal
-          onClose={() => setShowLoad(false)}
-          onSelect={handleLoadSelect}
-          onDelete={async (q) => {
-            const urls = await deleteQuotation(q.id);
-            await deletePaymentImages(urls);
-          }}
-        />
-      )}
-    </>
+  setPdfData(prev => ({
+  ...prev,
+  spDiscount: val
+  }));
+  }}
+  />
+
+  <p className="text-xs text-gray-500 mt-1">
+  * SP Discount maximum{" "}
+  <span className="font-semibold text-blue-600">10%</span> allowed
+  </p>
+  </div>
+
+  {/* PAYMENT CARD */}
+  <div className="bg-white rounded-xl shadow-sm p-4">
+  <h3 className="text-sm font-semibold text-blue-700 mb-3">
+  Payment Proof ( 2 Images Allow)
+  </h3>
+
+  {paymentImages.length < 2 && (
+  <input
+  type="file"
+  accept="image/*"
+  onChange={handlePaymentImage}
+  className="text-sm mb-2"
+  />
+  )}
+
+  <div className="grid grid-cols-2 gap-2">
+  {paymentImages.map((_, idx) => (
+  <div key={idx} className="border rounded p-1">
+  {previewMap[idx] ? (
+  <img
+  src={previewMap[idx]}
+  className="h-28 w-full object-contain mb-1"
+  alt="Payment Proof"
+  />
+  ) : (
+  <div className="h-28 flex items-center justify-center text-xs text-gray-400">
+  Image not available
+  </div>
+  )}
+
+  <button
+  onClick={() => removePaymentImage(idx)}
+  className="w-full text-xs py-1 rounded bg-red-500 text-white"
+  >
+  Remove
+  </button>
+  </div>
+  ))}
+  </div>
+
+  <p className="text-xs text-gray-500 mt-2">
+  * Only 2 images allowed. Both will appear in PDF.
+  </p>
+  </div>
+
+
+  {/* ITEM CARD */}
+  <ItemForm
+  onAddItem={onAddItem}
+  editIndex={editIndex}
+  editItem={editItem}
+  onUpdateItem={onUpdateItem}
+  onCancelEdit={onCancelEdit}
+  />
+  </div>
   );
-}
+  }
