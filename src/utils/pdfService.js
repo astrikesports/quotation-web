@@ -265,7 +265,7 @@ import { parseSizes } from "../utils/sizeHelper";
   `Total Discount : ${totalDiscount}%`
   ],
   [{ text: `Address : ${address || "-"}`, colSpan: 4 }, {}, {}, {}],
-  [{ text: `Remark : ${remark || "-"}`, colSpan: 4 }, {}, {}, {}]
+  [{ text: `Remark : ${remark || "-"}`, colSpan: 4, fontSize: 13, bold: true }, {}, {}, {}]
   ]
   },
   layout: GRID,
