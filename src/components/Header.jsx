@@ -35,23 +35,28 @@ import {
       .then(res => res.text())
       .then(text => {
         const json = JSON.parse(text.substring(47).slice(0, -2));
-        const rows = json.table.rows.map(r => ({
-          party: r.c[1]?.v,                // Column B → PARTY
-          pincode: r.c[2]?.v?.toString()   // Column C → PINCODE
-        }));
+  
+        const rows = json.table.rows
+          .filter(r => r.c && r.c[2] && r.c[2].v) // blank pincode rows hatao
+          .map(r => ({
+            party: String(r.c[1]?.v || "").trim(),   // Column B → PARTY
+            pincode: String(r.c[2].v).trim()         // Column C → PINCODE
+          }));
+  
         setPincodeData(rows);
       })
       .catch(err => console.error("PINCODE SHEET ERROR", err));
+      console.log("PINCODE DATA:", pincodeData);
   }, []);
-
+    
   /* ================= PINCODE CHECK (ONLY CHECK & SHOW) ================= */
   const checkPincode = () => {
-    if (!pincode) return;
-
+    const entered = String(pincode).trim();
+  
     const match = pincodeData.find(
-      row => row.pincode === pincode.trim()
+      row => row.pincode === entered
     );
-
+  
     if (match) {
       setPincodeResult({
         status: "Available",
@@ -62,6 +67,7 @@ import {
         status: "Not Available"
       });
     }
+    
   };
 
     
