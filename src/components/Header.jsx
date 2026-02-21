@@ -36,8 +36,8 @@ import {
       .then(text => {
         const json = JSON.parse(text.substring(47).slice(0, -2));
         const rows = json.table.rows.map(r => ({
-          pincode: r.c[0]?.v?.toString(),
-          party: r.c[1]?.v
+          party: r.c[1]?.v,                // Column B → PARTY
+          pincode: r.c[2]?.v?.toString()   // Column C → PINCODE
         }));
         setPincodeData(rows);
       })
