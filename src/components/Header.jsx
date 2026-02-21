@@ -315,7 +315,9 @@ import {
   
           {pincodeResult.status === "Location Not Available" ? (
             <>
-              <div className="font-bold">{pincode}</div>
+              <div className="font-bold text-red-500">
+                Location Not Available
+              </div>
               <div className="text-gray-300">
                 {pincodeResult.party}
               </div>
