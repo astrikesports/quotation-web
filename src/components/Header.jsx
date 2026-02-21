@@ -292,17 +292,18 @@ import {
       placeholder="Pincode"
       value={pincode}
       onChange={(e) => setPincode(e.target.value)}
-      className="px-2 py-1 rounded text-black text-sm"
+      className="w-56 pr-16 px-3 py-2 rounded text-black text-sm"
     />
   
+    {/* CHECK BUTTON INSIDE INPUT */}
     <button
       onClick={checkPincode}
-      className="ml-2 px-3 py-1 text-sm rounded bg-green-500 text-white font-semibold"
+      className="absolute right-1 top-1 bottom-1 px-3 rounded bg-green-500 text-white text-sm font-semibold"
     >
       Check
     </button>
   
-    {/* TOOLTIP RESULT */}
+    {/* RESULT TOOLTIP */}
     {pincodeResult && (
       <div className="absolute top-full left-2 mt-2 z-50">
         <div className="relative bg-black text-white text-xs px-3 py-2 rounded shadow-lg">
@@ -310,8 +311,7 @@ import {
           {/* Arrow */}
           <div className="absolute -top-2 left-4 w-0 h-0 
             border-l-8 border-r-8 border-b-8 
-            border-l-transparent border-r-transparent border-b-black">
-          </div>
+            border-l-transparent border-r-transparent border-b-black" />
   
           {pincodeResult.status === "Location Not Available" ? (
             <>
