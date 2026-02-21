@@ -286,7 +286,7 @@ import {
 
   
   {/* PINCODE SEARCH */}
-  <div className="flex gap-2 items-center">
+  <div className="relative">
     <input
       type="text"
       placeholder="Pincode"
@@ -297,26 +297,38 @@ import {
   
     <button
       onClick={checkPincode}
-      className="px-3 py-1 text-sm rounded bg-green-500 text-white font-semibold"
+      className="ml-2 px-3 py-1 text-sm rounded bg-green-500 text-white font-semibold"
     >
       Check
     </button>
-  </div>
   
-  {pincodeResult && (
-    <div className="mt-1 text-sm font-semibold">
-      {pincodeResult.status === "Location Not Available" ? (
-        <span className="text-red-300">
-          ❌ Location Not Available – {pincodeResult.party}
-        </span>
-      ) : (
-        <span className="text-green-300">
-          ✅ Location Available
-        </span>
-      )}
-    </div>
-  )}
-
+    {/* TOOLTIP RESULT */}
+    {pincodeResult && (
+      <div className="absolute top-full left-2 mt-2 z-50">
+        <div className="relative bg-black text-white text-xs px-3 py-2 rounded shadow-lg">
+          
+          {/* Arrow */}
+          <div className="absolute -top-2 left-4 w-0 h-0 
+            border-l-8 border-r-8 border-b-8 
+            border-l-transparent border-r-transparent border-b-black">
+          </div>
+  
+          {pincodeResult.status === "Location Not Available" ? (
+            <>
+              <div className="font-bold">{pincode}</div>
+              <div className="text-gray-300">
+                {pincodeResult.party}
+              </div>
+            </>
+          ) : (
+            <div className="text-green-400 font-semibold">
+              Location Available
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+  </div>
   <button
   onClick={handleNewQuotation}
   className="px-3 py-2 text-sm rounded bg-white text-blue-700 font-semibold"
