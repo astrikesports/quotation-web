@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { deletePaymentImages } from "../services/paymentImageService";
 import {
   deleteQuotation,
@@ -23,6 +23,49 @@ import {
   }) {
 
   const [showLoad, setShowLoad] = useState(false);
+ /* ================= NEW PINCODE STATES ================= */
+  const [pincode, setPincode] = useState("");
+  const [pincodeData, setPincodeData] = useState([]);
+  const [pincodeResult, setPincodeResult] = useState(null);
+ /* ================= FETCH GOOGLE SHEET (PINCODE) ================= */
+  useEffect(() => {
+    fetch(
+      "https://docs.google.com/spreadsheets/d/1Y5VQsIQ33UYPOe1-Ul6VV7vv79lbrHnu8aRoAgYLeho/gviz/tq?tqx=out:json&gid=813343933"
+    )
+      .then(res => res.text())
+      .then(text => {
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const rows = json.table.rows.map(r => ({
+          pincode: r.c[0]?.v?.toString(),
+          party: r.c[1]?.v
+        }));
+        setPincodeData(rows);
+      })
+      .catch(err => console.error("PINCODE SHEET ERROR", err));
+  }, []);
+
+  /* ================= PINCODE CHECK (ONLY CHECK & SHOW) ================= */
+  const checkPincode = () => {
+    if (!pincode) return;
+
+    const match = pincodeData.find(
+      row => row.pincode === pincode.trim()
+    );
+
+    if (match) {
+      setPincodeResult({
+        status: "Available",
+        party: match.party
+      });
+    } else {
+      setPincodeResult({
+        status: "Not Available"
+      });
+    }
+  };
+
+    
+  /* ================= EXISTING FUNCTIONS (UNCHANGED) ================= */
   const handleSave = async () => {
   try {
   /* ================= VALIDATION (DIALOG BASED) ================= */
@@ -235,6 +278,37 @@ import {
 
   {/* RIGHT */}
   <div className="flex gap-2 items-center">
+
+  
+  {/* PINCODE SEARCH */}
+  <input
+  type="text"
+  placeholder="Pincode"
+  value={pincode}
+  onChange={(e) => setPincode(e.target.value)}
+  className="px-2 py-1 rounded text-black text-sm"
+  />
+  
+  <button
+  onClick={checkPincode}
+  className="px-3 py-1 text-sm rounded bg-green-500 text-white font-semibold"
+  >
+  Check
+  </button>
+  
+  {pincodeResult && (
+  <div className="text-sm font-semibold">
+  {pincodeResult.status === "Available" ? (
+  <span className="text-green-300">
+  ✅ Available – {pincodeResult.party}
+  </span>
+  ) : (
+  <span className="text-red-300">
+  ❌ Not Available
+  </span>
+  )}
+  </div>
+  )}
 
   <button
   onClick={handleNewQuotation}
