@@ -59,15 +59,14 @@ import {
   
     if (match) {
       setPincodeResult({
-        status: "Available",
+        status: "Location Not Available",
         party: match.party
       });
     } else {
       setPincodeResult({
-        status: "Not Available"
+        status: "Location Available"
       });
     }
-    
   };
 
     
@@ -303,17 +302,17 @@ import {
   </button>
   
   {pincodeResult && (
-  <div className="text-sm font-semibold">
-  {pincodeResult.status === "Available" ? (
-  <span className="text-green-300">
-  ✅ Available – {pincodeResult.party}
-  </span>
-  ) : (
-  <span className="text-red-300">
-  ❌ Not Available
-  </span>
-  )}
-  </div>
+    <div className="text-sm font-semibold">
+      {pincodeResult.status === "Location Not Available" ? (
+        <span className="text-red-300">
+          ❌ Location Not Available – {pincodeResult.party}
+        </span>
+      ) : (
+        <span className="text-green-300">
+          ✅ Location Available
+        </span>
+      )}
+    </div>
   )}
 
   <button
