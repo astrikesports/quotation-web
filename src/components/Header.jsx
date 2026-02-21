@@ -286,23 +286,25 @@ import {
 
   
   {/* PINCODE SEARCH */}
-  <input
-  type="text"
-  placeholder="Pincode"
-  value={pincode}
-  onChange={(e) => setPincode(e.target.value)}
-  className="px-2 py-1 rounded text-black text-sm"
-  />
+  <div className="flex gap-2 items-center">
+    <input
+      type="text"
+      placeholder="Pincode"
+      value={pincode}
+      onChange={(e) => setPincode(e.target.value)}
+      className="px-2 py-1 rounded text-black text-sm"
+    />
   
-  <button
-  onClick={checkPincode}
-  className="px-3 py-1 text-sm rounded bg-green-500 text-white font-semibold"
-  >
-  Check
-  </button>
+    <button
+      onClick={checkPincode}
+      className="px-3 py-1 text-sm rounded bg-green-500 text-white font-semibold"
+    >
+      Check
+    </button>
+  </div>
   
   {pincodeResult && (
-    <div className="text-sm font-semibold">
+    <div className="mt-1 text-sm font-semibold">
       {pincodeResult.status === "Location Not Available" ? (
         <span className="text-red-300">
           ❌ Location Not Available – {pincodeResult.party}
