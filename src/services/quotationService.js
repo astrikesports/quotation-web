@@ -1,5 +1,5 @@
 /* ================= MAPPERS ================= */
-import { supabase } from "../supabase";
+
 // frontend → DB
 function mapToDB(data) {
   return {
@@ -22,9 +22,10 @@ function mapToDB(data) {
 
 // DB → frontend
 function mapFromDB(row) {
+  if (!row) return null;
+
   return {
     id: row.id,
-
     party: row.party ?? "",
     phone: row.phone ?? "",
     address: row.address ?? "",
@@ -36,33 +37,33 @@ function mapFromDB(row) {
     billDiscount: Number(row.bill_discount ?? 0),
     shipping: Number(row.shipping ?? 0),
     advance: Number(row.advance ?? 0),
-    
-    
-    createdAt: row.created_at,   // ✅ FIX
-    updatedAt: row.updated_at,   // ✅ FIX
-    items: Array.isArray(row.items) ? row.items : [],
 
-    // 🔥 MOST IMPORTANT LINE
-    // 🔥 THIS IS CRITICAL
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    items: Array.isArray(row.items) ? row.items : [],
     paymentImages: Array.isArray(row.payment_images)
       ? row.payment_images
       : []
   };
 }
+
 /* ================= CREATE ================= */
 export async function createQuotation(pdfData) {
   const payload = mapToDB(pdfData);
 
   const res = await fetch("/api/quotations", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Prefer: "return=representation"
+    },
     body: JSON.stringify(payload)
   });
 
   if (!res.ok) throw new Error("Failed to create quotation");
 
   const data = await res.json();
-  return mapFromDB(data[0]);
+  return mapFromDB(data?.[0]);
 }
 
 /* ================= UPDATE ================= */
@@ -86,7 +87,7 @@ export async function updateQuotation(id, pdfData) {
   if (!res.ok) return null;
 
   const data = await res.json();
-  return data[0] ? mapFromDB(data[0]) : null;
+  return mapFromDB(data?.[0]);
 }
 
 /* ================= LOAD ONE ================= */
@@ -96,7 +97,7 @@ export async function fetchQuotationById(id) {
   if (!res.ok) throw new Error("Failed to load quotation");
 
   const data = await res.json();
-  return mapFromDB(data[0]);
+  return mapFromDB(data?.[0]);
 }
 
 /* ================= LOAD LIST ================= */
@@ -106,7 +107,7 @@ export async function fetchQuotations() {
   if (!res.ok) throw new Error("Failed to load quotations");
 
   const data = await res.json();
-  return data.map(mapFromDB);
+  return Array.isArray(data) ? data.map(mapFromDB).filter(Boolean) : [];
 }
 
 /* ================= DELETE ================= */
@@ -114,9 +115,8 @@ export async function deleteQuotation(id) {
   // get images first
   const res = await fetch(`/api/quotations?id=eq.${id}`);
   const data = await res.json();
-  const images = data[0]?.payment_images || [];
+  const images = data?.[0]?.payment_images || [];
 
-  // delete row
   await fetch(`/api/quotations?id=eq.${id}`, {
     method: "DELETE"
   });
