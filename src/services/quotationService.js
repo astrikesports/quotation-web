@@ -26,10 +26,6 @@ function mapFromDB(row) {
 
   return {
     id: row.id,
-
-    // 🔥 QUOTATION NUMBER
-    quotationNumber: row.quotation_number ?? row.quotation_no ?? "",
-
     party: row.party ?? "",
     phone: row.phone ?? "",
     address: row.address ?? "",
@@ -42,16 +38,15 @@ function mapFromDB(row) {
     shipping: Number(row.shipping ?? 0),
     advance: Number(row.advance ?? 0),
 
-    // 🔥 DATES (THIS WAS MISSING)
-    createdAt: row.created_at ?? null,
-    updatedAt: row.updated_at ?? null,
-
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
     items: Array.isArray(row.items) ? row.items : [],
     paymentImages: Array.isArray(row.payment_images)
       ? row.payment_images
       : []
   };
 }
+
 /* ================= CREATE ================= */
 export async function createQuotation(pdfData) {
   const payload = mapToDB(pdfData);
