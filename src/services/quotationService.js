@@ -1,5 +1,3 @@
-import { supabase } from "../supabase";
-
 /* ================= MAPPERS ================= */
 
 // frontend → DB
@@ -26,7 +24,6 @@ function mapToDB(data) {
 function mapFromDB(row) {
   return {
     id: row.id,
-
     party: row.party ?? "",
     phone: row.phone ?? "",
     address: row.address ?? "",
@@ -38,104 +35,87 @@ function mapFromDB(row) {
     billDiscount: Number(row.bill_discount ?? 0),
     shipping: Number(row.shipping ?? 0),
     advance: Number(row.advance ?? 0),
-    
-    
-    createdAt: row.created_at,   // ✅ FIX
-    updatedAt: row.updated_at,   // ✅ FIX
-    items: Array.isArray(row.items) ? row.items : [],
 
-    // 🔥 MOST IMPORTANT LINE
-    // 🔥 THIS IS CRITICAL
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    items: Array.isArray(row.items) ? row.items : [],
     paymentImages: Array.isArray(row.payment_images)
       ? row.payment_images
       : []
   };
 }
 
-
 /* ================= CREATE ================= */
 export async function createQuotation(pdfData) {
   const payload = mapToDB(pdfData);
 
-  const { data, error } = await supabase
-    .from("quotations")
-    .insert([payload])
-    .select()
-    .single();
+  const res = await fetch("/api/quotations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
 
-  if (error) throw error;
-  return mapFromDB(data);
+  if (!res.ok) throw new Error("Failed to create quotation");
+
+  const data = await res.json();
+  return mapFromDB(data[0]);
 }
 
 /* ================= UPDATE ================= */
-
 export async function updateQuotation(id, pdfData) {
-  if (!id) throw new Error("Quotation ID missing");
+  if (!id || id === "null" || id === "undefined") return null;
 
   const payload = {
     ...mapToDB(pdfData),
     updated_at: new Date().toISOString()
   };
 
-  const { data, error } = await supabase
-    .from("quotations")
-    .update(payload)
-    .eq("id", id)
-    .select(); // 👈 NO .single()
+  const res = await fetch(`/api/quotations?id=eq.${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Prefer: "return=representation"
+    },
+    body: JSON.stringify(payload)
+  });
 
-  if (error) throw error;
+  if (!res.ok) return null;
 
-  if (!data || data.length === 0) {
-    throw new Error("Quotation not found or not updated");
-  }
-
-  return mapFromDB(data[0]); // 👈 manually first row
+  const data = await res.json();
+  return data[0] ? mapFromDB(data[0]) : null;
 }
-
-
 
 /* ================= LOAD ONE ================= */
 export async function fetchQuotationById(id) {
-  const { data, error } = await supabase
-    .from("quotations")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const res = await fetch(`/api/quotations?id=eq.${id}`);
 
-  if (error) throw error;
-  return mapFromDB(data);
+  if (!res.ok) throw new Error("Failed to load quotation");
+
+  const data = await res.json();
+  return mapFromDB(data[0]);
 }
 
 /* ================= LOAD LIST ================= */
 export async function fetchQuotations() {
-  const { data, error } = await supabase
-    .from("quotations")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const res = await fetch("/api/quotations");
 
-  if (error) throw error;
-  return data;
+  if (!res.ok) throw new Error("Failed to load quotations");
+
+  const data = await res.json();
+  return data.map(mapFromDB);
 }
 
-/* ================= DELETE QUOTATION ================= */
+/* ================= DELETE ================= */
 export async function deleteQuotation(id) {
-  // pehle images nikaal lo
-  const { data, error } = await supabase
-    .from("quotations")
-    .select("payment_images")
-    .eq("id", id)
-    .single();
+  // get images first
+  const res = await fetch(`/api/quotations?id=eq.${id}`);
+  const data = await res.json();
+  const images = data[0]?.payment_images || [];
 
-  if (error) throw error;
+  // delete row
+  await fetch(`/api/quotations?id=eq.${id}`, {
+    method: "DELETE"
+  });
 
-  // ab row delete karo
-  const { error: delError } = await supabase
-    .from("quotations")
-    .delete()
-    .eq("id", id);
-
-  if (delError) throw delError;
-
-  // image urls return karo
-  return data?.payment_images || [];
+  return images;
 }
