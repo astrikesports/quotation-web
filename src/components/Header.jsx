@@ -28,26 +28,37 @@ import {
   const [pincodeData, setPincodeData] = useState([]);
   const [pincodeResult, setPincodeResult] = useState(null);
  /* ================= FETCH GOOGLE SHEET (PINCODE) ================= */
-  useEffect(() => {
-    fetch(
-      "https://docs.google.com/spreadsheets/d/1Y5VQsIQ33UYPOe1-Ul6VV7vv79lbrHnu8aRoAgYLeho/gviz/tq?tqx=out:json&gid=813343933"
-    )
-      .then(res => res.text())
-      .then(text => {
-        const json = JSON.parse(text.substring(47).slice(0, -2));
-  
-        const rows = json.table.rows
-          .filter(r => r.c && r.c[2] && r.c[2].v) // blank pincode rows hatao
-          .map(r => ({
-            party: String(r.c[1]?.v || "").trim(),   // Column B → PARTY
-            pincode: String(r.c[2].v).trim()         // Column C → PINCODE
-          }));
-  
-        setPincodeData(rows);
-      })
-      .catch(err => console.error("PINCODE SHEET ERROR", err));
-      console.log("PINCODE DATA:", pincodeData);
-  }, []);
+useEffect(() => {
+  const loadPincodeSheet = async () => {
+    try {
+      const res = await fetch(
+        "https://docs.google.com/spreadsheets/d/1Y5VQsIQ33UYPOe1-Ul6VV7vv79lbrHnu8aRoAgYLeho/gviz/tq?gid=813343933"
+      );
+
+      const text = await res.text();
+
+      const json = JSON.parse(
+        text.replace(/^[^(]*\(|\);?$/g, "")
+      );
+
+      const rows =
+        json?.table?.rows
+          ?.filter(r => r?.c?.[2]?.v)
+          ?.map(r => ({
+            party: String(r.c[1]?.v || "").trim(),
+            pincode: String(r.c[2]?.v || "").trim()
+          })) || [];
+
+      setPincodeData(rows);
+      console.log("PINCODE LOADED:", rows.length);
+
+    } catch (err) {
+      console.error("PINCODE SHEET FAILED", err);
+    }
+  };
+
+  loadPincodeSheet();
+}, []);
     
   /* ================= PINCODE CHECK (ONLY CHECK & SHOW) ================= */
   const checkPincode = () => {
