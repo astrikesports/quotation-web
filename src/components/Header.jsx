@@ -23,6 +23,63 @@ import {
   }) {
 
   const [showLoad, setShowLoad] = useState(false);
+  const [pincode, setPincode] = useState("");
+  const [pincodeData, setPincodeData] = useState([]);
+  const [pincodeResult, setPincodeResult] = useState(null);
+
+
+
+  useEffect(() => {
+  const loadPincodeSheet = async () => {
+    try {
+      const res = await fetch(
+        "https://docs.google.com/spreadsheets/d/1Y5VQsIQ33UYPOe1-Ul6VV7vv79lbrHnu8aRoAgYLeho/gviz/tq?gid=813343933"
+      );
+
+      const text = await res.text();
+
+      const json = JSON.parse(
+        text.replace(/^[^(]*\(|\);?$/g, "")
+      );
+
+      const rows =
+        json?.table?.rows
+          ?.filter(r => r?.c?.[2]?.v) // Column C = PINCODE
+          ?.map(r => ({
+            party: String(r.c[1]?.v || "").trim(),   // Column B = PARTY
+            pincode: String(r.c[2]?.v || "").trim()
+          })) || [];
+
+      setPincodeData(rows);
+      console.log("PINCODE LOADED:", rows.length);
+
+    } catch (err) {
+      console.error("PINCODE SHEET FAILED", err);
+    }
+  };
+
+  loadPincodeSheet();
+}, []);
+
+
+  const checkPincode = () => {
+  const entered = String(pincode).trim();
+
+  if (!entered) {
+    setPincodeResult(null);
+    return;
+  }
+
+  const match = pincodeData.find(
+    row => row.pincode.trim() === entered
+  );
+
+  setPincodeResult(
+    match
+      ? { status: "Location Not Available", party: match.party }
+      : { status: "Location Available" }
+  );
+};
     
   /* ================= EXISTING FUNCTIONS (UNCHANGED) ================= */
   const handleSave = async () => {
