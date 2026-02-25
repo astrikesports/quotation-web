@@ -1,5 +1,5 @@
 /* ================= MAPPERS ================= */
-
+import { supabase } from "../supabase";
 // frontend → DB
 function mapToDB(data) {
   return {
