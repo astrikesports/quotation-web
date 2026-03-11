@@ -6,6 +6,7 @@ import {
 } from "../services/quotationService";
 import { generateQuotationPDF } from "../utils/pdfService";
 import LoadQuotationModal from "./LoadQuotationModal";
+import StockCheckModal from "./StockCheckModal";
 
 import {
   createQuotation,
@@ -23,6 +24,7 @@ import {
   }) {
 
   const [showLoad, setShowLoad] = useState(false);
+  const [showStock,setShowStock] = useState(false)
   const handleSave = async () => {
   try {
   /* ================= VALIDATION (DIALOG BASED) ================= */
@@ -237,6 +239,13 @@ import {
   <div className="flex gap-2 items-center">
 
   <button
+  onClick={() => setShowStock(true)}
+  className="px-4 py-2 text-sm rounded bg-green-600 text-white font-semibold"
+  >
+  📦 Check Stock
+  </button>
+
+  <button
   onClick={handleNewQuotation}
   className="px-3 py-2 text-sm rounded bg-white text-blue-700 font-semibold"
   >
@@ -275,6 +284,12 @@ import {
   onDelete={handleDelete}
   />
 
+  )}
+  {/* STOCK CHECK POPUP */}
+  {showStock && (
+    <StockCheckModal
+      onClose={() => setShowStock(false)}
+    />
   )}
   </>
   );
