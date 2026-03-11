@@ -26,9 +26,17 @@ const handleSearch = (value) => {
 
 setSku(value)
 
-const result = data.filter(i =>
-i.sku.toLowerCase().includes(value.toLowerCase())
-)
+const search = value.toLowerCase().replace(/[^a-z0-9]/g,"")
+
+const result = data.filter(item => {
+
+const sku = item.sku
+.toLowerCase()
+.replace(/[^a-z0-9]/g,"")
+
+return sku.includes(search)
+
+})
 
 setFiltered(result)
 
