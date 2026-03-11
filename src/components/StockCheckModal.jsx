@@ -6,7 +6,6 @@ export default function StockCheckModal({ onClose }) {
 const [sku,setSku] = useState("")
 const [data,setData] = useState([])
 const [filtered,setFiltered] = useState([])
-const [loading,setLoading] = useState(false)
 
 useEffect(()=>{
 
@@ -16,15 +15,10 @@ loadStock()
 
 const loadStock = async () => {
 
-setLoading(true)
-
 const stock = await fetchStockData()
 
 setData(stock)
-
 setFiltered(stock)
-
-setLoading(false)
 
 }
 
@@ -42,50 +36,26 @@ setFiltered(result)
 
 return (
 
-<div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+<div className="fixed inset-0 bg-black/40 flex items-center justify-center">
 
-<div className="bg-white w-[420px] rounded-xl p-5 shadow-xl">
+<div className="bg-white p-6 rounded w-[400px]">
 
-<h2 className="text-lg font-bold mb-3">
-Stock Checker
-</h2>
+<h2 className="font-bold mb-3">Stock Checker</h2>
 
 <input
-type="text"
 value={sku}
-placeholder="Search SKU..."
 onChange={(e)=>handleSearch(e.target.value)}
 className="border w-full p-2 rounded"
 />
 
-<div className="border rounded mt-3 max-h-60 overflow-y-auto">
+<div className="max-h-48 overflow-y-auto mt-3 border rounded">
 
-{loading && (
-<div className="p-3 text-sm">
-Loading stock...
-</div>
-)}
+{filtered.map((item,i)=>(
 
-{filtered.map((item,index)=>(
+<div key={i} className="flex justify-between px-3 py-2 border-b">
 
-<div
-key={index}
-className="flex justify-between items-center px-3 py-2 border-b hover:bg-gray-50"
->
-
-<span className="font-medium">
-{item.sku}
-</span>
-
-<span
-className={
-item.stock > 0
-? "text-green-600 font-semibold"
-: "text-red-600 font-semibold"
-}
->
-{item.stock} pcs
-</span>
+<span>{item.sku}</span>
+<span>{item.stock}</span>
 
 </div>
 
@@ -95,9 +65,11 @@ item.stock > 0
 
 <button
 onClick={onClose}
-className="mt-4 w-full bg-gray-200 py-2 rounded"
+className="mt-4 w-full bg-gray-200 p-2 rounded"
 >
+
 Close
+
 </button>
 
 </div>
