@@ -3,7 +3,7 @@ export const fetchStockData = async () => {
   try {
 
     const res = await fetch(
-      "https://script.google.com/macros/s/AKfycbxylIzt0qTShWXoA_VcepAAeZkPraEbJpj6gSNw0dJ3lcdF7doS4FUhB4xd88IR0i4/exec"
+      "https://script.google.com/macros/s/AKfycbwj12s8NfiDZRTwwKd2NsFLSWAEkj8Hrk9gAKS59gsFobNH8EkwRy28b2yQauJ487Tg/exec"
     );
 
     const data = await res.json();
