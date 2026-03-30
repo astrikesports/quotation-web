@@ -4,7 +4,7 @@ export async function loadDistricts() {
   if (districtCache) return districtCache;
 
   const res = await fetch(
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vS67KO9ZS8Dk5pNd6dWzmtXafD9AQb38xmd5fs1woHAPRewJBYfFgbaMzI3d-FsYOJ3bbL2sWt-oSxn/pubhtml?gid=813343933&single=true"
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vS67KO9ZS8Dk5pNd6dWzmtXafD9AQb38xmd5fs1woHAPRewJBYfFgbaMzI3d-FsYOJ3bbL2sWt-oSxn/pub?gid=813343933&single=true&output=csv"
   );
 
   const text = await res.text();
@@ -15,9 +15,9 @@ export async function loadDistricts() {
     const cols = row.split(",");
 
     return {
-      party: cols[1]?.trim(),      // ✅ PARTY
-      pincode: cols[2]?.trim(),    // ✅ PINCODE
-      district: cols[3]?.replace(/"/g, "").trim() // ✅ DISTRICT FIX
+      party: cols[1]?.trim(),
+      pincode: cols[2]?.trim(),
+      district: cols[3]?.replace(/"/g, "").trim()
     };
   });
 
