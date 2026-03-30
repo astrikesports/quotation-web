@@ -15,8 +15,9 @@ export async function loadDistricts() {
     const cols = row.split(",");
 
     return {
-      party: cols[0]?.trim(),      // 👉 Column A
-      district: cols[1]?.trim()    // 👉 Column B
+      party: cols[1]?.trim(),      // ✅ PARTY
+      pincode: cols[2]?.trim(),    // ✅ PINCODE
+      district: cols[3]?.replace(/"/g, "").trim() // ✅ DISTRICT FIX
     };
   });
 
