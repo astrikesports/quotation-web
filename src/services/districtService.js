@@ -4,7 +4,7 @@ export async function loadDistricts() {
   if (districtCache) return districtCache;
 
   const res = await fetch(
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1v.../pub?gid=813343933&single=true&output=csv"
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vS67KO9ZS8Dk5pNd6dWzmtXafD9AQb38xmd5fs1woHAPRewJBYfFgbaMzI3d-FsYOJ3bbL2sWt-oSxn/pubhtml?gid=813343933&single=true"
   );
 
   const text = await res.text();
