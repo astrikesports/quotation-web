@@ -7,6 +7,7 @@ import {
 import { generateQuotationPDF } from "../utils/pdfService";
 import LoadQuotationModal from "./LoadQuotationModal";
 import StockCheckModal from "./StockCheckModal";
+import DistrictCheckModal from "./DistrictCheckModal";
 
 import {
   createQuotation,
@@ -25,6 +26,8 @@ import {
 
   const [showLoad, setShowLoad] = useState(false);
   const [showStock,setShowStock] = useState(false)
+  const [showDistrict, setShowDistrict] = useState(false);
+    
   const handleSave = async () => {
   try {
   /* ================= VALIDATION (DIALOG BASED) ================= */
@@ -239,6 +242,13 @@ import {
   <div className="flex gap-2 items-center">
 
   <button
+  onClick={() => setShowDistrict(true)}
+  className="px-4 py-2 text-sm rounded bg-purple-600 text-white font-semibold"
+>
+  📍 Check District
+  </button>
+
+  <button
   onClick={() => setShowStock(true)}
   className="px-4 py-2 text-sm rounded bg-green-600 text-white font-semibold"
   >
@@ -291,6 +301,15 @@ import {
       onClose={() => setShowStock(false)}
     />
   )}
+    
+  {/* STOCK CHECK POPUP */}
+    
+    {showDistrict && (
+  <DistrictCheckModal
+    onClose={() => setShowDistrict(false)}
+  />
+)}
+  
   </>
   );
   }
