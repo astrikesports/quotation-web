@@ -12,40 +12,37 @@ export default function DistrictCheckModal({ onClose, setPdfData }) {
   }, []);
 
   function handleSearch(value) {
-    setQuery(value);
+  setQuery(value);
 
-    if (!value) {
-      setFiltered([]);
-      setResult(null);
-      return;
-    }
-
-    const lower = value.toLowerCase().trim();
-
-    // 🔥 LIVE FILTER
-    const matches = db.filter(d =>
-      d.district?.toLowerCase().includes(lower)
-    );
-
-    setFiltered(matches);
-
-    // 🔥 EXACT MATCH CHECK
-    const exact = db.find(
-      d => d.district?.toLowerCase().trim() === lower
-    );
-
-    if (exact) {
-      setResult({
-        found: true,
-        party: exact.party,
-        pincode: exact.pincode
-      });
-    } else {
-      setResult({
-        found: false
-      });
-    }
+  if (!value) {
+    setFiltered([]);
+    setResult(null);
+    return;
   }
+
+  const lower = value.toLowerCase().trim();
+
+  // 🔥 PARTIAL MATCH (IMPORTANT FIX)
+  const matches = db.filter(d =>
+    d.district?.toLowerCase().includes(lower)
+  );
+
+  setFiltered(matches);
+
+  if (matches.length > 0) {
+    // ❌ Agar koi bhi match mila → NOT AVAILABLE
+    setResult({
+      found: true,
+      party: matches[0].party,
+      pincode: matches[0].pincode
+    });
+  } else {
+    // ✅ koi match nahi
+    setResult({
+      found: false
+    });
+  }
+}
 
   function handleSelect(item) {
     setQuery(item.district);
