@@ -1,17 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { loadDistricts } from "../services/districtService";
 
-const districtDB = [
-  { district: "Davangere", party: "Google Collection" },
-  { district: "Bhandara", party: "Radhe Collection" },
-  { district: "Imphal", party: "Sandeep Kumar" },
-  { district: "Munger", party: "Bishnu Enterprises" },
-  { district: "Bhojpur", party: "Ayush Enterprises" },
-  { district: "Agra", party: "Sunny Sports UP" }
-];
 
 export default function DistrictCheckModal({ onClose }) {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState(null);
+  const [db, setDb] = useState([]);
+
+  useEffect(() => {
+    loadDistricts().then(setDb);
+  }, []);
 
   function handleSearch(value) {
     setQuery(value);
@@ -21,15 +19,14 @@ export default function DistrictCheckModal({ onClose }) {
       return;
     }
 
-    const found = districtDB.find(d =>
-      d.district.toLowerCase().includes(value.toLowerCase())
+    const found = db.find(d =>
+      d.district?.toLowerCase().includes(value.toLowerCase())
     );
 
     if (found) {
       setResult({
         found: true,
-        party: found.party,
-        district: found.district
+        party: found.party
       });
     } else {
       setResult({
@@ -43,7 +40,7 @@ export default function DistrictCheckModal({ onClose }) {
       <div className="bg-white w-[400px] rounded p-4">
 
         <h2 className="text-lg font-bold mb-3">
-          📍 Check District
+          📍 Check District (Live)
         </h2>
 
         <input
@@ -54,10 +51,8 @@ export default function DistrictCheckModal({ onClose }) {
           className="w-full border p-2 rounded mb-3"
         />
 
-        {/* 🔥 RESULT SHOW */}
         {result && (
           <div className="mt-3 p-3 rounded border">
-            
             {result.found ? (
               <div className="text-red-600 font-semibold">
                 ❌ This district is not available <br />
@@ -68,7 +63,6 @@ export default function DistrictCheckModal({ onClose }) {
                 ✅ District Available
               </div>
             )}
-
           </div>
         )}
 
