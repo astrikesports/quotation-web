@@ -6,30 +6,36 @@ const districtDB = [
   { district: "Imphal", party: "Sandeep Kumar" },
   { district: "Munger", party: "Bishnu Enterprises" },
   { district: "Bhojpur", party: "Ayush Enterprises" },
-  { district: "Agra", party: "Sunny Sports UP" },
-  { district: "Guntur", party: "Sri Venkateshwar Fashion Hub" },
-  { district: "Ahmednagar", party: "Shaurya Sports" },
-  { district: "Varanasi", party: "Kanha Ji Sports" },
-  { district: "Bharatpur", party: "Shree Laxmi Collection" }
+  { district: "Agra", party: "Sunny Sports UP" }
 ];
 
 export default function DistrictCheckModal({ onClose }) {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
+  const [result, setResult] = useState(null);
 
   function handleSearch(value) {
     setQuery(value);
 
     if (!value) {
-      setResults([]);
+      setResult(null);
       return;
     }
 
-    const filtered = districtDB.filter(d =>
+    const found = districtDB.find(d =>
       d.district.toLowerCase().includes(value.toLowerCase())
     );
 
-    setResults(filtered);
+    if (found) {
+      setResult({
+        found: true,
+        party: found.party,
+        district: found.district
+      });
+    } else {
+      setResult({
+        found: false
+      });
+    }
   }
 
   return (
@@ -37,7 +43,7 @@ export default function DistrictCheckModal({ onClose }) {
       <div className="bg-white w-[400px] rounded p-4">
 
         <h2 className="text-lg font-bold mb-3">
-          🔍 Check District Availability
+          📍 Check District
         </h2>
 
         <input
@@ -48,19 +54,23 @@ export default function DistrictCheckModal({ onClose }) {
           className="w-full border p-2 rounded mb-3"
         />
 
-        <div className="max-h-60 overflow-y-auto">
-          {results.map((item, i) => (
-            <div
-              key={i}
-              className="p-2 border-b hover:bg-gray-100"
-            >
-              <b>{item.district}</b>
-              <div className="text-sm text-gray-500">
-                {item.party}
+        {/* 🔥 RESULT SHOW */}
+        {result && (
+          <div className="mt-3 p-3 rounded border">
+            
+            {result.found ? (
+              <div className="text-red-600 font-semibold">
+                ❌ This district is not available <br />
+                🏢 Party: {result.party}
               </div>
-            </div>
-          ))}
-        </div>
+            ) : (
+              <div className="text-green-600 font-semibold">
+                ✅ District Available
+              </div>
+            )}
+
+          </div>
+        )}
 
         <button
           onClick={onClose}
@@ -68,6 +78,7 @@ export default function DistrictCheckModal({ onClose }) {
         >
           Close
         </button>
+
       </div>
     </div>
   );
