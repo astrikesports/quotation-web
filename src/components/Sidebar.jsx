@@ -157,7 +157,7 @@ import ItemForm from "./ItemForm";
   placeholder="SP Discount (%)"
   type="number"
   min={0}
-  max={10}
+  max={14}
   value={spDiscount}
   onChange={(e) => {
   let val = Number(e.target.value);
