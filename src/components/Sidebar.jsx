@@ -161,7 +161,7 @@ import ItemForm from "./ItemForm";
   value={spDiscount}
   onChange={(e) => {
   let val = Number(e.target.value);
-  if (val > 10) val = 10;
+  if (val > 14) val = 14;
   if (val < 0) val = 0;
 
   setPdfData(prev => ({
