@@ -66,7 +66,7 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   let rate = (mrp * (100 - rateDiscount)) / 100;
 
   if (spDiscount > 0) {
-  rate = (rate * (100 - Math.min(spDiscount, 10))) / 100;
+  rate = (rate * (100 - Math.min(spDiscount, 14))) / 100;
   }
 
   rate = Math.round(rate);
