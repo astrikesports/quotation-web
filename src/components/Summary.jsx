@@ -11,17 +11,6 @@ export default function Summary({
   net,
 }) {
 
-  useEffect(() => {
-
-    if (!setPdfData) return;
-
-    setPdfData(prev => ({
-      ...prev,
-      netAmount: net
-    }));
-
-  }, [net, setPdfData]);
-
   return (
     <div className="bg-blue-600 text-white px-6 py-4">
       <div className="max-w-6xl mx-auto grid grid-cols-6 gap-4 text-sm items-end">
