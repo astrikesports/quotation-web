@@ -13,141 +13,164 @@ export default function Summary({
 
   return (
 
-    <div className="mt-6">
+    <div className="px-4 pb-5 mt-4">
 
-      <div className="bg-gradient-to-r from-black via-gray-900 to-black rounded-[32px] shadow-2xl border border-white/10 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#050816] via-[#0b1020] to-[#050816] rounded-[38px] border border-white/10 shadow-[0_10px_60px_rgba(0,0,0,0.45)] overflow-hidden relative">
 
-        {/* BG EFFECT */}
-        <div className="absolute top-0 right-0 w-72 h-72 bg-green-500/10 rounded-full blur-3xl" />
+        {/* GLOW */}
+        <div className="absolute top-0 right-0 w-80 h-80 bg-green-500/10 blur-3xl rounded-full" />
 
-        <div className="absolute bottom-0 left-0 w-56 h-56 bg-blue-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-blue-500/10 blur-3xl rounded-full" />
 
-        {/* CONTENT */}
-        <div className="relative z-10 p-6 md:p-8">
+        <div className="relative z-10 p-5 md:p-7">
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-5 items-end">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
 
             {/* TOTAL PCS */}
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-5">
+            <div className="rounded-[28px] bg-white/[0.04] border border-white/10 p-5 backdrop-blur-xl min-h-[170px] flex flex-col justify-between">
 
-              <p className="text-gray-400 text-sm font-semibold tracking-wide">
-                TOTAL PCS
-              </p>
+              <div>
 
-              <h2 className="text-4xl font-black text-white mt-3">
-                {pcs}
-              </h2>
+                <p className="text-gray-400 text-xs tracking-[2px] font-bold">
+                  TOTAL PCS
+                </p>
 
-              <p className="text-xs text-gray-500 mt-2">
+                <h2 className="text-white text-5xl font-black mt-4">
+                  {pcs}
+                </h2>
+
+              </div>
+
+              <p className="text-gray-500 text-sm">
                 Total number of pieces
               </p>
 
             </div>
 
-            {/* GROSS AMOUNT */}
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-5">
+            {/* GROSS */}
+            <div className="rounded-[28px] bg-white/[0.04] border border-white/10 p-5 backdrop-blur-xl min-h-[170px] flex flex-col justify-between">
 
-              <p className="text-gray-400 text-sm font-semibold tracking-wide">
-                GROSS AMOUNT
-              </p>
+              <div>
 
-              <h2 className="text-4xl font-black text-white mt-3">
-                ₹{amount}
-              </h2>
+                <p className="text-gray-400 text-xs tracking-[2px] font-bold">
+                  GROSS AMOUNT
+                </p>
 
-              <p className="text-xs text-gray-500 mt-2">
+                <h2 className="text-white text-5xl font-black mt-4">
+                  ₹{amount}
+                </h2>
+
+              </div>
+
+              <p className="text-gray-500 text-sm">
                 After rate & SP discount
               </p>
 
             </div>
 
             {/* BILL DISCOUNT */}
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-5">
+            <div className="rounded-[28px] bg-white/[0.04] border border-white/10 p-5 backdrop-blur-xl min-h-[170px] flex flex-col justify-between">
 
-              <p className="text-gray-400 text-sm font-semibold tracking-wide">
-                BILL DISCOUNT
-              </p>
+              <div>
 
-              <input
-                type="number"
-                min={0}
-                value={billDiscount}
-                onChange={(e) =>
-                  setBillDiscount(
-                    Number(e.target.value)
-                  )
-                }
-                className="w-full h-12 mt-3 rounded-2xl bg-white/10 border border-white/10 px-4 text-white text-xl font-black outline-none focus:border-green-400"
-              />
+                <p className="text-gray-400 text-xs tracking-[2px] font-bold">
+                  BILL DISCOUNT
+                </p>
 
-              <p className="text-xs text-gray-500 mt-2">
-                Extra bill level discount
+                <input
+                  type="number"
+                  min={0}
+                  value={billDiscount}
+                  onChange={(e) =>
+                    setBillDiscount(
+                      Number(e.target.value)
+                    )
+                  }
+                  className="w-full h-14 rounded-2xl mt-4 bg-white/10 border border-white/10 px-5 text-white text-3xl font-black outline-none focus:border-green-400"
+                />
+
+              </div>
+
+              <p className="text-gray-500 text-sm">
+                Extra bill discount
               </p>
 
             </div>
 
             {/* SHIPPING */}
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-5">
+            <div className="rounded-[28px] bg-white/[0.04] border border-white/10 p-5 backdrop-blur-xl min-h-[170px] flex flex-col justify-between">
 
-              <p className="text-gray-400 text-sm font-semibold tracking-wide">
-                SHIPPING
-              </p>
+              <div>
 
-              <input
-                type="number"
-                min={0}
-                value={shipping}
-                onChange={(e) =>
-                  setShipping(
-                    Number(e.target.value)
-                  )
-                }
-                className="w-full h-12 mt-3 rounded-2xl bg-white/10 border border-white/10 px-4 text-white text-xl font-black outline-none focus:border-blue-400"
-              />
+                <p className="text-gray-400 text-xs tracking-[2px] font-bold">
+                  SHIPPING
+                </p>
 
-              <p className="text-xs text-gray-500 mt-2">
+                <input
+                  type="number"
+                  min={0}
+                  value={shipping}
+                  onChange={(e) =>
+                    setShipping(
+                      Number(e.target.value)
+                    )
+                  }
+                  className="w-full h-14 rounded-2xl mt-4 bg-white/10 border border-white/10 px-5 text-white text-3xl font-black outline-none focus:border-blue-400"
+                />
+
+              </div>
+
+              <p className="text-gray-500 text-sm">
                 Added to bill
               </p>
 
             </div>
 
             {/* ADVANCE */}
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-5">
+            <div className="rounded-[28px] bg-white/[0.04] border border-white/10 p-5 backdrop-blur-xl min-h-[170px] flex flex-col justify-between">
 
-              <p className="text-gray-400 text-sm font-semibold tracking-wide">
-                ADVANCE
-              </p>
+              <div>
 
-              <input
-                type="number"
-                min={0}
-                value={advance}
-                onChange={(e) =>
-                  setAdvance(
-                    Number(e.target.value)
-                  )
-                }
-                className="w-full h-12 mt-3 rounded-2xl bg-white/10 border border-white/10 px-4 text-white text-xl font-black outline-none focus:border-yellow-400"
-              />
+                <p className="text-gray-400 text-xs tracking-[2px] font-bold">
+                  ADVANCE
+                </p>
 
-              <p className="text-xs text-gray-500 mt-2">
+                <input
+                  type="number"
+                  min={0}
+                  value={advance}
+                  onChange={(e) =>
+                    setAdvance(
+                      Number(e.target.value)
+                    )
+                  }
+                  className="w-full h-14 rounded-2xl mt-4 bg-white/10 border border-white/10 px-5 text-white text-3xl font-black outline-none focus:border-yellow-400"
+                />
+
+              </div>
+
+              <p className="text-gray-500 text-sm">
                 Deducted from bill
               </p>
 
             </div>
 
-            {/* NET PAYABLE */}
-            <div className="bg-gradient-to-r from-green-400 to-green-500 rounded-3xl p-5 shadow-2xl">
+            {/* NET */}
+            <div className="rounded-[28px] bg-gradient-to-br from-green-400 to-green-500 p-5 min-h-[170px] flex flex-col justify-between shadow-[0_10px_40px_rgba(34,197,94,0.45)]">
 
-              <p className="text-black/70 text-sm font-black tracking-wide">
-                NET PAYABLE
-              </p>
+              <div>
 
-              <h2 className="text-5xl font-black text-black mt-3 leading-none">
-                ₹{net}
-              </h2>
+                <p className="text-black/70 text-xs tracking-[2px] font-black">
+                  NET PAYABLE
+                </p>
 
-              <p className="text-xs text-black/60 mt-2 font-semibold">
+                <h2 className="text-black text-6xl font-black mt-4">
+                  ₹{net}
+                </h2>
+
+              </div>
+
+              <p className="text-black/60 text-sm font-semibold">
                 Final payable amount
               </p>
 
