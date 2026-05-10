@@ -292,6 +292,10 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   setPdfData(prev => ({ ...prev, advance: v }))
   }
   net={net}
+  
+  // ADD THESE
+  pdfData={pdfData}
+  setPdfData={setPdfData}
   />
 
   {/* 🔥 GLOBAL LOADER */}
