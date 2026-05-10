@@ -191,8 +191,27 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   }
   }
 
-
-
+  // =========================
+  // AUTO LOAD QUOTATION
+  // =========================
+  
+  useEffect(() => {
+  
+    const quotationId =
+      localStorage.getItem(
+        "selectedQuotationId"
+      );
+  
+    if (!quotationId)
+      return;
+  
+    setPdfData(prev => ({
+      ...prev,
+      id: quotationId
+    }));
+  
+  }, []);
+      
   /* ================= NEW QUOTATION ================= */
   function newQuotation() {
   setConfirm({
