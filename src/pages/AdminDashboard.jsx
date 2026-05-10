@@ -841,113 +841,234 @@ export default function AdminDashboard() {
           {/* TOP */}
           <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
       
-            <h2 className="text-4xl font-black">
-              Inventory
-            </h2>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
       
-            <p className="text-gray-500 mt-3 text-lg">
-              Current live inventory stock
-            </p>
+              <div>
+      
+                <h2 className="text-4xl font-black">
+                  Inventory
+                </h2>
+      
+                <p className="text-gray-500 mt-3 text-lg">
+                  Current live inventory stock
+                </p>
+      
+              </div>
+      
+              <div className="bg-black text-white rounded-3xl px-6 py-5 min-w-[220px]">
+      
+                <p className="text-xs tracking-[3px] uppercase text-gray-400 font-bold">
+                  Total Products
+                </p>
+      
+                <h2 className="text-5xl font-black mt-2">
+                  {products.length}
+                </h2>
+      
+              </div>
+      
+            </div>
       
           </div>
       
-          {/* PRODUCTS */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {/* TABLE */}
+          <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
       
-            {products.map((product) => {
+            <div className="overflow-x-auto">
       
-              const variants =
-                product.variants || {};
+              <table className="w-full">
       
-              let totalStock = 0;
+                {/* HEAD */}
+                <thead className="bg-black text-white">
       
-              Object.values(variants).forEach(
-                (v) => {
-                  totalStock += Number(
-                    v?.qty || 0
-                  );
-                }
-              );
+                  <tr>
       
-              return (
+                    <th className="text-left px-6 py-5 text-sm font-black">
+                      Product
+                    </th>
       
-                <div
-                  key={product.id}
-                  className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100"
-                >
-      
-                  {/* TOP */}
-                  <div className="flex items-start justify-between gap-4">
-      
-                    <div>
-      
-                      <h2 className="text-3xl font-black leading-tight">
-                        {product.desc ||
-                          product.name ||
-                          "No Name"}
-                      </h2>
-      
-                      <p className="text-gray-500 mt-2 font-medium">
-                        Product Inventory
-                      </p>
-      
-                    </div>
-      
-                    <div className="w-16 h-16 rounded-2xl bg-black text-white flex items-center justify-center text-2xl shadow-lg">
-                      📦
-                    </div>
-      
-                  </div>
-      
-                  {/* TOTAL */}
-                  <div className="mt-7">
-      
-                    <p className="text-gray-500 text-sm font-bold tracking-[2px] uppercase">
+                    <th className="text-left px-6 py-5 text-sm font-black">
                       Total Stock
-                    </p>
+                    </th>
       
-                    <h3 className="text-5xl font-black mt-2">
-                      {totalStock}
-                    </h3>
+                    <th className="text-left px-6 py-5 text-sm font-black">
+                      Sizes Inventory
+                    </th>
       
-                  </div>
+                    <th className="text-left px-6 py-5 text-sm font-black">
+                      Status
+                    </th>
       
-                  {/* SIZES */}
-                  <div className="mt-8 flex flex-wrap gap-3">
+                  </tr>
       
-                    {Object.entries(
-                      variants
-                    ).map(
-                      ([size, data]) => {
+                </thead>
       
-                        const qty =
-                          Number(
-                            data?.qty || 0
-                          );
+                {/* BODY */}
+                <tbody>
       
-                        return (
+                  {products.map((product) => {
+      
+                    // SAFE VARIANTS
+                    let variants = {};
+      
+                    try {
+      
+                      if (
+                        typeof product.variants === "string"
+                      ) {
+      
+                        variants = JSON.parse(
+                          product.variants || "{}"
+                        );
+      
+                      } else if (
+                        typeof product.variants === "object" &&
+                        product.variants !== null
+                      ) {
+      
+                        variants = product.variants;
+      
+                      }
+      
+                    } catch (err) {
+      
+                      variants = {};
+      
+                    }
+      
+                    // TOTAL STOCK
+                    let totalStock = 0;
+      
+                    Object.values(variants).forEach(
+                      (v) => {
+      
+                        totalStock += Number(
+                          v?.qty || 0
+                        );
+      
+                      }
+                    );
+      
+                    return (
+      
+                      <tr
+                        key={product.id}
+                        className="border-b border-gray-100 hover:bg-gray-50 transition-all duration-200"
+                      >
+      
+                        {/* PRODUCT */}
+                        <td className="px-6 py-5 min-w-[250px]">
+      
+                          <div>
+      
+                            <h2 className="text-lg font-black break-words">
+                              {product.product_name ||
+                                product.name ||
+                                "No Name"}
+                            </h2>
+      
+                            <p className="text-gray-500 text-sm mt-1">
+                              ID :
+                              {" "}
+                              {product.id}
+                            </p>
+      
+                          </div>
+      
+                        </td>
+      
+                        {/* TOTAL */}
+                        <td className="px-6 py-5">
+      
+                          <div className="text-3xl font-black">
+                            {totalStock}
+                          </div>
+      
+                        </td>
+      
+                        {/* SIZES */}
+                        <td className="px-6 py-5 min-w-[400px]">
+      
+                          {Object.keys(variants).length === 0 ? (
+      
+                            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2 rounded-2xl text-sm font-bold inline-block">
+                              No Inventory
+                            </div>
+      
+                          ) : (
+      
+                            <div className="flex flex-wrap gap-2">
+      
+                              {Object.entries(
+                                variants
+                              ).map(
+                                ([size, data]) => {
+      
+                                  const qty =
+                                    Number(
+                                      data?.qty || 0
+                                    );
+      
+                                  return (
+      
+                                    <div
+                                      key={size}
+                                      className={`px-4 py-2 rounded-2xl text-sm font-black border ${
+                                        qty <= 5
+                                          ? "bg-red-50 border-red-200 text-red-600"
+                                          : qty <= 20
+                                          ? "bg-yellow-50 border-yellow-200 text-yellow-700"
+                                          : "bg-gray-50 border-gray-200 text-black"
+                                      }`}
+                                    >
+      
+                                      {size} :
+                                      {" "}
+                                      {qty}
+      
+                                    </div>
+                                  );
+                                }
+                              )}
+      
+                            </div>
+      
+                          )}
+      
+                        </td>
+      
+                        {/* STATUS */}
+                        <td className="px-6 py-5">
       
                           <div
-                            key={size}
-                            className={`px-4 py-3 rounded-2xl border text-sm font-black ${
-                              qty <= 5
-                                ? "bg-red-50 border-red-200 text-red-600"
-                                : "bg-gray-50 border-gray-200 text-black"
+                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-black ${
+                              totalStock <= 5
+                                ? "bg-red-100 text-red-600"
+                                : totalStock <= 20
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-green-100 text-green-700"
                             }`}
                           >
       
-                            {size} : {qty}
+                            {totalStock <= 5
+                              ? "Low"
+                              : totalStock <= 20
+                              ? "Medium"
+                              : "Good"}
       
                           </div>
-                        );
-                      }
-                    )}
       
-                  </div>
+                        </td>
       
-                </div>
-              );
-            })}
+                      </tr>
+                    );
+                  })}
+      
+                </tbody>
+      
+              </table>
+      
+            </div>
       
           </div>
       
