@@ -14,7 +14,7 @@ export default function Home() {
 
         {/* BUTTONS */}
         <button
-          onClick={() => navigate("/quotation")}
+          onClick={() => navigate("/login")}
           className="w-full bg-green-600 text-white py-3 rounded font-bold hover:bg-green-700 transition"
         >
           ➕ New Quotation
