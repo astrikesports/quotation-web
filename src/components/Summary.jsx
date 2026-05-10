@@ -9,8 +9,6 @@ export default function Summary({
   advance,
   setAdvance,
   net,
-  pdfData,
-  setPdfData,
 }) {
 
   useEffect(() => {
