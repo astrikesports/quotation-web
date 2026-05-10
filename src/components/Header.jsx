@@ -233,8 +233,13 @@ import {
 
   return (
   <>
-  <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 flex justify-between items-center shadow">
+  <div className="bg-gradient-to-r from-black via-gray-900 to-black text-white px-8 py-5 flex justify-between items-center rounded-[28px] shadow-2xl border border-white/10 relative overflow-hidden">
 
+  {/* BG EFFECT */}
+  <div className="absolute top-0 right-0 w-72 h-72 bg-green-500/10 rounded-full blur-3xl" />
+
+  <div className="absolute bottom-0 left-0 w-56 h-56 bg-blue-500/10 rounded-full blur-3xl" />
+  
   {/* LEFT */}
   <div>
   <h1 className="text-xl font-bold">ASTRIKE SPORTSWEAR</h1>
