@@ -120,17 +120,6 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   items: prev.items.filter((_, i) => i !== index)
   }));
   }
-
-  /* =================NET AMOUNT ================= */
-
-  useEffect(() => {
-  
-  setPdfData(prev => ({
-  ...prev,
-  netAmount: net
-  }));
-  
-  }, [net]);
     
   /* ================= PAYMENT IMAGES (FILE BASED) ================= */
   function handlePaymentImage(e) {
