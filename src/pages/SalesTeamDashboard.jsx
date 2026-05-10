@@ -116,8 +116,23 @@ export default function Dashboard({
     id
   ) => {
   
-    onSelect(id);
+    if (
+      typeof onSelect ===
+      "function"
+    ) {
   
+      onSelect(id);
+  
+    } else {
+  
+      localStorage.setItem(
+        "selectedQuotationId",
+        id
+      );
+  
+      navigate("/quotation");
+  
+    }
   };
   
   // DOWNLOAD PDF
@@ -773,11 +788,18 @@ export default function Dashboard({
                       
                           {/* DOWNLOAD */}
                           <button
-                            onClick={() =>
-                              handleDownloadPDF(
-                                quote
-                              )
-                            }
+                            onClick={() => {
+                              localStorage.setItem(
+                                "selectedQuotationId",
+                                quote.id
+                              );
+                            
+                              window.open(
+                                "/quotation",
+                                "_blank"
+                              );
+                            
+                            }}
                             className="w-11 h-11 rounded-2xl bg-blue-500 text-white flex items-center justify-center text-lg shadow-lg hover:scale-105 transition-all"
                             title="Download"
                           >
