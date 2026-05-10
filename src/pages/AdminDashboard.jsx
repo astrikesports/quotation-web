@@ -331,17 +331,83 @@ export default function AdminDashboard() {
 
           </div>
 
-          {/* RIGHT */}
-          <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl p-6 min-w-[220px]">
-
-            <p className="text-gray-300 text-sm font-semibold">
-              TEAM MEMBERS
-            </p>
-
-            <h2 className="text-6xl font-black mt-2 text-green-400">
-              {salesPersons.length}
-            </h2>
-
+          {/* RIGHT STATS */}
+          <div className="grid grid-cols-1 gap-4 min-w-[320px]">
+          
+            {/* TOTAL TARGET */}
+            <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl p-5">
+          
+              <div className="flex items-center justify-between">
+          
+                <div>
+          
+                  <p className="text-gray-400 text-xs font-bold tracking-[2px]">
+                    TOTAL TARGET
+                  </p>
+          
+                  <h2 className="text-4xl font-black mt-2 text-white">
+          
+                    ₹{
+          
+                      salesPersons
+          
+                        .reduce(
+                          (acc, person) =>
+          
+                            acc +
+                            Number(
+                              person.target_amount || 0
+                            ),
+          
+                          0
+                        )
+          
+                        .toLocaleString()
+          
+                    }
+          
+                  </h2>
+          
+                </div>
+          
+                <div className="w-14 h-14 rounded-2xl bg-blue-500/20 flex items-center justify-center text-2xl">
+                  🎯
+                </div>
+          
+              </div>
+          
+            </div>
+          
+            {/* ACHIEVED */}
+            <div className="bg-gradient-to-r from-green-400 to-green-500 rounded-3xl p-5 shadow-2xl">
+          
+              <div className="flex items-center justify-between">
+          
+                <div>
+          
+                  <p className="text-black/70 text-xs font-black tracking-[2px]">
+                    ACHIEVED SALES
+                  </p>
+          
+                  <h2 className="text-4xl font-black mt-2 text-black">
+          
+                    ₹{
+                      getTotalSales()
+                        .toLocaleString()
+                    }
+          
+                  </h2>
+          
+                </div>
+          
+                <div className="w-14 h-14 rounded-2xl bg-black/10 flex items-center justify-center text-2xl">
+                  📈
+                </div>
+          
+              </div>
+          
+            </div>
+          
           </div>
 
         </div>
