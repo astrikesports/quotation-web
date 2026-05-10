@@ -26,7 +26,7 @@ export default function Dashboard() {
 
   }, []);
 
-  // FETCH ALL DATA
+  // FETCH DATA
   const fetchData = async () => {
 
     setLoading(true);
@@ -64,7 +64,7 @@ export default function Dashboard() {
     setLoading(false);
   };
 
-  // GET SALES PERSON QUOTATIONS
+  // GET QUOTATIONS
   const getPersonQuotations = (name) => {
 
     return quotations.filter(
@@ -75,19 +75,19 @@ export default function Dashboard() {
   // CALCULATE SALES
   const calculateSales = (name) => {
 
-    const personQuotes =
+    const personQuotations =
       getPersonQuotations(name);
 
     let total = 0;
 
-    personQuotes.forEach((q) => {
+    personQuotations.forEach((q) => {
 
       if (Array.isArray(q.items)) {
 
         q.items.forEach((item) => {
 
-          total +=
-            Number(item.total || 0);
+          total += Number(item.total || 0);
+
         });
       }
     });
@@ -141,176 +141,263 @@ export default function Dashboard() {
       </div>
 
       {/* SALES PERSON CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+      {!selectedPerson && (
 
-        {salesPersons.map((person) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
 
-          const personQuotations =
-            getPersonQuotations(person.name);
+          {salesPersons.map((person) => {
 
-          const totalSales =
-            calculateSales(person.name);
+            const personQuotations =
+              getPersonQuotations(person.name);
 
-          const target =
-            Number(person.target_amount || 0);
+            const totalSales =
+              calculateSales(person.name);
 
-          const percent =
-            target > 0
-              ? Math.min(
-                  (
-                    (totalSales / target) *
+            const target =
+              Number(person.target_amount || 0);
+
+            const percent =
+              target > 0
+                ? Math.min(
+                    (
+                      (totalSales / target) *
+                      100
+                    ).toFixed(0),
                     100
-                  ).toFixed(0),
-                  100
-                )
-              : 0;
+                  )
+                : 0;
 
-          return (
+            return (
 
-            <div
-              key={person.id}
-              onClick={() =>
-                setSelectedPerson(person)
-              }
-              className={`bg-white rounded-[32px] p-6 shadow-sm border cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${
-                selectedPerson?.id ===
-                person.id
-                  ? "border-black"
-                  : "border-gray-100"
-              }`}
-            >
+              <div
+                key={person.id}
+                onClick={() =>
+                  setSelectedPerson(person)
+                }
+                className="bg-white rounded-[32px] p-6 shadow-sm border cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 border-gray-100"
+              >
 
-              {/* TOP */}
-              <div className="flex items-center justify-between">
+                {/* TOP */}
+                <div className="flex items-center justify-between">
 
-                <div>
+                  <div>
 
-                  <h2 className="text-3xl font-black">
-                    {person.name}
-                  </h2>
+                    <h2 className="text-3xl font-black">
+                      {person.name}
+                    </h2>
 
-                  <p className="text-gray-500 mt-2 font-medium">
-                    Sales Executive
+                    <p className="text-gray-500 mt-2 font-medium">
+                      Sales Executive
+                    </p>
+
+                  </div>
+
+                  <div className="w-16 h-16 rounded-2xl bg-black text-white flex items-center justify-center text-2xl font-black shadow-xl">
+                    {person.name?.charAt(0)}
+                  </div>
+
+                </div>
+
+                {/* SALES */}
+                <div className="mt-8">
+
+                  <p className="text-gray-500 font-semibold text-sm">
+                    TOTAL SALES
                   </p>
 
-                </div>
-
-                <div className="w-16 h-16 rounded-2xl bg-black text-white flex items-center justify-center text-2xl font-black shadow-xl">
-                  {person.name?.charAt(0)}
-                </div>
-
-              </div>
-
-              {/* SALES */}
-              <div className="mt-8">
-
-                <p className="text-gray-500 font-semibold text-sm">
-                  TOTAL SALES
-                </p>
-
-                <h3 className="text-4xl font-black mt-2">
-                  ₹{totalSales.toLocaleString()}
-                </h3>
-
-              </div>
-
-              {/* TARGET */}
-              <div className="mt-6">
-
-                <div className="flex items-center justify-between mb-2">
-
-                  <span className="text-gray-500 text-sm font-semibold">
-                    Target
-                  </span>
-
-                  <span className="font-black">
-                    ₹{target.toLocaleString()}
-                  </span>
+                  <h3 className="text-4xl font-black mt-2">
+                    ₹{totalSales.toLocaleString()}
+                  </h3>
 
                 </div>
 
-                {/* BAR */}
-                <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                {/* TARGET */}
+                <div className="mt-6">
 
-                  <div
-                    className="h-full bg-green-500 rounded-full"
-                    style={{
-                      width: `${percent}%`
-                    }}
-                  />
+                  <div className="flex items-center justify-between mb-2">
+
+                    <span className="text-gray-500 text-sm font-semibold">
+                      Target
+                    </span>
+
+                    <span className="font-black">
+                      ₹{target.toLocaleString()}
+                    </span>
+
+                  </div>
+
+                  {/* BAR */}
+                  <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+
+                    <div
+                      className="h-full bg-green-500 rounded-full"
+                      style={{
+                        width: `${percent}%`
+                      }}
+                    />
+
+                  </div>
+
+                  <div className="flex justify-between mt-2">
+
+                    <span className="text-sm text-gray-500">
+                      Completion
+                    </span>
+
+                    <span className="font-black text-green-600">
+                      {percent}%
+                    </span>
+
+                  </div>
 
                 </div>
 
-                <div className="flex justify-between mt-2">
+                {/* QUOTATIONS */}
+                <div className="mt-6 flex items-center justify-between bg-gray-50 rounded-2xl p-4">
 
-                  <span className="text-sm text-gray-500">
-                    Completion
-                  </span>
+                  <div>
 
-                  <span className="font-black text-green-600">
-                    {percent}%
-                  </span>
+                    <p className="text-sm text-gray-500 font-semibold">
+                      Quotations
+                    </p>
 
-                </div>
+                    <h4 className="text-2xl font-black mt-1">
+                      {personQuotations.length}
+                    </h4>
 
-              </div>
+                  </div>
 
-              {/* QUOTATIONS */}
-              <div className="mt-6 flex items-center justify-between bg-gray-50 rounded-2xl p-4">
+                  <div className="w-14 h-14 rounded-2xl bg-blue-500 text-white flex items-center justify-center text-2xl shadow-lg">
+                    📄
+                  </div>
 
-                <div>
-
-                  <p className="text-sm text-gray-500 font-semibold">
-                    Quotations
-                  </p>
-
-                  <h4 className="text-2xl font-black mt-1">
-                    {personQuotations.length}
-                  </h4>
-
-                </div>
-
-                <div className="w-14 h-14 rounded-2xl bg-blue-500 text-white flex items-center justify-center text-2xl shadow-lg">
-                  📄
                 </div>
 
               </div>
+            );
+          })}
 
-            </div>
-          );
-        })}
+        </div>
 
-      </div>
+      )}
 
-      {/* SELECTED SALES PERSON DATA */}
+      {/* SALES PERSON DETAIL PAGE */}
       {selectedPerson && (
 
-        <div className="mt-10">
+        <div className="mt-2">
 
-          {/* HEADER */}
-          <div className="flex items-center justify-between mb-6">
+          {/* TOP BAR */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-8">
 
-            <div>
+            <div className="flex items-center gap-4">
 
-              <h2 className="text-4xl font-black">
-                {selectedPerson.name}
-              </h2>
+              {/* BACK */}
+              <button
+                onClick={() =>
+                  setSelectedPerson(null)
+                }
+                className="w-14 h-14 rounded-2xl bg-black text-white text-2xl font-black shadow-xl hover:scale-[1.02] transition-all"
+              >
+                ←
+              </button>
 
-              <p className="text-gray-500 mt-2">
-                Total Quotations
-              </p>
+              <div>
+
+                <h2 className="text-5xl font-black">
+                  {selectedPerson.name}
+                </h2>
+
+                <p className="text-gray-500 mt-2 text-lg">
+                  Sales Performance & Quotations
+                </p>
+
+              </div>
 
             </div>
 
-            <div className="bg-black text-white px-6 py-4 rounded-2xl shadow-xl">
+            {/* TOTAL QUOTATIONS */}
+            <div className="bg-black text-white px-8 py-5 rounded-3xl shadow-2xl">
 
-              <h3 className="text-3xl font-black">
+              <p className="text-gray-300 text-sm font-semibold">
+                TOTAL QUOTATIONS
+              </p>
+
+              <h3 className="text-5xl font-black mt-2">
                 {
                   getPersonQuotations(
                     selectedPerson.name
                   ).length
                 }
               </h3>
+
+            </div>
+
+          </div>
+
+          {/* SUMMARY CARDS */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+            {/* SALES */}
+            <div className="bg-white rounded-[32px] p-6 shadow-sm border border-gray-100">
+
+              <p className="text-gray-500 font-semibold">
+                Total Sales
+              </p>
+
+              <h2 className="text-5xl font-black mt-3">
+                ₹{calculateSales(
+                  selectedPerson.name
+                ).toLocaleString()}
+              </h2>
+
+            </div>
+
+            {/* TARGET */}
+            <div className="bg-white rounded-[32px] p-6 shadow-sm border border-gray-100">
+
+              <p className="text-gray-500 font-semibold">
+                Monthly Target
+              </p>
+
+              <h2 className="text-5xl font-black mt-3">
+                ₹{Number(
+                  selectedPerson.target_amount || 0
+                ).toLocaleString()}
+              </h2>
+
+            </div>
+
+            {/* COMPLETION */}
+            <div className="bg-white rounded-[32px] p-6 shadow-sm border border-gray-100">
+
+              <p className="text-gray-500 font-semibold">
+                Completion
+              </p>
+
+              <h2 className="text-5xl font-black mt-3 text-green-600">
+
+                {Number(
+                  selectedPerson.target_amount
+                ) > 0
+
+                  ? Math.min(
+                      (
+                        (calculateSales(
+                          selectedPerson.name
+                        ) /
+
+                          Number(
+                            selectedPerson.target_amount
+                          )) *
+
+                        100
+                      ).toFixed(0),
+                      100
+                    )
+
+                  : 0}%
+
+              </h2>
 
             </div>
 
