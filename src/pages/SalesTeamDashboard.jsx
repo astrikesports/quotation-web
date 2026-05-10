@@ -21,9 +21,22 @@ export default function Dashboard() {
 
   // LOAD DATA
   useEffect(() => {
-
+  
     fetchData();
-
+  
+    // AUTO OPEN SALES PERSON
+    const selected =
+      localStorage.getItem(
+        "selectedSalesPerson"
+      );
+  
+    if (selected) {
+  
+      setSelectedPerson({
+        name: selected
+      });
+    }
+  
   }, []);
 
   // FETCH DATA
@@ -281,9 +294,16 @@ export default function Dashboard() {
 
               {/* BACK */}
               <button
-                onClick={() =>
-                  setSelectedPerson(null)
-                }
+                onClick={() => {
+
+                  localStorage.removeItem(
+                    "selectedSalesPerson"
+                  );
+                
+                  setSelectedPerson(null);
+                
+                }}
+                
                 className="w-14 h-14 rounded-2xl bg-black text-white text-2xl font-black shadow-xl hover:scale-[1.02] transition-all"
               >
                 ←
