@@ -121,6 +121,17 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   }));
   }
 
+  /* =================NET AMOUNT ================= */
+
+  useEffect(() => {
+  
+  setPdfData(prev => ({
+  ...prev,
+  netAmount: net
+  }));
+  
+  }, [net]);
+    
   /* ================= PAYMENT IMAGES (FILE BASED) ================= */
   function handlePaymentImage(e) {
   const file = e.target.files[0];
