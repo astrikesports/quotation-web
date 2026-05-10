@@ -74,26 +74,22 @@ export default function Dashboard() {
 
   // CALCULATE SALES
   const calculateSales = (name) => {
-
+  
     const personQuotations =
       getPersonQuotations(name);
-
+  
     let total = 0;
-
+  
     personQuotations.forEach((q) => {
-
-      if (Array.isArray(q.items)) {
-
-        q.items.forEach((item) => {
-
-          total += Number(item.total || 0);
-
-        });
-      }
+  
+      total += Number(
+        q.net_amount || 0
+      );
+  
     });
-
+  
     return total;
-  };
+  };  
 
   return (
 
