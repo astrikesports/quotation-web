@@ -5,8 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabase";
 
 import LoaderOverlay from "../components/LoaderOverlay";
+import { fetchQuotations } from "../services/quotationService";
 
-export default function Dashboard() {
+export default function Dashboard({
+  onSelect
+}) {
 
   const navigate = useNavigate();
 
@@ -546,6 +549,7 @@ export default function Dashboard() {
           
                           {/* VIEW */}
                           <button
+                            onClick={() => onSelect(q.id)}
                             className="w-11 h-11 rounded-2xl bg-black text-white flex items-center justify-center text-lg shadow-lg hover:scale-105 transition-all"
                           >
                             ➜]
