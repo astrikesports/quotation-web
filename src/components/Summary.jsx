@@ -8,6 +8,8 @@ export default function Summary({
   advance,
   setAdvance,
   net,
+  pdfData,
+  setPdfData,
 }) {
   return (
     <div className="bg-blue-600 text-white px-6 py-4">
