@@ -436,83 +436,133 @@ export default function Dashboard() {
 
           {/* TABLE */}
           <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
-
+          
             <div className="overflow-x-auto">
-
+          
               <table className="w-full">
-
+          
                 <thead className="bg-black text-white">
-
+          
                   <tr>
-
+          
                     <th className="text-left p-5 font-bold">
                       Party
                     </th>
-
+          
                     <th className="text-left p-5 font-bold">
                       Phone
                     </th>
-
-                    <th className="text-left p-5 font-bold">
-                      Address
-                    </th>
-
-                    <th className="text-left p-5 font-bold">
-                      Items
-                    </th>
-
+          
                     <th className="text-left p-5 font-bold">
                       Date
                     </th>
-
+          
+                    <th className="text-left p-5 font-bold">
+                      Status
+                    </th>
+          
+                    <th className="text-center p-5 font-bold">
+                      Actions
+                    </th>
+          
                   </tr>
-
+          
                 </thead>
-
+          
                 <tbody>
-
+          
                   {getPersonQuotations(
                     selectedPerson.name
                   ).map((quote) => (
-
+          
                     <tr
                       key={quote.id}
-                      className="border-b border-gray-100 hover:bg-gray-50"
+                      className="border-b border-gray-100 hover:bg-gray-50 transition-all"
                     >
-
-                      <td className="p-5 font-bold">
-                        {quote.party}
-                      </td>
-
+          
+                      {/* PARTY */}
                       <td className="p-5">
+          
+                        <div>
+          
+                          <h3 className="font-black text-lg">
+                            {quote.party}
+                          </h3>
+          
+                        </div>
+          
+                      </td>
+          
+                      {/* PHONE */}
+                      <td className="p-5 font-semibold text-gray-700">
                         {quote.phone}
                       </td>
-
-                      <td className="p-5">
-                        {quote.address}
-                      </td>
-
-                      <td className="p-5 font-semibold">
-                        {quote.items?.length || 0}
-                      </td>
-
-                      <td className="p-5 text-gray-500">
+          
+                      {/* DATE */}
+                      <td className="p-5 text-gray-500 font-semibold">
+          
                         {new Date(
                           quote.created_at
                         ).toLocaleDateString()}
+          
                       </td>
-
+          
+                      {/* STATUS */}
+                      <td className="p-5">
+          
+                        <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-2xl font-bold text-sm">
+          
+                          <div className="w-2 h-2 rounded-full bg-green-500" />
+          
+                          Booked
+          
+                        </div>
+          
+                      </td>
+          
+                      {/* ACTIONS */}
+                      <td className="p-5">
+          
+                        <div className="flex items-center justify-center gap-3">
+          
+                          {/* VIEW */}
+                          <button
+                            className="w-11 h-11 rounded-2xl bg-black text-white flex items-center justify-center text-lg shadow-lg hover:scale-105 transition-all"
+                          >
+                            →
+                          </button>
+          
+                          {/* SAVE */}
+                          <button
+                            className="w-11 h-11 rounded-2xl bg-green-500 text-white flex items-center justify-center text-lg shadow-lg hover:scale-105 transition-all"
+                          >
+                            💾
+                          </button>
+          
+                          {/* DELETE */}
+                          <button
+                            className="w-11 h-11 rounded-2xl bg-red-500 text-white flex items-center justify-center text-lg shadow-lg hover:scale-105 transition-all"
+                          >
+                            🗑
+                          </button>
+          
+                        </div>
+          
+                      </td>
+          
                     </tr>
-
+          
                   ))}
-
+          
                 </tbody>
-
+          
               </table>
-
+          
             </div>
-
+          
           </div>
+
+          {/* TABLE END */}
 
         </div>
 
