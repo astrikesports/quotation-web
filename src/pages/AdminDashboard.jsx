@@ -1016,70 +1016,70 @@ export default function AdminDashboard() {
       
           {/* TOP */}
           <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
-      
+          
             <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6">
-      
+          
               {/* LEFT */}
               <div>
-      
+          
                 <h2 className="text-4xl font-black">
                   Inventory
                 </h2>
-      
+          
                 <p className="text-gray-500 mt-3 text-lg">
                   Current live inventory stock
                 </p>
-      
-              </div>
-      
-              {/* RIGHT */}
-              <div className="flex flex-wrap gap-4">
-      
-                {/* TOTAL */}
-                <div className="bg-black text-white rounded-3xl px-6 py-5 min-w-[220px]">
-      
-                  <p className="text-xs tracking-[3px] uppercase text-gray-400 font-bold">
-                    Total Products
-                  </p>
-      
-                  <h2 className="text-5xl font-black mt-2">
-                    {products.length}
-                  </h2>
-      
-                </div>
-      
-                {/* SAMPLE CSV */}
-                <button
-                  onClick={
-                    downloadSampleCSV
-                  }
-                  className="h-14 px-6 rounded-2xl bg-black text-white font-black hover:scale-[1.02] transition-all duration-200"
-                >
-                  ⬇ Download Sample CSV
-                </button>
-      
-                {/* CSV UPLOAD */}
-                <label className="h-14 px-6 rounded-2xl bg-green-500 text-black font-black flex items-center justify-center cursor-pointer hover:scale-[1.02] transition-all duration-200">
-      
-                  {uploadingCsv
-                    ? "Uploading..."
-                    : "⬆ Bulk Upload CSV"}
-      
-                  <input
-                    type="file"
-                    accept=".csv"
-                    onChange={
-                      handleCSVUpload
+          
+                {/* ACTION BUTTONS */}
+                <div className="flex flex-wrap gap-4 mt-6">
+          
+                  {/* DOWNLOAD */}
+                  <button
+                    onClick={
+                      downloadSampleCSV
                     }
-                    hidden
-                  />
-      
-                </label>
-      
+                    className="h-14 px-6 rounded-2xl bg-black text-white font-black hover:scale-[1.02] transition-all duration-200"
+                  >
+                    ⬇ Download Sample CSV
+                  </button>
+          
+                  {/* UPLOAD */}
+                  <label className="h-14 px-6 rounded-2xl bg-green-500 text-black font-black flex items-center justify-center cursor-pointer hover:scale-[1.02] transition-all duration-200">
+          
+                    {uploadingCsv
+                      ? "Uploading..."
+                      : "⬆ Bulk Upload CSV"}
+          
+                    <input
+                      type="file"
+                      accept=".csv"
+                      onChange={
+                        handleCSVUpload
+                      }
+                      hidden
+                    />
+          
+                  </label>
+          
+                </div>
+          
               </div>
-      
+          
+              {/* RIGHT */}
+              <div className="bg-black text-white rounded-3xl px-6 py-5 min-w-[220px]">
+          
+                <p className="text-xs tracking-[3px] uppercase text-gray-400 font-bold">
+                  Total Products
+                </p>
+          
+                <h2 className="text-5xl font-black mt-2">
+                  {products.length}
+                </h2>
+          
+              </div>
+          
             </div>
-      
+          
           </div>
       
           {/* TABLE */}
