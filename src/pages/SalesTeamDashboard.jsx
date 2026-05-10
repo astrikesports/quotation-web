@@ -116,23 +116,14 @@ export default function Dashboard({
     id
   ) => {
   
-    if (
-      typeof onSelect ===
-      "function"
-    ) {
+    localStorage.setItem(
+      "selectedQuotationId",
+      id
+    );
   
-      onSelect(id);
+    window.location.href =
+      "/quotation";
   
-    } else {
-  
-      localStorage.setItem(
-        "selectedQuotationId",
-        id
-      );
-  
-      navigate("/quotation");
-  
-    }
   };
   
   // DOWNLOAD PDF
