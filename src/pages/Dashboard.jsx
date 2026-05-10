@@ -1,55 +1,56 @@
 import { useEffect, useState } from "react";
 
-import { supabase } from "../supabase";
+import { useNavigate } from "react-router-dom";
 
 import AdminDashboard from "./AdminDashboard";
 
 import SalesTeamDashboard from "./SalesTeamDashboard";
 
+import LoaderOverlay from "../components/LoaderOverlay";
+
 export default function Dashboard() {
 
-  const [role, setRole] = useState(null);
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(true);
+
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
 
-    getUserRole();
+    const storedUser = localStorage.getItem("user");
+
+    // NO USER
+    if (!storedUser) {
+
+      navigate("/login");
+
+      return;
+    }
+
+    // PARSE USER
+    const parsedUser = JSON.parse(storedUser);
+
+    setUser(parsedUser);
+
+    setLoading(false);
 
   }, []);
 
-  const getUserRole = async () => {
+  // LOADING
+  if (loading) {
 
-    // GET LOGGED USER
-    const {
-
-      data: { user }
-
-    } = await supabase.auth.getUser();
-
-    if (!user) return;
-
-    // FETCH ROLE
-    const { data } = await supabase
-
-      .from("users")
-
-      .select("role")
-
-      .eq("id", user.id)
-
-      .single();
-
-    setRole(data?.role);
-  };
-
-  if (!role) {
-
-    return <div>Loading...</div>;
+    return (
+      <LoaderOverlay text="Loading Dashboard..." />
+    );
   }
 
-  if (role === "admin") {
+  // ADMIN
+  if (user?.role === "admin") {
 
     return <AdminDashboard />;
   }
 
+  // SALES
   return <SalesTeamDashboard />;
 }
