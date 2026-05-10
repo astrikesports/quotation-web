@@ -71,12 +71,10 @@ export default function AdminDashboard() {
       return;
     }
 
-    // RESET
     setName("");
 
     setTarget("");
 
-    // RELOAD
     fetchSalesPersons();
   };
 
@@ -84,8 +82,6 @@ export default function AdminDashboard() {
   const updateTarget = async (id, value) => {
 
     if (!value) return;
-
-    setLoading(true);
 
     const { error } = await supabase
 
@@ -97,20 +93,17 @@ export default function AdminDashboard() {
 
       .eq("id", id);
 
-    setLoading(false);
-
     if (error) {
 
-      alert("Failed to update target");
+      alert("Failed to update");
 
       return;
     }
 
-    // RELOAD
     fetchSalesPersons();
   };
 
-  // DELETE SALES PERSON
+  // DELETE
   const deleteSalesPerson = async (id) => {
 
     const confirmDelete =
@@ -139,97 +132,176 @@ export default function AdminDashboard() {
       return;
     }
 
-    // RELOAD
     fetchSalesPersons();
   };
 
   return (
 
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-[#f4f6f8] p-4 md:p-8">
 
       {/* LOADER */}
       {loading && (
         <LoaderOverlay text="Processing..." />
       )}
 
-      {/* TITLE */}
-      <div className="flex items-center justify-between mb-8">
+      {/* TOP BAR */}
+      <div className="bg-gradient-to-r from-black to-gray-900 rounded-3xl p-8 text-white shadow-2xl mb-8">
 
-        <div>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
 
-          <h1 className="text-4xl font-bold">
-            Admin Dashboard
-          </h1>
+          <div>
 
-          <p className="text-gray-500 mt-1">
-            Sales Team Management
-          </p>
+            <p className="text-green-400 font-semibold tracking-wide uppercase text-sm">
+              ASTRIKE SPORTSWEAR
+            </p>
 
-        </div>
+            <h1 className="text-4xl md:text-5xl font-black mt-3 leading-tight">
+              Admin Dashboard
+            </h1>
 
-      </div>
+            <p className="text-gray-300 mt-3 text-lg">
+              Manage your sales team, targets & performance
+            </p>
 
-      {/* TOP CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
+          </div>
 
-        <div className="bg-white p-5 rounded-xl shadow">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl px-6 py-5 border border-white/10">
 
-          <p className="text-gray-500">
-            Total Sales
-          </p>
+            <p className="text-sm text-gray-300">
+              Total Team Members
+            </p>
 
-          <h2 className="text-3xl font-bold mt-2">
-            ₹61,00,000
-          </h2>
+            <h2 className="text-5xl font-black mt-2 text-green-400">
+              {salesPersons.length}
+            </h2>
 
-        </div>
-
-        <div className="bg-white p-5 rounded-xl shadow">
-
-          <p className="text-gray-500">
-            Total Profit
-          </p>
-
-          <h2 className="text-3xl font-bold text-green-600 mt-2">
-            ₹6,50,000
-          </h2>
-
-        </div>
-
-        <div className="bg-white p-5 rounded-xl shadow">
-
-          <p className="text-gray-500">
-            Orders
-          </p>
-
-          <h2 className="text-3xl font-bold mt-2">
-            248
-          </h2>
-
-        </div>
-
-        <div className="bg-white p-5 rounded-xl shadow">
-
-          <p className="text-gray-500">
-            Sales Team
-          </p>
-
-          <h2 className="text-3xl font-bold mt-2">
-            {salesPersons.length}
-          </h2>
+          </div>
 
         </div>
 
       </div>
 
-      {/* ADD SALES PERSON */}
-      <div className="bg-white p-5 rounded-xl shadow mb-8">
+      {/* STATS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
 
-        <h2 className="text-2xl font-bold mb-5">
-          Add Sales Person
-        </h2>
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="flex items-center justify-between">
+
+            <div>
+
+              <p className="text-gray-500 font-medium">
+                Total Sales
+              </p>
+
+              <h2 className="text-4xl font-black mt-3">
+                ₹61L
+              </h2>
+
+            </div>
+
+            <div className="w-16 h-16 rounded-2xl bg-black text-white flex items-center justify-center text-2xl">
+              💰
+            </div>
+
+          </div>
+
+        </div>
+
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+
+          <div className="flex items-center justify-between">
+
+            <div>
+
+              <p className="text-gray-500 font-medium">
+                Total Profit
+              </p>
+
+              <h2 className="text-4xl font-black mt-3 text-green-600">
+                ₹6.5L
+              </h2>
+
+            </div>
+
+            <div className="w-16 h-16 rounded-2xl bg-green-600 text-white flex items-center justify-center text-2xl">
+              📈
+            </div>
+
+          </div>
+
+        </div>
+
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+
+          <div className="flex items-center justify-between">
+
+            <div>
+
+              <p className="text-gray-500 font-medium">
+                Orders
+              </p>
+
+              <h2 className="text-4xl font-black mt-3">
+                248
+              </h2>
+
+            </div>
+
+            <div className="w-16 h-16 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl">
+              📦
+            </div>
+
+          </div>
+
+        </div>
+
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+
+          <div className="flex items-center justify-between">
+
+            <div>
+
+              <p className="text-gray-500 font-medium">
+                Team Members
+              </p>
+
+              <h2 className="text-4xl font-black mt-3">
+                {salesPersons.length}
+              </h2>
+
+            </div>
+
+            <div className="w-16 h-16 rounded-2xl bg-orange-500 text-white flex items-center justify-center text-2xl">
+              👥
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* ADD FORM */}
+      <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 mb-8">
+
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-6">
+
+          <div>
+
+            <h2 className="text-3xl font-black">
+              Add Sales Person
+            </h2>
+
+            <p className="text-gray-500 mt-1">
+              Create new sales team member
+            </p>
+
+          </div>
+
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
           {/* NAME */}
           <input
@@ -239,61 +311,77 @@ export default function AdminDashboard() {
             onChange={(e) =>
               setName(e.target.value)
             }
-            className="border rounded px-4 py-3 outline-none"
+            className="h-14 rounded-2xl border border-gray-200 px-5 outline-none focus:border-black"
           />
 
           {/* TARGET */}
           <input
             type="number"
-            placeholder="Target Amount"
+            placeholder="Monthly Target"
             value={target}
             onChange={(e) =>
               setTarget(e.target.value)
             }
-            className="border rounded px-4 py-3 outline-none"
+            className="h-14 rounded-2xl border border-gray-200 px-5 outline-none focus:border-black"
           />
 
           {/* BUTTON */}
           <button
             onClick={addSalesPerson}
-            className="bg-green-600 text-white rounded px-5 py-3 font-bold hover:bg-green-700"
+            className="h-14 rounded-2xl bg-black text-white font-bold hover:scale-[1.02] transition-all"
           >
-            Add Sales Person
+            + Add Sales Person
           </button>
 
         </div>
 
       </div>
 
-      {/* SALES PERSON LIST */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
+      {/* SALES PERSONS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
         {salesPersons.map((person) => (
 
           <div
             key={person.id}
-            className="bg-white rounded-xl p-5 shadow"
+            className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300"
           >
 
             {/* TOP */}
             <div className="flex items-center justify-between">
 
-              <h2 className="text-xl font-bold">
-                {person.name}
-              </h2>
+              <div>
 
-              <div className="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center font-bold">
+                <h2 className="text-2xl font-black">
+                  {person.name}
+                </h2>
+
+                <p className="text-gray-500 mt-1">
+                  Sales Executive
+                </p>
+
+              </div>
+
+              <div className="w-16 h-16 rounded-2xl bg-black text-white flex items-center justify-center text-2xl font-black shadow-lg">
                 {person.name?.charAt(0)}
               </div>
 
             </div>
 
             {/* TARGET */}
-            <div className="mt-5">
+            <div className="mt-8">
 
-              <p className="text-gray-500 text-sm mb-2">
-                Monthly Target
-              </p>
+              <div className="flex items-center justify-between mb-3">
+
+                <p className="text-gray-500 font-medium">
+                  Monthly Target
+                </p>
+
+                <p className="font-bold text-green-600">
+                  Active
+                </p>
+
+              </div>
 
               <input
                 type="number"
@@ -304,19 +392,42 @@ export default function AdminDashboard() {
                     e.target.value
                   )
                 }
-                className="w-full border rounded px-4 py-3 outline-none"
+                className="w-full h-14 rounded-2xl border border-gray-200 px-5 outline-none focus:border-black font-bold text-lg"
               />
 
             </div>
 
+            {/* TARGET BAR */}
+            <div className="mt-6">
+
+              <div className="flex items-center justify-between mb-2">
+
+                <span className="text-sm text-gray-500">
+                  Progress
+                </span>
+
+                <span className="font-bold">
+                  0%
+                </span>
+
+              </div>
+
+              <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+
+                <div className="h-full w-[0%] bg-green-500 rounded-full" />
+
+              </div>
+
+            </div>
+
             {/* ACTIONS */}
-            <div className="mt-5 flex gap-3">
+            <div className="mt-8 flex gap-3">
 
               <button
                 onClick={() =>
                   deleteSalesPerson(person.id)
                 }
-                className="flex-1 bg-red-500 text-white py-2 rounded font-semibold hover:bg-red-600"
+                className="flex-1 h-12 rounded-2xl bg-red-500 text-white font-bold hover:bg-red-600 transition-all"
               >
                 Delete
               </button>
