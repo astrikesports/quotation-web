@@ -105,6 +105,15 @@ import {
   ...saved,
   paymentImages: pdfData.paymentImages
   });
+    
+  // OPEN SALES PERSON PERFORMANCE
+  localStorage.setItem(
+    "selectedSalesPerson",
+    saved.salesPerson || ""
+  );
+
+  // GO TO DASHBOARD
+  navigate("/dashboard");
 
   } catch (err) {
   console.error("SAVE ERROR:", err);
