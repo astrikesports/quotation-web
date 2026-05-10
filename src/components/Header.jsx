@@ -248,12 +248,12 @@ import {
 
 
   <button
-      onClick={() =>
-        navigate("/dashboard")
-      }
-      className="px-4 py-2 text-sm rounded bg-black text-white font-semibold"
-    >
-      📊 Dashboard
+    onClick={() =>
+      navigate("/dashboard")
+    }
+    className="px-4 py-2 text-sm rounded-xl bg-white/15 backdrop-blur-xl border border-white/20 text-white font-semibold hover:bg-white/25 transition-all duration-200 shadow-lg"
+  >
+    🪟 Dashboard
   </button>
 
   <button
