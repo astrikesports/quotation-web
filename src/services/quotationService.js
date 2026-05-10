@@ -27,6 +27,7 @@ function mapFromDB(row) {
 
   return {
     id: row.id,
+    quotationNo: row.quotation_no ?? "",
     party: row.party ?? "",
     phone: row.phone ?? "",
     address: row.address ?? "",
@@ -38,6 +39,7 @@ function mapFromDB(row) {
     billDiscount: Number(row.bill_discount ?? 0),
     shipping: Number(row.shipping ?? 0),
     advance: Number(row.advance ?? 0),
+    netAmount: Number(row.net_amount ?? 0),
 
     createdAt: row.created_at,
     updatedAt: row.updated_at,
