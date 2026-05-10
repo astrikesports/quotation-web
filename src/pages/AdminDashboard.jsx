@@ -1,3 +1,4 @@
+```jsx
 import { useEffect, useState } from "react";
 
 import { supabase } from "../supabase";
@@ -71,10 +72,12 @@ export default function AdminDashboard() {
       return;
     }
 
+    // RESET
     setName("");
 
     setTarget("");
 
+    // RELOAD
     fetchSalesPersons();
   };
 
@@ -82,6 +85,8 @@ export default function AdminDashboard() {
   const updateTarget = async (id, value) => {
 
     if (!value) return;
+
+    setLoading(true);
 
     const { error } = await supabase
 
@@ -93,9 +98,11 @@ export default function AdminDashboard() {
 
       .eq("id", id);
 
+    setLoading(false);
+
     if (error) {
 
-      alert("Failed to update");
+      alert("Failed to update target");
 
       return;
     }
@@ -103,7 +110,7 @@ export default function AdminDashboard() {
     fetchSalesPersons();
   };
 
-  // DELETE
+  // DELETE SALES PERSON
   const deleteSalesPerson = async (id) => {
 
     const confirmDelete =
@@ -145,23 +152,37 @@ export default function AdminDashboard() {
       )}
 
       {/* TOP BAR */}
-      <div className="bg-gradient-to-r from-black to-gray-900 rounded-3xl p-8 text-white shadow-2xl mb-8">
+      <div className="bg-gradient-to-r from-black to-gray-900 rounded-[32px] p-8 md:p-10 text-white shadow-2xl mb-8 overflow-hidden relative">
 
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div className="absolute top-0 right-0 w-72 h-72 bg-green-500/10 rounded-full blur-3xl" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
 
           <div>
 
-            <p className="text-green-400 font-semibold tracking-wide uppercase text-sm">
+            <p className="text-green-400 font-bold tracking-[4px] uppercase text-xs">
               ASTRIKE SPORTSWEAR
             </p>
 
-            <h1 className="text-4xl md:text-5xl font-black mt-3 leading-tight">
+            <h1 className="text-4xl md:text-6xl font-black mt-4 leading-tight">
               Admin Dashboard
             </h1>
 
-            <p className="text-gray-300 mt-3 text-lg">
-              Manage your sales team, targets & performance
+            <p className="text-gray-300 mt-4 text-lg">
+              Manage sales team & targets
             </p>
+
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl p-6 min-w-[220px]">
+
+            <p className="text-gray-300 text-sm font-semibold">
+              TEAM MEMBERS
+            </p>
+
+            <h2 className="text-6xl font-black mt-2 text-green-400">
+              {salesPersons.length}
+            </h2>
 
           </div>
 
@@ -170,15 +191,16 @@ export default function AdminDashboard() {
       </div>
 
       {/* STATS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
 
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+        {/* CARD */}
+        <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
 
           <div className="flex items-center justify-between">
 
             <div>
 
-              <p className="text-gray-500 font-medium">
+              <p className="text-gray-500 font-semibold">
                 Total Sales
               </p>
 
@@ -188,7 +210,7 @@ export default function AdminDashboard() {
 
             </div>
 
-            <div className="w-16 h-16 rounded-2xl bg-black text-white flex items-center justify-center text-2xl">
+            <div className="w-16 h-16 rounded-2xl bg-black text-white flex items-center justify-center text-2xl shadow-lg">
               💰
             </div>
 
@@ -196,14 +218,15 @@ export default function AdminDashboard() {
 
         </div>
 
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+        {/* CARD */}
+        <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
 
           <div className="flex items-center justify-between">
 
             <div>
 
-              <p className="text-gray-500 font-medium">
-                Total Profit
+              <p className="text-gray-500 font-semibold">
+                Profit
               </p>
 
               <h2 className="text-4xl font-black mt-3 text-green-600">
@@ -212,7 +235,7 @@ export default function AdminDashboard() {
 
             </div>
 
-            <div className="w-16 h-16 rounded-2xl bg-green-600 text-white flex items-center justify-center text-2xl">
+            <div className="w-16 h-16 rounded-2xl bg-green-600 text-white flex items-center justify-center text-2xl shadow-lg">
               📈
             </div>
 
@@ -220,13 +243,14 @@ export default function AdminDashboard() {
 
         </div>
 
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+        {/* CARD */}
+        <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
 
           <div className="flex items-center justify-between">
 
             <div>
 
-              <p className="text-gray-500 font-medium">
+              <p className="text-gray-500 font-semibold">
                 Orders
               </p>
 
@@ -236,7 +260,7 @@ export default function AdminDashboard() {
 
             </div>
 
-            <div className="w-16 h-16 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl">
+            <div className="w-16 h-16 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl shadow-lg">
               📦
             </div>
 
@@ -244,14 +268,15 @@ export default function AdminDashboard() {
 
         </div>
 
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+        {/* CARD */}
+        <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
 
           <div className="flex items-center justify-between">
 
             <div>
 
-              <p className="text-gray-500 font-medium">
-                Team Members
+              <p className="text-gray-500 font-semibold">
+                Active Team
               </p>
 
               <h2 className="text-4xl font-black mt-3">
@@ -260,7 +285,7 @@ export default function AdminDashboard() {
 
             </div>
 
-            <div className="w-16 h-16 rounded-2xl bg-orange-500 text-white flex items-center justify-center text-2xl">
+            <div className="w-16 h-16 rounded-2xl bg-orange-500 text-white flex items-center justify-center text-2xl shadow-lg">
               👥
             </div>
 
@@ -271,21 +296,17 @@ export default function AdminDashboard() {
       </div>
 
       {/* ADD FORM */}
-      <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 mb-8">
+      <div className="bg-white rounded-[32px] p-6 md:p-8 shadow-sm border border-gray-100 mb-8">
 
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-6">
+        <div className="mb-7">
 
-          <div>
+          <h2 className="text-3xl font-black">
+            Add Sales Person
+          </h2>
 
-            <h2 className="text-3xl font-black">
-              Add Sales Person
-            </h2>
-
-            <p className="text-gray-500 mt-1">
-              Create new sales team member
-            </p>
-
-          </div>
+          <p className="text-gray-500 mt-2">
+            Create new sales executive
+          </p>
 
         </div>
 
@@ -299,7 +320,7 @@ export default function AdminDashboard() {
             onChange={(e) =>
               setName(e.target.value)
             }
-            className="h-14 rounded-2xl border border-gray-200 px-5 outline-none focus:border-black"
+            className="h-14 rounded-2xl border border-gray-200 px-5 outline-none focus:border-black text-lg font-semibold"
           />
 
           {/* TARGET */}
@@ -310,13 +331,13 @@ export default function AdminDashboard() {
             onChange={(e) =>
               setTarget(e.target.value)
             }
-            className="h-14 rounded-2xl border border-gray-200 px-5 outline-none focus:border-black"
+            className="h-14 rounded-2xl border border-gray-200 px-5 outline-none focus:border-black text-lg font-semibold"
           />
 
           {/* BUTTON */}
           <button
             onClick={addSalesPerson}
-            className="h-14 rounded-2xl bg-black text-white font-bold hover:scale-[1.02] transition-all"
+            className="h-14 rounded-2xl bg-black text-white font-bold text-lg hover:scale-[1.02] transition-all duration-200 shadow-xl"
           >
             + Add Sales Person
           </button>
@@ -325,14 +346,14 @@ export default function AdminDashboard() {
 
       </div>
 
-      {/* SALES PERSONS */}
+      {/* SALES PERSON LIST */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
         {salesPersons.map((person) => (
 
           <div
             key={person.id}
-            className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300"
+            className="bg-white rounded-[32px] p-6 shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-300"
           >
 
             {/* TOP */}
@@ -340,17 +361,17 @@ export default function AdminDashboard() {
 
               <div>
 
-                <h2 className="text-2xl font-black">
+                <h2 className="text-3xl font-black leading-tight">
                   {person.name}
                 </h2>
 
-                <p className="text-gray-500 mt-1">
+                <p className="text-gray-500 mt-2 font-medium">
                   Sales Executive
                 </p>
 
               </div>
 
-              <div className="w-16 h-16 rounded-2xl bg-black text-white flex items-center justify-center text-2xl font-black shadow-lg">
+              <div className="w-16 h-16 rounded-2xl bg-black text-white flex items-center justify-center text-2xl font-black shadow-xl">
                 {person.name?.charAt(0)}
               </div>
 
@@ -359,42 +380,57 @@ export default function AdminDashboard() {
             {/* TARGET */}
             <div className="mt-8">
 
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-4">
 
-                <p className="text-gray-500 font-medium">
-                  Monthly Target
-                </p>
+                <div>
 
-                <p className="font-bold text-green-600">
-                  Active
-                </p>
+                  <p className="text-gray-500 font-semibold text-sm">
+                    MONTHLY TARGET
+                  </p>
+
+                  <h3 className="text-4xl font-black mt-2">
+                    ₹{Number(
+                      person.target_amount || 0
+                    ).toLocaleString()}
+                  </h3>
+
+                </div>
+
+                <div className="bg-green-100 text-green-700 px-4 py-2 rounded-2xl text-sm font-black">
+                  ACTIVE
+                </div>
 
               </div>
 
-              <input
-                type="number"
-                defaultValue={person.target_amount}
-                onBlur={(e) =>
-                  updateTarget(
-                    person.id,
-                    e.target.value
-                  )
-                }
-                className="w-full h-14 rounded-2xl border border-gray-200 px-5 outline-none focus:border-black font-bold text-lg"
-              />
+              {/* EDIT BOX */}
+              <div className="bg-gray-50 border border-gray-200 rounded-3xl p-4">
+
+                <label className="text-xs font-black text-gray-400 tracking-[2px] uppercase">
+                  Update Target
+                </label>
+
+                <input
+                  type="number"
+                  defaultValue={person.target_amount}
+                  id={`target-${person.id}`}
+                  className="w-full bg-transparent mt-3 text-3xl font-black outline-none"
+                  placeholder="Enter Target"
+                />
+
+              </div>
 
             </div>
 
-            {/* TARGET BAR */}
-            <div className="mt-6">
+            {/* PROGRESS */}
+            <div className="mt-7">
 
               <div className="flex items-center justify-between mb-2">
 
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-gray-500 font-semibold">
                   Progress
                 </span>
 
-                <span className="font-bold">
+                <span className="font-black">
                   0%
                 </span>
 
@@ -408,14 +444,34 @@ export default function AdminDashboard() {
 
             </div>
 
-            {/* ACTIONS */}
-            <div className="mt-8 flex gap-3">
+            {/* BUTTONS */}
+            <div className="mt-8 grid grid-cols-2 gap-4">
 
+              {/* SAVE */}
+              <button
+                onClick={() => {
+
+                  const value =
+                    document.getElementById(
+                      `target-${person.id}`
+                    ).value;
+
+                  updateTarget(
+                    person.id,
+                    value
+                  );
+                }}
+                className="h-14 rounded-2xl bg-black text-white font-black text-lg hover:scale-[1.02] transition-all duration-200 shadow-xl"
+              >
+                Save
+              </button>
+
+              {/* DELETE */}
               <button
                 onClick={() =>
                   deleteSalesPerson(person.id)
                 }
-                className="flex-1 h-12 rounded-2xl bg-red-500 text-white font-bold hover:bg-red-600 transition-all"
+                className="h-14 rounded-2xl bg-red-500 text-white font-black text-lg hover:bg-red-600 transition-all duration-200 shadow-lg"
               >
                 Delete
               </button>
@@ -431,3 +487,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+```
