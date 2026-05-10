@@ -64,7 +64,7 @@ export default function Dashboard() {
     setLoading(false);
   };
 
-  // GET QUOTATIONS
+  // GET PERSON QUOTATIONS
   const getPersonQuotations = (name) => {
 
     return quotations.filter(
@@ -126,28 +126,6 @@ export default function Dashboard() {
             </p>
 
           </div>
-
-          {/* NEW QUOTATION */}
-          {selectedPerson && (
-
-            <button
-              onClick={() => {
-
-                // SAVE SALES PERSON
-                localStorage.setItem(
-                  "selectedSalesPerson",
-                  selectedPerson.name
-                );
-
-                // REDIRECT
-                navigate("/quotation");
-              }}
-              className="h-14 px-8 rounded-2xl bg-green-500 text-white font-black text-lg hover:scale-[1.02] transition-all duration-200 shadow-2xl"
-            >
-              + New Quotation
-            </button>
-
-          )}
 
         </div>
 
@@ -294,14 +272,15 @@ export default function Dashboard() {
 
       )}
 
-      {/* SALES PERSON DETAIL PAGE */}
+      {/* DETAIL PAGE */}
       {selectedPerson && (
 
         <div className="mt-2">
 
-          {/* TOP BAR */}
+          {/* TOP */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-8">
 
+            {/* LEFT */}
             <div className="flex items-center gap-4">
 
               {/* BACK */}
@@ -328,26 +307,49 @@ export default function Dashboard() {
 
             </div>
 
-            {/* TOTAL QUOTATIONS */}
-            <div className="bg-black text-white px-8 py-5 rounded-3xl shadow-2xl">
+            {/* RIGHT */}
+            <div className="flex flex-col gap-4">
 
-              <p className="text-gray-300 text-sm font-semibold">
-                TOTAL QUOTATIONS
-              </p>
+              {/* TOTAL QUOTATIONS */}
+              <div className="bg-black text-white px-8 py-5 rounded-3xl shadow-2xl">
 
-              <h3 className="text-5xl font-black mt-2">
-                {
-                  getPersonQuotations(
+                <p className="text-gray-300 text-sm font-semibold">
+                  TOTAL QUOTATIONS
+                </p>
+
+                <h3 className="text-5xl font-black mt-2">
+                  {
+                    getPersonQuotations(
+                      selectedPerson.name
+                    ).length
+                  }
+                </h3>
+
+              </div>
+
+              {/* NEW QUOTATION BUTTON */}
+              <button
+                onClick={() => {
+
+                  // SAVE SALES PERSON
+                  localStorage.setItem(
+                    "selectedSalesPerson",
                     selectedPerson.name
-                  ).length
-                }
-              </h3>
+                  );
+
+                  // REDIRECT
+                  navigate("/quotation");
+                }}
+                className="h-14 px-8 rounded-2xl bg-green-500 text-white font-black text-lg hover:scale-[1.02] transition-all duration-200 shadow-xl"
+              >
+                + New Quotation
+              </button>
 
             </div>
 
           </div>
 
-          {/* SUMMARY CARDS */}
+          {/* SUMMARY */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
             {/* SALES */}
