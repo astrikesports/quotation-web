@@ -12,7 +12,7 @@ export default function Login() {
 
     // DEMO LOGIN
     if (email === "admin@astrike.com" && password === "123456") {
-      navigate("/quotation");
+      navigate("/dashboard");
     } else {
       alert("Invalid Email or Password");
     }
