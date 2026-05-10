@@ -452,7 +452,7 @@ export default function AdminDashboard() {
       {/* DASHBOARD PAGE */}
       {activePage === "dashboard" && (
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
 
           {/* SALES */}
           <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
@@ -632,7 +632,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* SALES PERSONS */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
             {salesPersons.map(
               (person) => {
