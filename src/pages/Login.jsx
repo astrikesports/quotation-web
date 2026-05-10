@@ -24,25 +24,11 @@ export default function Login() {
 
       setLoading(true);
 
-      // LOGIN
-      const { error } =
-        await supabase.auth.signInWithPassword({
-          email,
-          password
-        });
-
-      // LOGIN ERROR
-      if (error) {
-
-        alert(error.message);
-
-        return;
-      }
-
-      // FETCH USER ROLE
+      // CHECK USER FROM TABLE
       const {
-        data: userData,
-        error: userError
+
+        data,
+        error
 
       } = await supabase
 
@@ -52,12 +38,14 @@ export default function Login() {
 
         .eq("email", email)
 
+        .eq("password", password)
+
         .single();
 
-      // USER NOT FOUND
-      if (userError || !userData) {
+      // INVALID LOGIN
+      if (error || !data) {
 
-        alert("User role not found");
+        alert("Invalid Email or Password");
 
         return;
       }
@@ -65,13 +53,15 @@ export default function Login() {
       // SAVE USER
       localStorage.setItem(
         "user",
-        JSON.stringify(userData)
+        JSON.stringify(data)
       );
 
       // REDIRECT
       navigate("/dashboard");
 
-    } catch (err) {
+    }
+
+    catch (err) {
 
       alert("Something went wrong");
     }
