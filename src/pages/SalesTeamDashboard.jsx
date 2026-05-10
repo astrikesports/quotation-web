@@ -701,10 +701,7 @@ export default function Dashboard({
                       </td>
                       
                       {/* STATUS */}
-                      // =========================
-                      // STATUS UI START
-                      // =========================
-                      
+
                       <td className="p-5">
                       
                         <div
@@ -754,16 +751,9 @@ export default function Dashboard({
                         </div>
                       
                       </td>
-                      
-                      // =========================
-                      // STATUS UI END
-                      // =========================
+                    
           
                       {/* ACTIONS */}
-                      // =========================
-                      // ACTION BUTTONS START
-                      // =========================
-                      
                       <td className="p-5">
                       
                         <div className="flex items-center justify-center gap-3">
@@ -837,10 +827,6 @@ export default function Dashboard({
                       
                       </td>
                       
-                      // =========================
-                      // ACTION BUTTONS END
-                      // =========================
-          
                     </tr>
           
                   ))}
