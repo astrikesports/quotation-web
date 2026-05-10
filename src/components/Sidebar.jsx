@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ItemForm from "./ItemForm";
 
 
@@ -28,7 +28,27 @@ import ItemForm from "./ItemForm";
   spDiscount = 0,
   } = pdfData;
 
-  const [previewMap, setPreviewMap] = useState({});
+  useEffect(() => {
+
+  const selectedSalesPerson =
+    localStorage.getItem(
+      "selectedSalesPerson"
+    );
+
+  // AUTO SET SALES PERSON
+  if (
+    selectedSalesPerson &&
+    !pdfData.salesPerson
+  ) {
+
+    setPdfData(prev => ({
+      ...prev,
+      salesPerson:
+        selectedSalesPerson
+    }));
+  }
+  
+  }, []);
   
   return (
   <div className="w-[360px] bg-blue-50/50 p-4 space-y-4 overflow-y-auto">
