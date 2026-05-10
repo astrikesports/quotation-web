@@ -314,7 +314,7 @@ import {
 
   <button
   onClick={handleSave}
-  className="h-11 px-5 rounded-2xl bg-green-500 text-black font-black hover:bg-green-400 transition-all duration-300 shadow-2xl hover:scale-[1.03]"  >
+  className="h-11 px-5 rounded-2xl bg-green-500/20 backdrop-blur-xl text-white font-bold hover:bg-green-500/30 transition-all duration-300 shadow-2xl hover:scale-[1.03]"  >
     
   💾 Save & Download PDF
   </button>
