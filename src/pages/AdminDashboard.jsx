@@ -14,6 +14,8 @@ export default function AdminDashboard() {
 
   const [salesPersons, setSalesPersons] = useState([]);
 
+  const [quotations, setQuotations] = useState([]);
+
   // LOAD DATA
   useEffect(() => {
 
@@ -21,22 +23,100 @@ export default function AdminDashboard() {
 
   }, []);
 
-  // FETCH SALES PERSONS
+  // FETCH DATA
   const fetchSalesPersons = async () => {
 
     setLoading(true);
 
+    // SALES PERSONS
     const { data } = await supabase
 
       .from("sales_persons")
 
       .select("*")
 
-      .order("id", { ascending: false });
+      .order("id", {
+        ascending: false
+      });
 
     setSalesPersons(data || []);
 
+    // QUOTATIONS
+    const {
+      data: quotationData
+    } = await supabase
+
+      .from("quotations")
+
+      .select("*");
+
+    setQuotations(
+      quotationData || []
+    );
+
     setLoading(false);
+  };
+
+  // TOTAL SALES
+  const getTotalSales = () => {
+
+    let total = 0;
+
+    quotations.forEach((q) => {
+
+      total += Number(
+        q.net_amount || 0
+      );
+
+    });
+
+    return total;
+  };
+
+  // TOTAL PROFIT
+  const getProfit = () => {
+
+    return (
+      getTotalSales() * 0.095
+    );
+  };
+
+  // PERSON SALES
+  const getPersonSales = (name) => {
+
+    let total = 0;
+
+    quotations.forEach((q) => {
+
+      if (
+        q.sales_person === name
+      ) {
+
+        total += Number(
+          q.net_amount || 0
+        );
+      }
+
+    });
+
+    return total;
+  };
+
+  // PROGRESS
+  const getProgress = (
+    sales,
+    target
+  ) => {
+
+    if (!target) return 0;
+
+    return Math.min(
+      (
+        (sales / target) *
+        100
+      ).toFixed(0),
+      100
+    );
   };
 
   // ADD SALES PERSON
@@ -44,102 +124,116 @@ export default function AdminDashboard() {
 
     if (!name || !target) {
 
-      alert("Enter name and target");
+      alert(
+        "Enter name and target"
+      );
 
       return;
     }
 
     setLoading(true);
 
-    const { error } = await supabase
+    const { error } =
+      await supabase
 
-      .from("sales_persons")
+        .from("sales_persons")
 
-      .insert([
-        {
-          name,
-          target_amount: target
-        }
-      ]);
+        .insert([
+          {
+            name,
+            target_amount: target
+          }
+        ]);
 
     setLoading(false);
 
     if (error) {
 
-      alert("Failed to add");
+      alert(
+        "Failed to add"
+      );
 
       return;
     }
 
-    // RESET
     setName("");
 
     setTarget("");
 
-    // RELOAD
     fetchSalesPersons();
   };
 
   // UPDATE TARGET
-  const updateTarget = async (id, value) => {
+  const updateTarget = async (
+    id,
+    value
+  ) => {
 
     if (!value) return;
 
     setLoading(true);
 
-    const { error } = await supabase
+    const { error } =
+      await supabase
 
-      .from("sales_persons")
+        .from("sales_persons")
 
-      .update({
-        target_amount: value
-      })
+        .update({
+          target_amount: value
+        })
 
-      .eq("id", id);
+        .eq("id", id);
 
     setLoading(false);
 
     if (error) {
 
-      alert("Failed to update target");
-
-      return;
-    }
-
-    fetchSalesPersons();
-  };
-
-  // DELETE SALES PERSON
-  const deleteSalesPerson = async (id) => {
-
-    const confirmDelete =
-      window.confirm(
-        "Delete this sales person?"
+      alert(
+        "Failed to update target"
       );
 
-    if (!confirmDelete) return;
-
-    setLoading(true);
-
-    const { error } = await supabase
-
-      .from("sales_persons")
-
-      .delete()
-
-      .eq("id", id);
-
-    setLoading(false);
-
-    if (error) {
-
-      alert("Delete failed");
-
       return;
     }
 
     fetchSalesPersons();
   };
+
+  // DELETE
+  const deleteSalesPerson =
+    async (id) => {
+
+      const confirmDelete =
+        window.confirm(
+          "Delete this sales person?"
+        );
+
+      if (!confirmDelete)
+        return;
+
+      setLoading(true);
+
+      const { error } =
+        await supabase
+
+          .from("sales_persons")
+
+          .delete()
+
+          .eq("id", id);
+
+      setLoading(false);
+
+      if (error) {
+
+        alert(
+          "Delete failed"
+        );
+
+        return;
+      }
+
+      fetchSalesPersons();
+    };
 
   return (
 
@@ -192,7 +286,7 @@ export default function AdminDashboard() {
       {/* STATS */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
 
-        {/* CARD */}
+        {/* SALES */}
         <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
 
           <div className="flex items-center justify-between">
@@ -204,7 +298,10 @@ export default function AdminDashboard() {
               </p>
 
               <h2 className="text-4xl font-black mt-3">
-                ₹61L
+                ₹{
+                  getTotalSales()
+                    .toLocaleString()
+                }
               </h2>
 
             </div>
@@ -217,7 +314,7 @@ export default function AdminDashboard() {
 
         </div>
 
-        {/* CARD */}
+        {/* PROFIT */}
         <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
 
           <div className="flex items-center justify-between">
@@ -229,7 +326,11 @@ export default function AdminDashboard() {
               </p>
 
               <h2 className="text-4xl font-black mt-3 text-green-600">
-                ₹6.5L
+                ₹{
+                  getProfit()
+                    .toFixed(0)
+                    .toLocaleString()
+                }
               </h2>
 
             </div>
@@ -242,7 +343,7 @@ export default function AdminDashboard() {
 
         </div>
 
-        {/* CARD */}
+        {/* ORDERS */}
         <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
 
           <div className="flex items-center justify-between">
@@ -254,7 +355,9 @@ export default function AdminDashboard() {
               </p>
 
               <h2 className="text-4xl font-black mt-3">
-                248
+                {
+                  quotations.length
+                }
               </h2>
 
             </div>
@@ -267,7 +370,7 @@ export default function AdminDashboard() {
 
         </div>
 
-        {/* CARD */}
+        {/* TEAM */}
         <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
 
           <div className="flex items-center justify-between">
@@ -279,7 +382,9 @@ export default function AdminDashboard() {
               </p>
 
               <h2 className="text-4xl font-black mt-3">
-                {salesPersons.length}
+                {
+                  salesPersons.length
+                }
               </h2>
 
             </div>
@@ -317,7 +422,9 @@ export default function AdminDashboard() {
             placeholder="Sales Person Name"
             value={name}
             onChange={(e) =>
-              setName(e.target.value)
+              setName(
+                e.target.value
+              )
             }
             className="h-14 rounded-2xl border border-gray-200 px-5 outline-none focus:border-black text-lg font-semibold"
           />
@@ -328,14 +435,18 @@ export default function AdminDashboard() {
             placeholder="Monthly Target"
             value={target}
             onChange={(e) =>
-              setTarget(e.target.value)
+              setTarget(
+                e.target.value
+              )
             }
             className="h-14 rounded-2xl border border-gray-200 px-5 outline-none focus:border-black text-lg font-semibold"
           />
 
           {/* BUTTON */}
           <button
-            onClick={addSalesPerson}
+            onClick={
+              addSalesPerson
+            }
             className="h-14 rounded-2xl bg-black text-white font-bold text-lg hover:scale-[1.02] transition-all duration-200 shadow-xl"
           >
             + Add Sales Person
@@ -345,141 +456,201 @@ export default function AdminDashboard() {
 
       </div>
 
-      {/* SALES PERSON LIST */}
+      {/* SALES PERSONS */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
-        {salesPersons.map((person) => (
+        {salesPersons.map(
+          (person) => {
 
-          <div
-            key={person.id}
-            className="bg-white rounded-[32px] p-6 shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-300"
-          >
+            const sales =
+              getPersonSales(
+                person.name
+              );
 
-            {/* TOP */}
-            <div className="flex items-center justify-between">
+            const progress =
+              getProgress(
+                sales,
+                person.target_amount
+              );
 
-              <div>
+            const profit =
+              sales * 0.095;
 
-                <h2 className="text-3xl font-black leading-tight">
-                  {person.name}
-                </h2>
+            return (
 
-                <p className="text-gray-500 mt-2 font-medium">
-                  Sales Executive
-                </p>
+              <div
+                key={person.id}
+                className="bg-white rounded-[32px] p-6 shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-300"
+              >
 
-              </div>
+                {/* TOP */}
+                <div className="flex items-center justify-between">
 
-              <div className="w-16 h-16 rounded-2xl bg-black text-white flex items-center justify-center text-2xl font-black shadow-xl">
-                {person.name?.charAt(0)}
-              </div>
+                  <div>
 
-            </div>
+                    <h2 className="text-3xl font-black leading-tight">
+                      {person.name}
+                    </h2>
 
-            {/* TARGET */}
-            <div className="mt-8">
+                    <p className="text-gray-500 mt-2 font-medium">
+                      Sales Executive
+                    </p>
 
-              <div className="flex items-center justify-between mb-4">
+                  </div>
 
-                <div>
+                  <div className="w-16 h-16 rounded-2xl bg-black text-white flex items-center justify-center text-2xl font-black shadow-xl">
+                    {
+                      person.name?.charAt(
+                        0
+                      )
+                    }
+                  </div>
+
+                </div>
+
+                {/* SALES */}
+                <div className="mt-8">
 
                   <p className="text-gray-500 font-semibold text-sm">
-                    MONTHLY TARGET
+                    CURRENT SALES
                   </p>
 
                   <h3 className="text-4xl font-black mt-2">
-                    ₹{Number(
-                      person.target_amount || 0
-                    ).toLocaleString()}
+                    ₹{
+                      sales.toLocaleString()
+                    }
                   </h3>
 
+                  <p className="text-sm text-green-600 font-bold mt-2">
+                    Profit ₹{
+                      profit
+                        .toFixed(0)
+                        .toLocaleString()
+                    }
+                  </p>
+
                 </div>
 
-                <div className="bg-green-100 text-green-700 px-4 py-2 rounded-2xl text-sm font-black">
-                  ACTIVE
+                {/* TARGET */}
+                <div className="mt-8">
+
+                  <div className="flex items-center justify-between mb-4">
+
+                    <div>
+
+                      <p className="text-gray-500 font-semibold text-sm">
+                        MONTHLY TARGET
+                      </p>
+
+                      <h3 className="text-4xl font-black mt-2">
+                        ₹{
+                          Number(
+                            person.target_amount || 0
+                          ).toLocaleString()
+                        }
+                      </h3>
+
+                    </div>
+
+                    <div className="bg-green-100 text-green-700 px-4 py-2 rounded-2xl text-sm font-black">
+                      ACTIVE
+                    </div>
+
+                  </div>
+
+                  {/* EDIT BOX */}
+                  <div className="bg-gray-50 border border-gray-200 rounded-3xl p-4">
+
+                    <label className="text-xs font-black text-gray-400 tracking-[2px] uppercase">
+                      Update Target
+                    </label>
+
+                    <input
+                      type="number"
+                      defaultValue={
+                        person.target_amount
+                      }
+                      id={
+                        "target-" +
+                        person.id
+                      }
+                      className="w-full bg-transparent mt-3 text-3xl font-black outline-none"
+                      placeholder="Enter Target"
+                    />
+
+                  </div>
+
+                </div>
+
+                {/* PROGRESS */}
+                <div className="mt-7">
+
+                  <div className="flex items-center justify-between mb-2">
+
+                    <span className="text-sm text-gray-500 font-semibold">
+                      Progress
+                    </span>
+
+                    <span className="font-black">
+                      {progress}%
+                    </span>
+
+                  </div>
+
+                  <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+
+                    <div
+                      className="h-full bg-green-500 rounded-full"
+                      style={{
+                        width: `${progress}%`
+                      }}
+                    />
+
+                  </div>
+
+                </div>
+
+                {/* BUTTONS */}
+                <div className="mt-8 grid grid-cols-2 gap-4">
+
+                  {/* SAVE */}
+                  <button
+                    onClick={() => {
+
+                      const value =
+                        document.getElementById(
+                          "target-" +
+                          person.id
+                        ).value;
+
+                      updateTarget(
+                        person.id,
+                        value
+                      );
+                    }}
+                    className="h-14 rounded-2xl bg-black text-white font-black text-lg hover:scale-[1.02] transition-all duration-200 shadow-xl"
+                  >
+                    Save
+                  </button>
+
+                  {/* DELETE */}
+                  <button
+                    onClick={() =>
+                      deleteSalesPerson(
+                        person.id
+                      )
+                    }
+                    className="h-14 rounded-2xl bg-red-500 text-white font-black text-lg hover:bg-red-600 transition-all duration-200 shadow-lg"
+                  >
+                    Delete
+                  </button>
+
                 </div>
 
               </div>
-
-              {/* EDIT BOX */}
-              <div className="bg-gray-50 border border-gray-200 rounded-3xl p-4">
-
-                <label className="text-xs font-black text-gray-400 tracking-[2px] uppercase">
-                  Update Target
-                </label>
-
-                <input
-                  type="number"
-                  defaultValue={person.target_amount}
-                  id={"target-" + person.id}
-                  className="w-full bg-transparent mt-3 text-3xl font-black outline-none"
-                  placeholder="Enter Target"
-                />
-
-              </div>
-
-            </div>
-
-            {/* PROGRESS */}
-            <div className="mt-7">
-
-              <div className="flex items-center justify-between mb-2">
-
-                <span className="text-sm text-gray-500 font-semibold">
-                  Progress
-                </span>
-
-                <span className="font-black">
-                  0%
-                </span>
-
-              </div>
-
-              <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-
-                <div className="h-full w-[0%] bg-green-500 rounded-full" />
-
-              </div>
-
-            </div>
-
-            {/* BUTTONS */}
-            <div className="mt-8 grid grid-cols-2 gap-4">
-
-              {/* SAVE */}
-              <button
-                onClick={() => {
-
-                  const value =
-                    document.getElementById(
-                      "target-" + person.id
-                    ).value;
-
-                  updateTarget(
-                    person.id,
-                    value
-                  );
-                }}
-                className="h-14 rounded-2xl bg-black text-white font-black text-lg hover:scale-[1.02] transition-all duration-200 shadow-xl"
-              >
-                Save
-              </button>
-
-              {/* DELETE */}
-              <button
-                onClick={() =>
-                  deleteSalesPerson(person.id)
-                }
-                className="h-14 rounded-2xl bg-red-500 text-white font-black text-lg hover:bg-red-600 transition-all duration-200 shadow-lg"
-              >
-                Delete
-              </button>
-
-            </div>
-
-          </div>
-
-        ))}
+            );
+          }
+        )}
 
       </div>
 
