@@ -15,7 +15,7 @@ export default function Summary({
 
     <div className="mt-4">
 
-      <div className="bg-gradient-to-r from-[#050816] via-[#0b1020] to-[#050816] rounded-[34px] border border-white/10 shadow-[0_10px_60px_rgba(0,0,0,0.45)] overflow-hidden relative">
+      <div className="bg-gradient-to-r from-[#050816] via-[#0b1020] to-[#050816]  border border-white/10 shadow-[0_10px_60px_rgba(0,0,0,0.45)] overflow-hidden relative">
 
         {/* GLOW */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-green-500/10 blur-3xl rounded-full" />
