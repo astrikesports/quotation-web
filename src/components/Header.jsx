@@ -201,18 +201,23 @@ import {
     
   /* LOAD SELECT */
   useEffect(() => {
+
     const quotationId =
       localStorage.getItem(
         "selectedQuotationId"
       );
   
-    if (quotationId) {
+    if (!quotationId)
+      return;
   
-      handleLoadSelect(
-        quotationId
-      );
+    handleLoadSelect(
+      quotationId
+    );
   
-    }
+    // CLEAR AFTER LOAD
+    localStorage.removeItem(
+      "selectedQuotationId"
+    );
   
   }, []);
 
