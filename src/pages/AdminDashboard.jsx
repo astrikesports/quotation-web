@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-
 import { supabase } from "../supabase";
-
+import ConfirmDialog from "../components/ConfirmDialog";
 import LoaderOverlay from "../components/LoaderOverlay";
 
 export default function AdminDashboard() {
@@ -24,6 +23,12 @@ export default function AdminDashboard() {
 
   const [activePage, setActivePage] =
     useState("dashboard");
+  
+  const [dialogOpen, setDialogOpen] =
+  useState(false);
+
+  const [dialogConfig, setDialogConfig] =
+    useState({});
 
   // LOAD
   useEffect(() => {
@@ -267,6 +272,168 @@ export default function AdminDashboard() {
       fetchSalesPersons();
     };
 
+  // =========================
+  // SAMPLE CSV DOWNLOAD START
+  // =========================
+  
+  const downloadSampleCSV = () => {
+    const sampleData = [
+      ["product_name", "M", "L", "XL", "2XL"],
+      ["QR25", "20", "15", "10", "5"],
+      ["TRACK01", "50", "40", "25", "10"],
+    ];
+  
+    const csvContent = sampleData
+      .map((row) => row.join(","))
+      .join("\n");
+  
+    const blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+  
+    const url =
+      window.URL.createObjectURL(blob);
+  
+    const link =
+      document.createElement("a");
+  
+    link.href = url;
+  
+    link.setAttribute(
+      "download",
+      "inventory_sample.csv"
+    );
+  
+    document.body.appendChild(link);
+  
+    link.click();
+  
+    document.body.removeChild(link);
+  };
+  
+  // =========================
+  // SAMPLE CSV DOWNLOAD END
+  // =========================
+  
+  
+  // =========================
+  // CSV UPLOAD START
+  // =========================
+  
+  const handleCSVUpload = async (e) => {
+  
+    const file = e.target.files[0];
+  
+    if (!file) return;
+  
+    setUploadingCsv(true);
+  
+    try {
+  
+      const text = await file.text();
+  
+      const rows = text.split("\n");
+  
+      const headers = rows[0]
+        .split(",")
+        .map((h) => h.trim());
+  
+      const productsToInsert = [];
+  
+      for (let i = 1; i < rows.length; i++) {
+  
+        if (!rows[i].trim())
+          continue;
+  
+        const cols = rows[i]
+          .split(",")
+          .map((c) => c.trim());
+  
+        const productName = cols[0];
+  
+        const variants = {};
+  
+        for (let j = 1; j < headers.length; j++) {
+  
+          const size = headers[j];
+  
+          const qty = Number(
+            cols[j] || 0
+          );
+  
+          variants[size] = {
+            qty,
+          };
+        }
+  
+        productsToInsert.push({
+          product_name:
+            productName,
+  
+          variants,
+        });
+      }
+  
+      const { error } =
+        await supabase
+          .from("products")
+          .insert(
+            productsToInsert
+          );
+  
+      if (error) {
+  
+        setDialogConfig({
+          title: "Upload Failed",
+          message:
+            "CSV upload failed",
+          confirmText: "OK",
+          onConfirm: () =>
+            setDialogOpen(false),
+        });
+  
+        setDialogOpen(true);
+  
+        return;
+      }
+  
+      setDialogConfig({
+        title: "Success",
+        message:
+          "Inventory Uploaded Successfully",
+        confirmText: "OK",
+        onConfirm: () =>
+          setDialogOpen(false),
+      });
+  
+      setDialogOpen(true);
+  
+      fetchProducts();
+  
+    } catch (err) {
+  
+      setDialogConfig({
+        title: "CSV Error",
+        message:
+          "CSV parsing failed",
+        confirmText: "OK",
+        onConfirm: () =>
+          setDialogOpen(false),
+      });
+  
+      setDialogOpen(true);
+  
+    } finally {
+  
+      setUploadingCsv(false);
+  
+    }
+  };
+  
+  // =========================
+  // CSV UPLOAD END
+  // =========================
+  
   return (
 
     <div className="min-h-screen bg-[#f4f6f8] p-4 md:p-8">
