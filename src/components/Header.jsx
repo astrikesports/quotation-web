@@ -90,6 +90,7 @@ import {
 
   const payload = {
   ...pdfData,
+  status: "pending",
   // SAVE NET AMOUNT
   netAmount: net,
   items: cleanItems,
