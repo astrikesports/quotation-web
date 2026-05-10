@@ -84,7 +84,7 @@ import {
   const payload = {
   ...pdfData,
   // SAVE NET AMOUNT
-  netAmount: pdfData.netAmount,
+  netAmount: net,
   items: cleanItems,
   paymentImages: []
   };
