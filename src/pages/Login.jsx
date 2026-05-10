@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 import { supabase } from "../supabase";
 
+import LoaderOverlay from "../components/LoaderOverlay";
+
 export default function Login() {
 
   const navigate = useNavigate();
@@ -12,29 +14,82 @@ export default function Login() {
 
   const [password, setPassword] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const handleLogin = async (e) => {
 
     e.preventDefault();
 
-    // LOGIN WITH SUPABASE
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
+    try {
 
-    if (error) {
+      setLoading(true);
 
-      alert(error.message);
+      // LOGIN
+      const { error } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
 
-      return;
+      // LOGIN ERROR
+      if (error) {
+
+        alert(error.message);
+
+        return;
+      }
+
+      // FETCH USER ROLE
+      const {
+        data: userData,
+        error: userError
+
+      } = await supabase
+
+        .from("users")
+
+        .select("*")
+
+        .eq("email", email)
+
+        .single();
+
+      // USER NOT FOUND
+      if (userError || !userData) {
+
+        alert("User role not found");
+
+        return;
+      }
+
+      // SAVE USER
+      localStorage.setItem(
+        "user",
+        JSON.stringify(userData)
+      );
+
+      // REDIRECT
+      navigate("/dashboard");
+
+    } catch (err) {
+
+      alert("Something went wrong");
     }
 
-    navigate("/dashboard");
+    finally {
+
+      setLoading(false);
+    }
   };
 
   return (
 
     <div className="h-screen flex items-center justify-center bg-gray-100">
+
+      {/* LOADER */}
+      {loading && (
+        <LoaderOverlay text="Logging in..." />
+      )}
 
       <div className="bg-white w-[420px] rounded shadow p-8">
 
@@ -57,7 +112,9 @@ export default function Login() {
               type="email"
               placeholder="Enter Email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) =>
+                setEmail(e.target.value)
+              }
               className="w-full border rounded px-4 py-3 outline-none focus:border-green-600"
               required
             />
@@ -75,7 +132,9 @@ export default function Login() {
               type="password"
               placeholder="Enter Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) =>
+                setPassword(e.target.value)
+              }
               className="w-full border rounded px-4 py-3 outline-none focus:border-green-600"
               required
             />
