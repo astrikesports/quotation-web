@@ -233,7 +233,7 @@ import {
 
   return (
   <>
-  <div className="bg-gradient-to-r from-black via-gray-900 to-black text-white px-8 py-5 flex justify-between items-center rounded-[28px] shadow-2xl border border-white/10 relative overflow-hidden">
+  <div className="bg-gradient-to-r from-black via-gray-900 to-black text-white px-8 py-5 flex justify-between items-center shadow-2xl border border-white/10 relative overflow-hidden">
 
   {/* BG EFFECT */}
   <div className="absolute top-0 right-0 w-72 h-72 bg-green-500/10 rounded-full blur-3xl" />
