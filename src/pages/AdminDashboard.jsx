@@ -338,8 +338,6 @@ export default function AdminDashboard() {
         .split(",")
         .map((h) => h.trim());
   
-      const productsToInsert = [];
-  
       for (let i = 1; i < rows.length; i++) {
   
         if (!rows[i].trim())
@@ -366,35 +364,45 @@ export default function AdminDashboard() {
           };
         }
   
-        productsToInsert.push({
-          product_name:
-            productName,
-  
-          variants,
-        });
-      }
-  
-      const { error } =
-        await supabase
+        // CHECK EXISTING PRODUCT
+        const {
+          data: existingProduct
+        } = await supabase
           .from("products")
-          .insert(
-            productsToInsert
-          );
+          .select("*")
+          .eq(
+            "product_name",
+            productName
+          )
+          .single();
   
-      if (error) {
+        // UPDATE IF EXISTS
+        if (existingProduct) {
   
-        setDialogConfig({
-          title: "Upload Failed",
-          message:
-            "CSV upload failed",
-          confirmText: "OK",
-          onConfirm: () =>
-            setDialogOpen(false),
-        });
+          await supabase
+            .from("products")
+            .update({
+              variants,
+            })
+            .eq(
+              "id",
+              existingProduct.id
+            );
   
-        setDialogOpen(true);
+        } else {
   
-        return;
+          // INSERT NEW
+          await supabase
+            .from("products")
+            .insert([
+              {
+                product_name:
+                  productName,
+  
+                variants,
+              },
+            ]);
+        }
       }
   
       setDialogConfig({
@@ -411,6 +419,8 @@ export default function AdminDashboard() {
       fetchProducts();
   
     } catch (err) {
+  
+      console.log(err);
   
       setDialogConfig({
         title: "CSV Error",
