@@ -1,4 +1,3 @@
-```jsx
 import { useEffect, useState } from "react";
 
 import { supabase } from "../supabase";
@@ -412,7 +411,7 @@ export default function AdminDashboard() {
                 <input
                   type="number"
                   defaultValue={person.target_amount}
-                  id={`target-${person.id}`}
+                  id={"target-" + person.id}
                   className="w-full bg-transparent mt-3 text-3xl font-black outline-none"
                   placeholder="Enter Target"
                 />
@@ -453,7 +452,7 @@ export default function AdminDashboard() {
 
                   const value =
                     document.getElementById(
-                      `target-${person.id}`
+                      "target-" + person.id
                     ).value;
 
                   updateTarget(
@@ -487,4 +486,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-```
