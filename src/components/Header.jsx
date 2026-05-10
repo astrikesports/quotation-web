@@ -22,6 +22,7 @@ import {
   setLoading,
   setLoadingText,
   setConfirm,
+  net,
   }) {
 
   const [showLoad, setShowLoad] = useState(false);
