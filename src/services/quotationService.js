@@ -15,6 +15,7 @@ function mapToDB(data) {
     bill_discount: data.billDiscount,
     shipping: data.shipping,
     advance: data.advance,
+    net_amount: data.netAmount,
 
     items: data.items
   };
