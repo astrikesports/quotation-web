@@ -165,18 +165,6 @@ export default function AdminDashboard() {
 
           </div>
 
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl px-6 py-5 border border-white/10">
-
-            <p className="text-sm text-gray-300">
-              Total Team Members
-            </p>
-
-            <h2 className="text-5xl font-black mt-2 text-green-400">
-              {salesPersons.length}
-            </h2>
-
-          </div>
-
         </div>
 
       </div>
