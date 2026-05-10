@@ -562,7 +562,14 @@ export default function Dashboard() {
                           <button
                             className="w-11 h-11 rounded-2xl bg-red-500 text-white flex items-center justify-center text-lg shadow-lg hover:scale-105 transition-all"
                           >
-                            ✖
+                            X
+                          </button>
+
+                          {/* COMPLETE */}
+                          <button
+                            className="w-11 h-11 rounded-2xl bg-green-600 text-white flex items-center justify-center text-lg shadow-lg hover:scale-105 transition-all"
+                          >
+                            ✓
                           </button>
           
                         </div>
