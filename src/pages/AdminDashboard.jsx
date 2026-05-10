@@ -16,17 +16,37 @@ export default function AdminDashboard() {
 
   const [quotations, setQuotations] = useState([]);
 
+  const [products, setProducts] =
+    useState([]);
+
   const [activePage, setActivePage] =
     useState("dashboard");
 
   // LOAD
   useEffect(() => {
-
+    fetchProducts();
     fetchSalesPersons();
 
   }, []);
 
   // FETCH
+
+  // SALES PRODUCTS
+  const fetchProducts = async () => {
+    const { data, error } =
+      await supabase
+        .from("products")
+        .select("*")
+        .order("id", {
+          ascending: false,
+        });
+  
+    if (!error) {
+      setProducts(data || []);
+    }
+  };
+
+  // SALES PERSONS
   const fetchSalesPersons = async () => {
 
     setLoading(true);
@@ -815,19 +835,124 @@ export default function AdminDashboard() {
 
       {/* INVENTORY PAGE */}
       {activePage === "inventory" && (
-
-        <div className="bg-white rounded-[32px] p-10 shadow-sm border border-gray-100">
-
-          <h2 className="text-4xl font-black">
-            Inventory
-          </h2>
-
-          <p className="text-gray-500 mt-3 text-lg">
-            Inventory management coming soon...
-          </p>
-
+      
+        <div className="space-y-6">
+      
+          {/* TOP */}
+          <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
+      
+            <h2 className="text-4xl font-black">
+              Inventory
+            </h2>
+      
+            <p className="text-gray-500 mt-3 text-lg">
+              Current live inventory stock
+            </p>
+      
+          </div>
+      
+          {/* PRODUCTS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      
+            {products.map((product) => {
+      
+              const variants =
+                product.variants || {};
+      
+              let totalStock = 0;
+      
+              Object.values(variants).forEach(
+                (v) => {
+                  totalStock += Number(
+                    v?.qty || 0
+                  );
+                }
+              );
+      
+              return (
+      
+                <div
+                  key={product.id}
+                  className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100"
+                >
+      
+                  {/* TOP */}
+                  <div className="flex items-start justify-between gap-4">
+      
+                    <div>
+      
+                      <h2 className="text-3xl font-black leading-tight">
+                        {product.desc ||
+                          product.name ||
+                          "No Name"}
+                      </h2>
+      
+                      <p className="text-gray-500 mt-2 font-medium">
+                        Product Inventory
+                      </p>
+      
+                    </div>
+      
+                    <div className="w-16 h-16 rounded-2xl bg-black text-white flex items-center justify-center text-2xl shadow-lg">
+                      📦
+                    </div>
+      
+                  </div>
+      
+                  {/* TOTAL */}
+                  <div className="mt-7">
+      
+                    <p className="text-gray-500 text-sm font-bold tracking-[2px] uppercase">
+                      Total Stock
+                    </p>
+      
+                    <h3 className="text-5xl font-black mt-2">
+                      {totalStock}
+                    </h3>
+      
+                  </div>
+      
+                  {/* SIZES */}
+                  <div className="mt-8 flex flex-wrap gap-3">
+      
+                    {Object.entries(
+                      variants
+                    ).map(
+                      ([size, data]) => {
+      
+                        const qty =
+                          Number(
+                            data?.qty || 0
+                          );
+      
+                        return (
+      
+                          <div
+                            key={size}
+                            className={`px-4 py-3 rounded-2xl border text-sm font-black ${
+                              qty <= 5
+                                ? "bg-red-50 border-red-200 text-red-600"
+                                : "bg-gray-50 border-gray-200 text-black"
+                            }`}
+                          >
+      
+                            {size} : {qty}
+      
+                          </div>
+                        );
+                      }
+                    )}
+      
+                  </div>
+      
+                </div>
+              );
+            })}
+      
+          </div>
+      
         </div>
-
+      
       )}
 
       {/* ITEMS PAGE */}
