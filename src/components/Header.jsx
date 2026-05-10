@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "../supabase";
 import { deletePaymentImages } from "../services/paymentImageService";
 import {
   deleteQuotation,
@@ -30,6 +31,8 @@ import {
   const [showLoad, setShowLoad] = useState(false);
   const [showStock,setShowStock] = useState(false)
   const [showDistrict, setShowDistrict] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [quotationItems, setQuotationItems] = useState([]);
     
   const handleSave = async () => {
   try {
@@ -182,6 +185,8 @@ import {
   paymentImages: data.paymentImages || [] // 🔥 URLs only
   }));
 
+  await fetchQuotationItems(id);
+
 
   setTimeout(() => {
   setLoading(false);
@@ -203,7 +208,59 @@ import {
   }, 300);
   };
 
-
+  // =========================
+  // FETCH PRODUCTS START
+  // =========================
+  
+  const fetchProducts = async () => {
+  
+    const { data, error } =
+      await supabase
+        .from("products")
+        .select("*");
+  
+    if (!error) {
+  
+      setProducts(data || []);
+  
+    }
+  };
+  
+  // =========================
+  // FETCH PRODUCTS END
+  // =========================
+  
+  
+  // =========================
+  // FETCH QUOTATION ITEMS START
+  // =========================
+  
+  const fetchQuotationItems =
+    async (quotationId) => {
+  
+      if (!quotationId) return;
+  
+      const { data, error } =
+        await supabase
+          .from("quotations")
+          .select("items")
+          .eq("id", quotationId)
+          .single();
+  
+      if (!error) {
+  
+        setQuotationItems(
+          Array.isArray(data?.items)
+            ? data.items
+            : []
+        );
+  
+      }
+  };
+  
+  // =========================
+  // FETCH QUOTATION ITEMS END
+  // =========================
 
   /* HANDLE DELETE */
   const handleDelete = async (quotation) => {
@@ -236,7 +293,11 @@ import {
   });
   };
 
+  useEffect(() => {
 
+    fetchProducts();
+  
+  }, []);
 
 
 
@@ -280,14 +341,14 @@ import {
   📍 Check District
   </button>
 
-  {/* RIGHT 
   <button
   onClick={() => setShowStock(true)}
-  className="px-4 py-2 text-sm rounded bg-green-600 text-white font-semibold"
+  className="h-11 px-5 rounded-2xl bg-green-500/20 backdrop-blur-xl border border-green-400/20 text-white font-bold hover:bg-green-500/30 transition-all duration-300 shadow-lg hover:scale-[1.03]"
   >
   📦 Check Stock
   </button>
 
+  {/* RIGHT 
   <button
   onClick={handleNewQuotation}
   className="px-3 py-2 text-sm rounded bg-white text-blue-700 font-semibold"
@@ -335,7 +396,14 @@ import {
   {/* STOCK CHECK POPUP */}
   {showStock && (
     <StockCheckModal
-      onClose={() => setShowStock(false)}
+      open={showStock}
+      onClose={() =>
+        setShowStock(false)
+      }
+      quotationItems={
+        quotationItems
+      }
+      products={products}
     />
   )}
     
