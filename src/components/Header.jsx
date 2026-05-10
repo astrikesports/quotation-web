@@ -5,6 +5,7 @@ import {
   fetchQuotationById
 } from "../services/quotationService";
 import { generateQuotationPDF } from "../utils/pdfService";
+import { useNavigate } from "react-router-dom";
 import LoadQuotationModal from "./LoadQuotationModal";
 import StockCheckModal from "./StockCheckModal";
 import DistrictCheckModal from "./DistrictCheckModal";
@@ -25,6 +26,7 @@ import {
   net,
   }) {
 
+  const navigate = useNavigate();
   const [showLoad, setShowLoad] = useState(false);
   const [showStock,setShowStock] = useState(false)
   const [showDistrict, setShowDistrict] = useState(false);
@@ -244,6 +246,16 @@ import {
   {/* RIGHT */}
   <div className="flex gap-2 items-center">
 
+
+  <button
+      onClick={() =>
+        navigate("/dashboard")
+      }
+      className="px-4 py-2 text-sm rounded bg-black text-white font-semibold"
+    >
+      📊 Dashboard
+  </button>
+
   <button
   onClick={() => setShowDistrict(true)}
   className="px-4 py-2 text-sm rounded bg-purple-600 text-white font-semibold"
@@ -251,6 +263,7 @@ import {
   📍 Check District
   </button>
 
+  {/* RIGHT 
   <button
   onClick={() => setShowStock(true)}
   className="px-4 py-2 text-sm rounded bg-green-600 text-white font-semibold"
@@ -266,18 +279,21 @@ import {
   </button>
 
   <button
+  onClick={handleRefresh}
+  className="px-4 py-2 text-sm rounded bg-yellow-400 text-black font-semibold"
+  >
+  🔄 Refresh Sheet
+  </button>
+  
+  */}
+
+  <button
   onClick={() => setShowLoad(true)}
   className="px-3 py-2 text-sm rounded bg-blue-900/40 font-semibold"
   >
   Load Old Quotation
   </button>
 
-  <button
-  onClick={handleRefresh}
-  className="px-4 py-2 text-sm rounded bg-yellow-400 text-black font-semibold"
-  >
-  🔄 Refresh Sheet
-  </button>
 
   <button
   onClick={handleSave}
