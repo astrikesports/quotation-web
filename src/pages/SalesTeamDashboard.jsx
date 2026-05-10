@@ -452,7 +452,11 @@ export default function Dashboard() {
                     <th className="text-left p-5 font-bold">
                       Phone
                     </th>
-          
+
+                    <th className="text-left p-5 font-bold">
+                      Net Amount
+                    </th>
+                    
                     <th className="text-left p-5 font-bold">
                       Date
                     </th>
@@ -506,7 +510,22 @@ export default function Dashboard() {
                         ).toLocaleDateString()}
           
                       </td>
-          
+                      
+                      {/* NET AMOUNT */}
+                      <td className="p-5">
+                      
+                        <div className="font-black text-lg text-green-600">
+                      
+                          ₹{
+                            Number(
+                              quote.net_amount || 0
+                            ).toLocaleString()
+                          }
+                      
+                        </div>
+                      
+                      </td>
+                      
                       {/* STATUS */}
                       <td className="p-5">
           
@@ -529,21 +548,21 @@ export default function Dashboard() {
                           <button
                             className="w-11 h-11 rounded-2xl bg-black text-white flex items-center justify-center text-lg shadow-lg hover:scale-105 transition-all"
                           >
-                            →
+                            ➜]
                           </button>
           
                           {/* SAVE */}
                           <button
                             className="w-11 h-11 rounded-2xl bg-green-500 text-white flex items-center justify-center text-lg shadow-lg hover:scale-105 transition-all"
                           >
-                            💾
+                           📥
                           </button>
           
                           {/* DELETE */}
                           <button
                             className="w-11 h-11 rounded-2xl bg-red-500 text-white flex items-center justify-center text-lg shadow-lg hover:scale-105 transition-all"
                           >
-                            🗑
+                            ✖
                           </button>
           
                         </div>
