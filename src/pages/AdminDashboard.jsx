@@ -80,6 +80,69 @@ export default function AdminDashboard() {
     fetchSalesPersons();
   };
 
+  // UPDATE TARGET
+  const updateTarget = async (id, value) => {
+
+    if (!value) return;
+
+    setLoading(true);
+
+    const { error } = await supabase
+
+      .from("sales_persons")
+
+      .update({
+        target_amount: value
+      })
+
+      .eq("id", id);
+
+    setLoading(false);
+
+    if (error) {
+
+      alert("Failed to update target");
+
+      return;
+    }
+
+    // RELOAD
+    fetchSalesPersons();
+  };
+
+  // DELETE SALES PERSON
+  const deleteSalesPerson = async (id) => {
+
+    const confirmDelete =
+      window.confirm(
+        "Delete this sales person?"
+      );
+
+    if (!confirmDelete) return;
+
+    setLoading(true);
+
+    const { error } = await supabase
+
+      .from("sales_persons")
+
+      .delete()
+
+      .eq("id", id);
+
+    setLoading(false);
+
+    if (error) {
+
+      alert("Delete failed");
+
+      return;
+    }
+
+    // RELOAD
+    fetchSalesPersons();
+  };
+
   return (
 
     <div className="min-h-screen bg-gray-100 p-6">
@@ -90,16 +153,30 @@ export default function AdminDashboard() {
       )}
 
       {/* TITLE */}
-      <h1 className="text-4xl font-bold mb-6">
-        Admin Dashboard
-      </h1>
+      <div className="flex items-center justify-between mb-8">
+
+        <div>
+
+          <h1 className="text-4xl font-bold">
+            Admin Dashboard
+          </h1>
+
+          <p className="text-gray-500 mt-1">
+            Sales Team Management
+          </p>
+
+        </div>
+
+      </div>
 
       {/* TOP CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
 
-        <div className="bg-white p-5 rounded shadow">
+        <div className="bg-white p-5 rounded-xl shadow">
 
-          <p>Total Sales</p>
+          <p className="text-gray-500">
+            Total Sales
+          </p>
 
           <h2 className="text-3xl font-bold mt-2">
             ₹61,00,000
@@ -107,9 +184,11 @@ export default function AdminDashboard() {
 
         </div>
 
-        <div className="bg-white p-5 rounded shadow">
+        <div className="bg-white p-5 rounded-xl shadow">
 
-          <p>Total Profit</p>
+          <p className="text-gray-500">
+            Total Profit
+          </p>
 
           <h2 className="text-3xl font-bold text-green-600 mt-2">
             ₹6,50,000
@@ -117,9 +196,11 @@ export default function AdminDashboard() {
 
         </div>
 
-        <div className="bg-white p-5 rounded shadow">
+        <div className="bg-white p-5 rounded-xl shadow">
 
-          <p>Orders</p>
+          <p className="text-gray-500">
+            Orders
+          </p>
 
           <h2 className="text-3xl font-bold mt-2">
             248
@@ -127,9 +208,11 @@ export default function AdminDashboard() {
 
         </div>
 
-        <div className="bg-white p-5 rounded shadow">
+        <div className="bg-white p-5 rounded-xl shadow">
 
-          <p>Sales Team</p>
+          <p className="text-gray-500">
+            Sales Team
+          </p>
 
           <h2 className="text-3xl font-bold mt-2">
             {salesPersons.length}
@@ -140,7 +223,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* ADD SALES PERSON */}
-      <div className="bg-white p-5 rounded shadow mb-8">
+      <div className="bg-white p-5 rounded-xl shadow mb-8">
 
         <h2 className="text-2xl font-bold mb-5">
           Add Sales Person
@@ -173,7 +256,7 @@ export default function AdminDashboard() {
           {/* BUTTON */}
           <button
             onClick={addSalesPerson}
-            className="bg-green-600 text-white rounded px-5 py-3 font-bold"
+            className="bg-green-600 text-white rounded px-5 py-3 font-bold hover:bg-green-700"
           >
             Add Sales Person
           </button>
@@ -208,13 +291,35 @@ export default function AdminDashboard() {
             {/* TARGET */}
             <div className="mt-5">
 
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-500 text-sm mb-2">
                 Monthly Target
               </p>
 
-              <h3 className="text-2xl font-bold mt-2">
-                ₹{Number(person.target_amount).toLocaleString()}
-              </h3>
+              <input
+                type="number"
+                defaultValue={person.target_amount}
+                onBlur={(e) =>
+                  updateTarget(
+                    person.id,
+                    e.target.value
+                  )
+                }
+                className="w-full border rounded px-4 py-3 outline-none"
+              />
+
+            </div>
+
+            {/* ACTIONS */}
+            <div className="mt-5 flex gap-3">
+
+              <button
+                onClick={() =>
+                  deleteSalesPerson(person.id)
+                }
+                className="flex-1 bg-red-500 text-white py-2 rounded font-semibold hover:bg-red-600"
+              >
+                Delete
+              </button>
 
             </div>
 
