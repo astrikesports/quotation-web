@@ -105,7 +105,178 @@ export default function Dashboard({
     });
   
     return total;
-  };  
+  };
+
+  // =========================
+  // ACTION FUNCTIONS START
+  // =========================
+  
+  // VIEW QUOTATION
+  const handleViewQuotation = (
+    id
+  ) => {
+  
+    onSelect(id);
+  
+  };
+  
+  // DOWNLOAD PDF
+  const handleDownloadPDF = async (
+    quote
+  ) => {
+  
+    localStorage.setItem(
+      "selectedQuotationId",
+      quote.id
+    );
+  
+    navigate("/quotation");
+  
+  };
+  
+  // DELETE QUOTATION
+  const handleDeleteQuotation =
+    async (id) => {
+  
+      const confirmDelete =
+        window.confirm(
+          "Delete quotation?"
+        );
+  
+      if (!confirmDelete)
+        return;
+  
+      await supabase
+        .from("quotations")
+        .delete()
+        .eq("id", id);
+  
+      fetchData();
+    };
+  
+  // CONFIRM QUOTATION
+  const handleConfirmQuotation =
+    async (quote) => {
+  
+      try {
+  
+        // ALREADY CONFIRMED
+        if (
+          quote.status ===
+          "confirmed"
+        ) {
+  
+          alert(
+            "Already confirmed"
+          );
+  
+          return;
+        }
+  
+        // GET PRODUCTS
+        const {
+          data: products
+        } = await supabase
+          .from("products")
+          .select("*");
+  
+        // UPDATE STOCK
+        for (const item of quote.items ||
+          []) {
+  
+          const product =
+            products.find(
+              (p) =>
+                p.product_name ===
+                item.desc
+            );
+  
+          if (!product)
+            continue;
+  
+          let variants =
+            typeof product.variants ===
+            "string"
+  
+              ? JSON.parse(
+                  product.variants
+                )
+  
+              : product.variants ||
+                {};
+  
+          // PARSE SIZE
+          item.size
+            ?.split(",")
+            .forEach((s) => {
+  
+              const [
+                size,
+                qty,
+              ] = s
+                .trim()
+                .split("-");
+  
+              const requiredQty =
+                Number(qty || 0);
+  
+              if (
+                variants[size]
+              ) {
+  
+                variants[
+                  size
+                ].qty =
+                  Number(
+                    variants[
+                      size
+                    ].qty || 0
+                  ) -
+                  requiredQty;
+              }
+            });
+  
+          // UPDATE PRODUCT
+          await supabase
+            .from("products")
+            .update({
+              variants,
+            })
+            .eq(
+              "id",
+              product.id
+            );
+        }
+  
+        // UPDATE STATUS
+        await supabase
+          .from("quotations")
+          .update({
+            status:
+              "confirmed",
+          })
+          .eq("id", quote.id);
+  
+        fetchData();
+  
+        alert(
+          "Quotation confirmed & inventory updated"
+        );
+  
+      } catch (err) {
+  
+        console.log(err);
+  
+        alert(
+          "Confirmation failed"
+        );
+  
+      }
+    };
+  
+  // =========================
+  // ACTION FUNCTIONS END
+  // =========================
 
   return (
 
@@ -530,55 +701,145 @@ export default function Dashboard({
                       </td>
                       
                       {/* STATUS */}
+                      // =========================
+                      // STATUS UI START
+                      // =========================
+                      
                       <td className="p-5">
-          
-                        <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-2xl font-bold text-sm">
-          
-                          <div className="w-2 h-2 rounded-full bg-green-500" />
-          
-                          Booked
-          
+                      
+                        <div
+                          className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl font-bold text-sm ${
+                            quote.status ===
+                            "confirmed"
+                      
+                              ? "bg-green-100 text-green-700"
+                      
+                              : quote.status ===
+                                "cancelled"
+                      
+                              ? "bg-red-100 text-red-700"
+                      
+                              : "bg-yellow-100 text-yellow-700"
+                          }`}
+                        >
+                      
+                          <div
+                            className={`w-2 h-2 rounded-full ${
+                              quote.status ===
+                              "confirmed"
+                      
+                                ? "bg-green-500"
+                      
+                                : quote.status ===
+                                  "cancelled"
+                      
+                                ? "bg-red-500"
+                      
+                                : "bg-yellow-500"
+                            }`}
+                          />
+                      
+                          {quote.status ===
+                          "confirmed"
+                      
+                            ? "Confirmed"
+                      
+                            : quote.status ===
+                              "cancelled"
+                      
+                            ? "Cancelled"
+                      
+                            : "Pending"}
+                      
                         </div>
-          
+                      
                       </td>
+                      
+                      // =========================
+                      // STATUS UI END
+                      // =========================
           
                       {/* ACTIONS */}
+                      // =========================
+                      // ACTION BUTTONS START
+                      // =========================
+                      
                       <td className="p-5">
-          
+                      
                         <div className="flex items-center justify-center gap-3">
-          
+                      
                           {/* VIEW */}
                           <button
-                            onClick={() => onSelect(q.id)}
+                            onClick={() =>
+                              handleViewQuotation(
+                                quote.id
+                              )
+                            }
                             className="w-11 h-11 rounded-2xl bg-black text-white flex items-center justify-center text-lg shadow-lg hover:scale-105 transition-all"
+                            title="View"
                           >
-                            ➜]
+                            👁
                           </button>
-          
-                          {/* SAVE */}
+                      
+                          {/* DOWNLOAD */}
                           <button
-                            className="w-11 h-11 rounded-2xl bg-green-500 text-white flex items-center justify-center text-lg shadow-lg hover:scale-105 transition-all"
+                            onClick={() =>
+                              handleDownloadPDF(
+                                quote
+                              )
+                            }
+                            className="w-11 h-11 rounded-2xl bg-blue-500 text-white flex items-center justify-center text-lg shadow-lg hover:scale-105 transition-all"
+                            title="Download"
                           >
-                           📥
+                            📥
                           </button>
-          
+                      
                           {/* DELETE */}
                           <button
+                            onClick={() =>
+                              handleDeleteQuotation(
+                                quote.id
+                              )
+                            }
                             className="w-11 h-11 rounded-2xl bg-red-500 text-white flex items-center justify-center text-lg shadow-lg hover:scale-105 transition-all"
+                            title="Delete"
                           >
-                            X
+                            🗑
                           </button>
-
-                          {/* COMPLETE */}
+                      
+                          {/* CONFIRM */}
                           <button
-                            className="w-11 h-11 rounded-2xl bg-green-600 text-white flex items-center justify-center text-lg shadow-lg hover:scale-105 transition-all"
+                            onClick={() =>
+                              handleConfirmQuotation(
+                                quote
+                              )
+                            }
+                      
+                            disabled={
+                              quote.status ===
+                              "confirmed"
+                            }
+                      
+                            className={`w-11 h-11 rounded-2xl text-white flex items-center justify-center text-lg shadow-lg transition-all ${
+                              quote.status ===
+                              "confirmed"
+                      
+                                ? "bg-gray-400 cursor-not-allowed"
+                      
+                                : "bg-green-600 hover:scale-105"
+                            }`}
+                            title="Confirm"
                           >
                             ✓
                           </button>
-          
+                      
                         </div>
-          
+                      
                       </td>
+                      
+                      // =========================
+                      // ACTION BUTTONS END
+                      // =========================
           
                     </tr>
           
