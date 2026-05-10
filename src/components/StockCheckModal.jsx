@@ -1,17 +1,23 @@
-// src/components/StockCheckModal.jsx
+// =========================
+// STOCK CHECK MODAL START
+// =========================
 
 import React from "react";
 
 function parseSizeString(sizeStr = "") {
+
   const result = {};
 
   sizeStr.split(",").forEach((item) => {
+
     const [size, qty] =
       item.trim().split("-");
 
     if (size && qty) {
+
       result[size.trim()] =
         Number(qty.trim());
+
     }
   });
 
@@ -23,13 +29,16 @@ export default function StockCheckModal({
   onClose,
   quotationItems = [],
   products = [],
-  onConfirm,
+  quotations = [],
+  currentQuotationId = null,
 }) {
 
   if (!open) return null;
 
   return (
+
     <div style={overlayStyle}>
+
       <div style={modalStyle}>
 
         {/* HEADER */}
@@ -37,24 +46,12 @@ export default function StockCheckModal({
 
           <div>
 
-            <h2
-              style={{
-                margin: 0,
-                fontSize: "28px",
-                fontWeight: "900",
-              }}
-            >
+            <h2 style={titleStyle}>
               📦 Inventory Check
             </h2>
 
-            <p
-              style={{
-                margin: "6px 0 0",
-                color: "#666",
-                fontSize: "14px",
-              }}
-            >
-              Current stock vs quotation quantity
+            <p style={subTitleStyle}>
+              Live stock + reserved stock
             </p>
 
           </div>
@@ -80,20 +77,9 @@ export default function StockCheckModal({
         {/* TABLE */}
         {quotationItems.length > 0 && (
 
-          <div
-            style={{
-              overflowX: "auto",
-              marginTop: "25px",
-            }}
-          >
+          <div style={tableWrapper}>
 
-            <table
-              style={{
-                width: "100%",
-                borderCollapse:
-                  "collapse",
-              }}
-            >
+            <table style={tableStyle}>
 
               <thead>
 
@@ -108,15 +94,19 @@ export default function StockCheckModal({
                   </th>
 
                   <th style={th}>
-                    Required
+                    Stock
                   </th>
 
                   <th style={th}>
-                    Current Stock
+                    Reserved
                   </th>
 
                   <th style={th}>
-                    Remaining
+                    Your Qty
+                  </th>
+
+                  <th style={th}>
+                    Free
                   </th>
 
                   <th style={th}>
@@ -181,6 +171,7 @@ export default function StockCheckModal({
                         qty,
                       ]) => {
 
+                        // CURRENT STOCK
                         const currentQty =
                           Number(
                             variants?.[
@@ -188,91 +179,282 @@ export default function StockCheckModal({
                             ]?.qty || 0
                           );
 
-                        const remaining =
-                          currentQty -
-                          qty;
+                        // RESERVED
+                        let reservedQty = 0;
 
-                        const isOk =
-                          remaining >= 0;
+                        const reservedBy =
+                          [];
+
+                        quotations.forEach(
+                          (q) => {
+
+                            // SKIP CURRENT
+                            if (
+                              q.id ===
+                              currentQuotationId
+                            )
+                              return;
+
+                            // ONLY PENDING
+                            if (
+                              q.status !==
+                              "pending"
+                            )
+                              return;
+
+                            (
+                              q.items || []
+                            ).forEach(
+                              (
+                                qItem
+                              ) => {
+
+                                if (
+                                  qItem.desc !==
+                                  item.desc
+                                )
+                                  return;
+
+                                const qSizes =
+                                  parseSizeString(
+                                    qItem.size
+                                  );
+
+                                const reserved =
+                                  Number(
+                                    qSizes[
+                                      size
+                                    ] || 0
+                                  );
+
+                                if (
+                                  reserved >
+                                  0
+                                ) {
+
+                                  reservedQty +=
+                                    reserved;
+
+                                  reservedBy.push(
+                                    {
+                                      salesPerson:
+                                        q.sales_person,
+
+                                      party:
+                                        q.party,
+
+                                      qty:
+                                        reserved,
+                                    }
+                                  );
+                                }
+                              }
+                            );
+                          }
+                        );
+
+                        // FREE STOCK
+                        const freeQty =
+                          currentQty -
+                          reservedQty;
+
+                        // STATUS
+                        const canProceed =
+                          freeQty >= qty;
 
                         return (
 
-                          <tr
+                          <React.Fragment
                             key={`${index}-${size}`}
                           >
 
-                            <td style={td}>
-                              {item.desc}
-                            </td>
+                            {/* MAIN ROW */}
+                            <tr>
 
-                            <td style={td}>
-                              {size}
-                            </td>
+                              <td style={td}>
+                                {item.desc}
+                              </td>
 
-                            <td style={td}>
-                              {qty}
-                            </td>
+                              <td style={td}>
+                                {size}
+                              </td>
 
-                            <td style={td}>
-                              {
-                                currentQty
-                              }
-                            </td>
+                              <td style={td}>
+                                {
+                                  currentQty
+                                }
+                              </td>
 
-                            <td
-                              style={{
-                                ...td,
-                                color:
-                                  isOk
-                                    ? "#16a34a"
-                                    : "#dc2626",
+                              <td style={td}>
+                                {
+                                  reservedQty
+                                }
+                              </td>
 
-                                fontWeight:
-                                  "700",
-                              }}
-                            >
-                              {
-                                remaining
-                              }
-                            </td>
+                              <td style={td}>
+                                {qty}
+                              </td>
 
-                            <td style={td}>
-
-                              <span
+                              <td
                                 style={{
-                                  background:
-                                    isOk
-                                      ? "#dcfce7"
-                                      : "#fee2e2",
-
+                                  ...td,
                                   color:
-                                    isOk
-                                      ? "#166534"
-                                      : "#991b1b",
-
-                                  padding:
-                                    "6px 12px",
-
-                                  borderRadius:
-                                    "999px",
-
-                                  fontSize:
-                                    "12px",
+                                    freeQty >=
+                                    qty
+                                      ? "#16a34a"
+                                      : "#dc2626",
 
                                   fontWeight:
-                                    "800",
+                                    "700",
                                 }}
                               >
+                                {
+                                  freeQty
+                                }
+                              </td>
 
-                                {isOk
-                                  ? "OK"
-                                  : "LOW"}
+                              <td style={td}>
 
-                              </span>
+                                <span
+                                  style={{
+                                    background:
+                                      canProceed
+                                        ? "#dcfce7"
+                                        : "#fee2e2",
 
-                            </td>
+                                    color:
+                                      canProceed
+                                        ? "#166534"
+                                        : "#991b1b",
 
-                          </tr>
+                                    padding:
+                                      "6px 12px",
+
+                                    borderRadius:
+                                      "999px",
+
+                                    fontSize:
+                                      "12px",
+
+                                    fontWeight:
+                                      "800",
+                                  }}
+                                >
+
+                                  {canProceed
+                                    ? "OK"
+                                    : "LOW"}
+
+                                </span>
+
+                              </td>
+
+                            </tr>
+
+                            {/* RESERVED INFO */}
+                            {reservedBy.length >
+                              0 && (
+
+                              <tr>
+
+                                <td
+                                  colSpan="7"
+                                  style={{
+                                    ...td,
+                                    background:
+                                      "#fff7ed",
+                                  }}
+                                >
+
+                                  <div
+                                    style={{
+                                      fontWeight:
+                                        "800",
+
+                                      color:
+                                        "#c2410c",
+
+                                      marginBottom:
+                                        "10px",
+                                    }}
+                                  >
+                                    ⚠ Already Reserved
+                                  </div>
+
+                                  <div
+                                    style={{
+                                      display:
+                                        "flex",
+
+                                      flexDirection:
+                                        "column",
+
+                                      gap: "8px",
+                                    }}
+                                  >
+
+                                    {reservedBy.map(
+                                      (
+                                        r,
+                                        i
+                                      ) => (
+
+                                        <div
+                                          key={
+                                            i
+                                          }
+                                          style={{
+                                            background:
+                                              "#fff",
+
+                                            border:
+                                              "1px solid #fed7aa",
+
+                                            padding:
+                                              "10px 14px",
+
+                                            borderRadius:
+                                              "12px",
+
+                                            fontSize:
+                                              "14px",
+
+                                            fontWeight:
+                                              "600",
+                                          }}
+                                        >
+
+                                          👨‍💼{" "}
+                                          {
+                                            r.salesPerson
+                                          }
+
+                                          {" "}
+                                          • 🏢{" "}
+                                          {
+                                            r.party
+                                          }
+
+                                          {" "}
+                                          • 📦{" "}
+                                          {
+                                            r.qty
+                                          }{" "}
+                                          PCS
+
+                                        </div>
+                                      )
+                                    )}
+
+                                  </div>
+
+                                </td>
+
+                              </tr>
+
+                            )}
+
+                          </React.Fragment>
                         );
                       }
                     );
@@ -287,43 +469,15 @@ export default function StockCheckModal({
 
         )}
 
-        {/* FOOTER */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent:
-              "flex-end",
-
-            gap: "12px",
-
-            marginTop: "25px",
-          }}
-        >
-
-          <button
-            onClick={onClose}
-            style={cancelBtn}
-          >
-            Close
-          </button>
-
-          {onConfirm && (
-
-            <button
-              onClick={onConfirm}
-              style={confirmBtn}
-            >
-              Confirm & Minus Stock
-            </button>
-
-          )}
-
-        </div>
-
       </div>
+
     </div>
   );
 }
+
+// =========================
+// STYLES START
+// =========================
 
 const overlayStyle = {
   position: "fixed",
@@ -339,7 +493,7 @@ const overlayStyle = {
 
 const modalStyle = {
   width: "100%",
-  maxWidth: "1200px",
+  maxWidth: "1300px",
   maxHeight: "90vh",
   overflowY: "auto",
   background: "#fff",
@@ -355,6 +509,18 @@ const headerStyle = {
   alignItems: "center",
 };
 
+const titleStyle = {
+  margin: 0,
+  fontSize: "28px",
+  fontWeight: "900",
+};
+
+const subTitleStyle = {
+  margin: "6px 0 0",
+  color: "#666",
+  fontSize: "14px",
+};
+
 const closeBtn = {
   width: "45px",
   height: "45px",
@@ -364,6 +530,16 @@ const closeBtn = {
   cursor: "pointer",
   fontSize: "18px",
   fontWeight: "700",
+};
+
+const tableWrapper = {
+  overflowX: "auto",
+  marginTop: "25px",
+};
+
+const tableStyle = {
+  width: "100%",
+  borderCollapse: "collapse",
 };
 
 const th = {
@@ -384,25 +560,6 @@ const td = {
   fontWeight: "600",
 };
 
-const cancelBtn = {
-  border: "none",
-  background: "#f3f4f6",
-  padding: "14px 22px",
-  borderRadius: "14px",
-  cursor: "pointer",
-  fontWeight: "700",
-};
-
-const confirmBtn = {
-  border: "none",
-  background: "#111827",
-  color: "#fff",
-  padding: "14px 22px",
-  borderRadius: "14px",
-  cursor: "pointer",
-  fontWeight: "800",
-};
-
 const emptyBox = {
   marginTop: "25px",
   background: "#fee2e2",
@@ -412,3 +569,12 @@ const emptyBox = {
   fontWeight: "700",
   textAlign: "center",
 };
+
+// =========================
+// STYLES END
+// =========================
+
+
+// =========================
+// STOCK CHECK MODAL END
+// =========================
