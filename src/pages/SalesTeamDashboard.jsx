@@ -127,14 +127,27 @@ export default function Dashboard() {
 
           </div>
 
-          <button
-            onClick={() =>
-              navigate("/quotation")
-            }
-            className="h-14 px-8 rounded-2xl bg-green-500 text-white font-black text-lg hover:scale-[1.02] transition-all duration-200 shadow-2xl"
-          >
-            + New Quotation
-          </button>
+          {/* NEW QUOTATION */}
+          {selectedPerson && (
+
+            <button
+              onClick={() => {
+
+                // SAVE SALES PERSON
+                localStorage.setItem(
+                  "selectedSalesPerson",
+                  selectedPerson.name
+                );
+
+                // REDIRECT
+                navigate("/quotation");
+              }}
+              className="h-14 px-8 rounded-2xl bg-green-500 text-white font-black text-lg hover:scale-[1.02] transition-all duration-200 shadow-2xl"
+            >
+              + New Quotation
+            </button>
+
+          )}
 
         </div>
 
