@@ -198,7 +198,23 @@ import {
   setLoading(false);
   }
   };
-
+    
+  /* LOAD SELECT */
+  useEffect(() => {
+    const quotationId =
+      localStorage.getItem(
+        "selectedQuotationId"
+      );
+  
+    if (quotationId) {
+  
+      handleLoadSelect(
+        quotationId
+      );
+  
+    }
+  
+  }, []);
 
   const handleNewQuotation = () => {
   setLoading(true);
