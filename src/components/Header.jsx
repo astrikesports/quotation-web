@@ -33,6 +33,7 @@ import {
   const [showDistrict, setShowDistrict] = useState(false);
   const [products, setProducts] = useState([]);
   const [quotationItems, setQuotationItems] = useState([]);
+  const [allQuotations, setAllQuotations] = useState([]);
     
   const handleSave = async () => {
   try {
@@ -262,6 +263,31 @@ import {
   // FETCH QUOTATION ITEMS END
   // =========================
 
+  // =========================
+  // FETCH ALL QUOTATIONS START
+  // =========================
+  
+  const fetchAllQuotations =
+    async () => {
+  
+      const { data, error } =
+        await supabase
+          .from("quotations")
+          .select("*");
+  
+      if (!error) {
+  
+        setAllQuotations(
+          data || []
+        );
+  
+      }
+  };
+  
+  // =========================
+  // FETCH ALL QUOTATIONS END
+  // =========================
+
   /* HANDLE DELETE */
   const handleDelete = async (quotation) => {
   return new Promise((resolve, reject) => {
@@ -296,6 +322,7 @@ import {
   useEffect(() => {
 
     fetchProducts();
+    fetchAllQuotations();
   
   }, []);
 
@@ -400,10 +427,20 @@ import {
       onClose={() =>
         setShowStock(false)
       }
+    
       quotationItems={
         quotationItems
       }
+    
       products={products}
+    
+      quotations={
+        allQuotations
+      }
+    
+      currentQuotationId={
+        pdfData?.id
+      }
     />
   )}
     
