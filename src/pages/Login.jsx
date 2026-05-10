@@ -40,8 +40,8 @@ export default function Login() {
 
         .eq("password", password)
 
-        .single();
-
+        .maybeSingle();
+      
       // INVALID LOGIN
       if (error || !data) {
 
