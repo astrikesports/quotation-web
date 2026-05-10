@@ -259,15 +259,15 @@ import {
     onClick={() =>
       navigate("/dashboard")
     }
-    className="px-4 py-2 text-sm rounded-xl bg-white/15 backdrop-blur-xl border border-white/20 text-white font-semibold hover:bg-white/25 transition-all duration-200 shadow-lg"
-  >
-    🪟 Dashboard
+  className="h-11 px-5 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10 text-white font-bold hover:bg-white/20 transition-all duration-300 shadow-lg hover:scale-[1.03]"  >
+    
+    📊 Dashboard
   </button>
 
   <button
   onClick={() => setShowDistrict(true)}
-  className="px-4 py-2 text-sm rounded bg-purple-600 text-white font-semibold"
->
+  className="h-11 px-5 rounded-2xl bg-purple-500/20 backdrop-blur-xl border border-purple-400/20 text-white font-bold hover:bg-purple-500/30 transition-all duration-300 shadow-lg hover:scale-[1.03]" >
+    
   📍 Check District
   </button>
 
@@ -297,20 +297,19 @@ import {
 
   <button
   onClick={() => setShowLoad(true)}
-  className="px-3 py-2 text-sm rounded bg-blue-900/40 font-semibold"
-  >
+  className="h-11 px-5 rounded-2xl bg-blue-500/20 backdrop-blur-xl border border-blue-400/20 text-white font-bold hover:bg-blue-500/30 transition-all duration-300 shadow-lg hover:scale-[1.03]"  >
+    
   Load Old Quotation
   </button>
 
 
   <button
   onClick={handleSave}
-  className="px-4 py-2 text-sm rounded bg-blue-900/40 font-semibold"
-  >
+  className="h-11 px-5 rounded-2xl bg-green-500 text-black font-black hover:bg-green-400 transition-all duration-300 shadow-2xl hover:scale-[1.03]"  >
+    
   💾 Save & Download PDF
   </button>
 
-  </div>
   </div>
   </div>
   </div>
