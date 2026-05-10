@@ -249,6 +249,8 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   setLoadingText={setLoadingText}
   /* 🔥 ADD THESE */
   setConfirm={setConfirm}
+  // ADD THIS
+  net={net}
   />
 
   <div className="flex flex-1 overflow-hidden">
