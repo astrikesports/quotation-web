@@ -1,25 +1,41 @@
 import { useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 
+import { supabase } from "../supabase";
+
 export default function Login() {
+
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
+
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
+
     e.preventDefault();
 
-    // DEMO LOGIN
-    if (email === "admin@astrike.com" && password === "123456") {
-      navigate("/dashboard");
-    } else {
-      alert("Invalid Email or Password");
+    // LOGIN WITH SUPABASE
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+
+      alert(error.message);
+
+      return;
     }
+
+    navigate("/dashboard");
   };
 
   return (
+
     <div className="h-screen flex items-center justify-center bg-gray-100">
+
       <div className="bg-white w-[420px] rounded shadow p-8">
 
         {/* TITLE */}
@@ -32,6 +48,7 @@ export default function Login() {
 
           {/* EMAIL */}
           <div className="mb-4">
+
             <label className="block mb-2 font-semibold">
               Email
             </label>
@@ -44,10 +61,12 @@ export default function Login() {
               className="w-full border rounded px-4 py-3 outline-none focus:border-green-600"
               required
             />
+
           </div>
 
           {/* PASSWORD */}
           <div className="mb-5">
+
             <label className="block mb-2 font-semibold">
               Password
             </label>
@@ -60,6 +79,7 @@ export default function Login() {
               className="w-full border rounded px-4 py-3 outline-none focus:border-green-600"
               required
             />
+
           </div>
 
           {/* LOGIN BUTTON */}
@@ -78,6 +98,7 @@ export default function Login() {
         </p>
 
       </div>
+
     </div>
   );
 }
