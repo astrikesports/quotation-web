@@ -79,7 +79,7 @@ export default function LoadQuotationModal({
   }, [search]);
 
   return (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
       
         <div className="bg-[#f4f6f8] w-full max-w-5xl h-[90vh] rounded-[36px] shadow-2xl overflow-hidden flex flex-col">
       
@@ -177,7 +177,7 @@ export default function LoadQuotationModal({
                           </p>
       
                           <h3 className="text-3xl font-black mt-2">
-                            {q.quotation_no || "N/A"}
+                            {q.quotationNo || "N/A"}
                           </h3>
       
                           <p className="text-gray-500 mt-2 text-lg font-medium">
@@ -199,7 +199,7 @@ export default function LoadQuotationModal({
                           </p>
       
                           <h4 className="text-xl font-black mt-2">
-                            {q.salesPerson || q.sales_person || "-"}
+                            {q.salesPerson || "-"}
                           </h4>
       
                         </div>
@@ -214,9 +214,7 @@ export default function LoadQuotationModal({
                           <h4 className="text-2xl font-black text-black mt-2">
                             ₹{
                               Number(
-                                q.netAmount ||
-                                q.net_amount ||
-                                0
+                                q.netAmount || 0
                               ).toLocaleString()
                             }
                           </h4>
@@ -232,10 +230,8 @@ export default function LoadQuotationModal({
       
                           <h4 className="text-lg font-black mt-2">
       
-                            {q.created_at
-      
-                              ? formatDate(q.created_at)
-      
+                            {q.createdAt
+                              ? formatDate(q.createdAt)
                               : "-"}
       
                           </h4>
@@ -251,10 +247,8 @@ export default function LoadQuotationModal({
       
                           <h4 className="text-lg font-black mt-2">
       
-                            {q.updated_at
-      
-                              ? formatDate(q.updated_at)
-      
+                            {q.updatedAt
+                              ? formatDate(q.updatedAt)
                               : "-"}
       
                           </h4>
@@ -273,7 +267,7 @@ export default function LoadQuotationModal({
                         onClick={() => onSelect(q.id)}
                         className="w-14 h-14 rounded-2xl bg-blue-500 text-white text-xl shadow-xl hover:scale-105 transition-all"
                       >
-                        ✏️
+                        ➜]
                       </button>
       
                       {/* DELETE */}
@@ -281,14 +275,14 @@ export default function LoadQuotationModal({
                         onClick={() => handleDeleteClick(q)}
                         className="w-14 h-14 rounded-2xl bg-red-500 text-white text-xl shadow-xl hover:scale-105 transition-all"
                       >
-                        🗑
+                          X
                       </button>
       
                       {/* SAVE */}
                       <button
                         className="w-14 h-14 rounded-2xl bg-green-500 text-white text-xl shadow-xl hover:scale-105 transition-all"
                       >
-                        💾
+                        🡻
                       </button>
       
                     </div>
