@@ -3,15 +3,19 @@
 import React, { useState } from "react";
 
 function parseSizeString(sizeStr = "") {
+
   const result = {};
 
   sizeStr.split(",").forEach((item) => {
+
     const [size, qty] =
       item.trim().split("-");
 
     if (size && qty) {
+
       result[size.trim()] =
         Number(qty.trim());
+
     }
   });
 
@@ -33,6 +37,7 @@ export default function StockCheckModal({
   if (!open) return null;
 
   return (
+
     <div style={overlayStyle}>
 
       <div style={modalStyle}>
@@ -174,6 +179,7 @@ export default function StockCheckModal({
                         const rowKey =
                           `${index}-${size}`;
 
+                        // CURRENT STOCK
                         const currentQty =
                           Number(
                             variants?.[
@@ -181,6 +187,7 @@ export default function StockCheckModal({
                             ]?.qty || 0
                           );
 
+                        // RESERVED
                         let reservedQty = 0;
 
                         const reservedBy =
@@ -189,12 +196,14 @@ export default function StockCheckModal({
                         quotations.forEach(
                           (q) => {
 
+                            // SKIP CURRENT
                             if (
                               q.id ===
                               currentQuotationId
                             )
                               return;
 
+                            // ONLY PENDING
                             if (
                               q.status !==
                               "pending"
@@ -252,153 +261,152 @@ export default function StockCheckModal({
                           }
                         );
 
+                        // FREE STOCK
                         const freeQty =
                           currentQty -
                           reservedQty;
 
+                        // STATUS
                         const canProceed =
                           freeQty >= qty;
 
                         return (
 
-                          <tr
+                          <React.Fragment
                             key={rowKey}
                           >
 
-                            {/* PRODUCT */}
-                            <td style={td}>
-                              {item.desc}
-                            </td>
+                            {/* MAIN ROW */}
+                            <tr>
 
-                            {/* SIZE */}
-                            <td style={td}>
-                              {size}
-                            </td>
+                              {/* PRODUCT */}
+                              <td style={td}>
+                                {item.desc}
+                              </td>
 
-                            {/* STOCK */}
-                            <td style={td}>
-                              {
-                                currentQty
-                              }
-                            </td>
+                              {/* SIZE */}
+                              <td style={td}>
+                                {size}
+                              </td>
 
-                            {/* RESERVED */}
-                            <td style={td}>
-
-                              <span
-                                style={{
-                                  background:
-                                    reservedQty ===
-                                    0
-                                      ? "#dcfce7"
-                                      : reservedQty <=
-                                        5
-                                      ? "#fef9c3"
-                                      : "#fee2e2",
-
-                                  color:
-                                    reservedQty ===
-                                    0
-                                      ? "#166534"
-                                      : reservedQty <=
-                                        5
-                                      ? "#854d0e"
-                                      : "#991b1b",
-
-                                  padding:
-                                    "8px 14px",
-
-                                  borderRadius:
-                                    "999px",
-
-                                  fontWeight:
-                                    "900",
-
-                                  fontSize:
-                                    "13px",
-                                }}
-                              >
-
+                              {/* STOCK */}
+                              <td style={td}>
                                 {
-                                  reservedQty
+                                  currentQty
                                 }
+                              </td>
 
-                              </span>
+                              {/* RESERVED */}
+                              <td style={td}>
 
-                            </td>
-
-                            {/* YOUR QTY */}
-                            <td style={td}>
-                              {qty}
-                            </td>
-
-                            {/* FREE */}
-                            <td
-                              style={{
-                                ...td,
-                                color:
-                                  canProceed
-                                    ? "#16a34a"
-                                    : "#dc2626",
-
-                                fontWeight:
-                                  "900",
-                              }}
-                            >
-                              {
-                                freeQty
-                              }
-                            </td>
-
-                            {/* STATUS */}
-                            <td style={td}>
-
-                              <span
-                                style={{
-                                  background:
-                                    canProceed
-                                      ? "#dcfce7"
-                                      : "#fee2e2",
-
-                                  color:
-                                    canProceed
-                                      ? "#166534"
-                                      : "#991b1b",
-
-                                  padding:
-                                    "8px 14px",
-
-                                  borderRadius:
-                                    "999px",
-
-                                  fontSize:
-                                    "12px",
-
-                                  fontWeight:
-                                    "900",
-                                }}
-                              >
-
-                                {canProceed
-                                  ? "AVAILABLE"
-                                  : "LOW"}
-
-                              </span>
-
-                            </td>
-
-                            {/* DETAILS */}
-                            <td style={td}>
-
-                              {reservedBy.length >
-                              0 ? (
-
-                                <div
+                                <span
                                   style={{
-                                    position:
-                                      "relative",
+                                    background:
+                                      reservedQty ===
+                                      0
+                                        ? "#dcfce7"
+                                        : reservedQty <=
+                                          5
+                                        ? "#fef9c3"
+                                        : "#fee2e2",
+
+                                    color:
+                                      reservedQty ===
+                                      0
+                                        ? "#166534"
+                                        : reservedQty <=
+                                          5
+                                        ? "#854d0e"
+                                        : "#991b1b",
+
+                                    padding:
+                                      "8px 14px",
+
+                                    borderRadius:
+                                      "999px",
+
+                                    fontWeight:
+                                      "900",
+
+                                    fontSize:
+                                      "13px",
                                   }}
                                 >
+
+                                  {
+                                    reservedQty
+                                  }
+
+                                </span>
+
+                              </td>
+
+                              {/* YOUR QTY */}
+                              <td style={td}>
+                                {qty}
+                              </td>
+
+                              {/* FREE */}
+                              <td
+                                style={{
+                                  ...td,
+
+                                  color:
+                                    canProceed
+                                      ? "#16a34a"
+                                      : "#dc2626",
+
+                                  fontWeight:
+                                    "900",
+                                }}
+                              >
+                                {
+                                  freeQty
+                                }
+                              </td>
+
+                              {/* STATUS */}
+                              <td style={td}>
+
+                                <span
+                                  style={{
+                                    background:
+                                      canProceed
+                                        ? "#dcfce7"
+                                        : "#fee2e2",
+
+                                    color:
+                                      canProceed
+                                        ? "#166534"
+                                        : "#991b1b",
+
+                                    padding:
+                                      "8px 14px",
+
+                                    borderRadius:
+                                      "999px",
+
+                                    fontSize:
+                                      "12px",
+
+                                    fontWeight:
+                                      "900",
+                                  }}
+                                >
+
+                                  {canProceed
+                                    ? "AVAILABLE"
+                                    : "LOW"}
+
+                                </span>
+
+                              </td>
+
+                              {/* DETAILS */}
+                              <td style={td}>
+
+                                {reservedBy.length >
+                                0 ? (
 
                                   <button
                                     onClick={() =>
@@ -414,16 +422,16 @@ export default function StockCheckModal({
                                         "none",
 
                                       background:
-                                        "#111827",
+                                        expandedRow ===
+                                        rowKey
+                                          ? "#dc2626"
+                                          : "#111827",
 
                                       color:
                                         "#fff",
 
-                                      width:
-                                        "42px",
-
-                                      height:
-                                        "42px",
+                                      padding:
+                                        "10px 16px",
 
                                       borderRadius:
                                         "12px",
@@ -435,153 +443,324 @@ export default function StockCheckModal({
                                         "900",
 
                                       fontSize:
+                                        "13px",
+
+                                      minWidth:
+                                        "80px",
+                                    }}
+                                  >
+
+                                    {expandedRow ===
+                                    rowKey
+                                      ? "Close"
+                                      : "View"}
+
+                                  </button>
+
+                                ) : (
+
+                                  <span
+                                    style={{
+                                      color:
+                                        "#9ca3af",
+
+                                      fontWeight:
+                                        "700",
+                                    }}
+                                  >
+                                    —
+                                  </span>
+
+                                )}
+
+                              </td>
+
+                            </tr>
+
+                            {/* EXPAND ROW */}
+                            {expandedRow ===
+                              rowKey && (
+
+                              <tr>
+
+                                <td
+                                  colSpan="8"
+                                  style={{
+                                    padding:
+                                      "0px 20px 20px",
+
+                                    background:
+                                      "#fff",
+
+                                    borderBottom:
+                                      "1px solid #e5e7eb",
+                                  }}
+                                >
+
+                                  <div
+                                    style={{
+                                      background:
+                                        "#f9fafb",
+
+                                      border:
+                                        "1px solid #e5e7eb",
+
+                                      borderRadius:
+                                        "20px",
+
+                                      padding:
                                         "18px",
                                     }}
                                   >
-                                    👁
-                                  </button>
 
-                                  {expandedRow ===
-                                    rowKey && (
-
+                                    {/* TOP */}
                                     <div
                                       style={{
-                                        position:
-                                          "absolute",
+                                        display:
+                                          "flex",
 
-                                        top:
-                                          "52px",
+                                        alignItems:
+                                          "center",
 
-                                        right: 0,
+                                        justifyContent:
+                                          "space-between",
 
-                                        width:
-                                          "320px",
+                                        marginBottom:
+                                          "18px",
 
-                                        background:
-                                          "#fff",
+                                        flexWrap:
+                                          "wrap",
 
-                                        border:
-                                          "1px solid #e5e7eb",
-
-                                        borderRadius:
-                                          "20px",
-
-                                        boxShadow:
-                                          "0 20px 40px rgba(0,0,0,0.15)",
-
-                                        padding:
-                                          "14px",
-
-                                        zIndex:
-                                          9999,
+                                        gap: "12px",
                                       }}
                                     >
 
-                                      <div
-                                        style={{
-                                          fontWeight:
-                                            "900",
+                                      <div>
 
-                                          fontSize:
-                                            "16px",
+                                        <div
+                                          style={{
+                                            fontSize:
+                                              "18px",
 
-                                          marginBottom:
-                                            "12px",
-                                        }}
-                                      >
-                                        Reserved
-                                        By
+                                            fontWeight:
+                                              "900",
+
+                                            color:
+                                              "#111827",
+                                          }}
+                                        >
+                                          Reserved
+                                          Details
+                                        </div>
+
+                                        <div
+                                          style={{
+                                            marginTop:
+                                              "4px",
+
+                                            color:
+                                              "#6b7280",
+
+                                            fontSize:
+                                              "14px",
+
+                                            fontWeight:
+                                              "500",
+                                          }}
+                                        >
+                                          Current
+                                          booked
+                                          quotations
+                                        </div>
+
                                       </div>
 
                                       <div
                                         style={{
-                                          display:
-                                            "grid",
+                                          background:
+                                            "#fee2e2",
 
-                                          gap: "10px",
+                                          color:
+                                            "#991b1b",
+
+                                          padding:
+                                            "10px 14px",
+
+                                          borderRadius:
+                                            "12px",
+
+                                          fontWeight:
+                                            "900",
+
+                                          fontSize:
+                                            "13px",
                                         }}
                                       >
 
-                                        {reservedBy.map(
-                                          (
-                                            r,
-                                            i
-                                          ) => (
+                                        Reserved :
+                                        {" "}
+                                        {
+                                          reservedQty
+                                        }
 
+                                      </div>
+
+                                    </div>
+
+                                    {/* LIST */}
+                                    <div
+                                      style={{
+                                        display:
+                                          "grid",
+
+                                        gridTemplateColumns:
+                                          "repeat(auto-fit,minmax(260px,1fr))",
+
+                                        gap: "14px",
+                                      }}
+                                    >
+
+                                      {reservedBy.map(
+                                        (
+                                          r,
+                                          i
+                                        ) => (
+
+                                          <div
+                                            key={
+                                              i
+                                            }
+                                            style={{
+                                              background:
+                                                "#fff",
+
+                                              border:
+                                                "1px solid #e5e7eb",
+
+                                              borderRadius:
+                                                "18px",
+
+                                              padding:
+                                                "16px",
+                                            }}
+                                          >
+
+                                            {/* USER */}
                                             <div
-                                              key={
-                                                i
-                                              }
                                               style={{
-                                                border:
-                                                  "1px solid #f3f4f6",
+                                                display:
+                                                  "flex",
 
-                                                borderRadius:
-                                                  "14px",
+                                                alignItems:
+                                                  "center",
 
-                                                padding:
-                                                  "12px",
-
-                                                background:
-                                                  "#fafafa",
+                                                gap: "12px",
                                               }}
                                             >
 
                                               <div
                                                 style={{
-                                                  fontWeight:
-                                                    "800",
+                                                  width:
+                                                    "48px",
 
-                                                  fontSize:
-                                                    "15px",
-                                                }}
-                                              >
-                                                👨{" "}
-                                                {
-                                                  r.salesPerson
-                                                }
-                                              </div>
+                                                  height:
+                                                    "48px",
 
-                                              <div
-                                                style={{
-                                                  marginTop:
-                                                    "5px",
-
-                                                  color:
-                                                    "#6b7280",
-
-                                                  fontSize:
+                                                  borderRadius:
                                                     "14px",
 
-                                                  fontWeight:
-                                                    "600",
+                                                  background:
+                                                    "#f3f4f6",
+
+                                                  display:
+                                                    "flex",
+
+                                                  alignItems:
+                                                    "center",
+
+                                                  justifyContent:
+                                                    "center",
+
+                                                  fontSize:
+                                                    "20px",
                                                 }}
                                               >
-                                                🏢{" "}
-                                                {
-                                                  r.party
-                                                }
+                                                👨‍💼
                                               </div>
+
+                                              <div>
+
+                                                <div
+                                                  style={{
+                                                    fontWeight:
+                                                      "900",
+
+                                                    fontSize:
+                                                      "16px",
+
+                                                    color:
+                                                      "#111827",
+                                                  }}
+                                                >
+                                                  {
+                                                    r.salesPerson
+                                                  }
+                                                </div>
+
+                                                <div
+                                                  style={{
+                                                    marginTop:
+                                                      "4px",
+
+                                                    color:
+                                                      "#6b7280",
+
+                                                    fontWeight:
+                                                      "600",
+
+                                                    fontSize:
+                                                      "14px",
+                                                  }}
+                                                >
+                                                  🏢{" "}
+                                                  {
+                                                    r.party
+                                                  }
+                                                </div>
+
+                                              </div>
+
+                                            </div>
+
+                                            {/* QTY */}
+                                            <div
+                                              style={{
+                                                marginTop:
+                                                  "16px",
+                                              }}
+                                            >
 
                                               <div
                                                 style={{
-                                                  marginTop:
-                                                    "8px",
-
                                                   display:
-                                                    "inline-block",
+                                                    "inline-flex",
+
+                                                  alignItems:
+                                                    "center",
+
+                                                  gap: "8px",
 
                                                   background:
-                                                    "#f97316",
+                                                    "#111827",
 
                                                   color:
                                                     "#fff",
 
                                                   padding:
-                                                    "8px 12px",
+                                                    "10px 14px",
 
                                                   borderRadius:
-                                                    "10px",
+                                                    "12px",
 
                                                   fontWeight:
                                                     "900",
@@ -590,44 +769,31 @@ export default function StockCheckModal({
                                                     "13px",
                                                 }}
                                               >
+
                                                 📦{" "}
                                                 {
                                                   r.qty
-                                                }{" "}
-                                                PCS
+                                                }
+
                                               </div>
 
                                             </div>
-                                          )
-                                        )}
 
-                                      </div>
+                                          </div>
+                                        )
+                                      )}
 
                                     </div>
 
-                                  )}
+                                  </div>
 
-                                </div>
+                                </td>
 
-                              ) : (
+                              </tr>
 
-                                <span
-                                  style={{
-                                    color:
-                                      "#9ca3af",
+                            )}
 
-                                    fontWeight:
-                                      "700",
-                                  }}
-                                >
-                                  —
-                                </span>
-
-                              )}
-
-                            </td>
-
-                          </tr>
+                          </React.Fragment>
                         );
                       }
                     );
@@ -647,6 +813,10 @@ export default function StockCheckModal({
     </div>
   );
 }
+
+// =========================
+// STYLES START
+// =========================
 
 const overlayStyle = {
   position: "fixed",
@@ -743,3 +913,7 @@ const emptyBox = {
   fontWeight: "700",
   textAlign: "center",
 };
+
+// =========================
+// STYLES END
+// =========================
