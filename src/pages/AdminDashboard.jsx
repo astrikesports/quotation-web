@@ -378,34 +378,49 @@ export default function AdminDashboard() {
           
             </div>
           
-            {/* ACHIEVED */}
-            <div className="bg-gradient-to-r from-green-400 to-green-500 rounded-3xl p-5 shadow-2xl">
-          
+            {/* REMAINING */}
+            <div className="bg-gradient-to-r from-red-400 to-red-500 rounded-3xl p-5 shadow-2xl">
+            
               <div className="flex items-center justify-between">
-          
+            
                 <div>
-          
+            
                   <p className="text-black/70 text-xs font-black tracking-[2px]">
-                    ACHIEVED SALES
+                    REMAINING TARGET
                   </p>
-          
+            
                   <h2 className="text-4xl font-black mt-2 text-black">
-          
+            
                     ₹{
-                      getTotalSales()
-                        .toLocaleString()
+            
+                      (
+                        salesPersons.reduce(
+                          (acc, person) =>
+            
+                            acc +
+                            Number(
+                              person.target_amount || 0
+                            ),
+            
+                          0
+                        ) -
+            
+                        getTotalSales()
+            
+                      ).toLocaleString()
+            
                     }
-          
+            
                   </h2>
-          
+            
                 </div>
-          
+            
                 <div className="w-14 h-14 rounded-2xl bg-black/10 flex items-center justify-center text-2xl">
-                  📈
+                  🔥
                 </div>
-          
+            
               </div>
-          
+            
             </div>
           
           </div>
