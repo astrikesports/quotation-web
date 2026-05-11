@@ -34,7 +34,7 @@ import ItemForm from "./ItemForm";
 
   useEffect(() => {
 
-  const previews = {};
+    const previews = {};
   
     paymentImages.forEach(
       (img, idx) => {
@@ -51,23 +51,26 @@ import ItemForm from "./ItemForm";
   
   }, [paymentImages]);
   
-  const selectedSalesPerson =
-    localStorage.getItem(
-      "selectedSalesPerson"
-    );
+  useEffect(() => {
   
-  // AUTO SET SALES PERSON
-  if (
-    selectedSalesPerson &&
-    !pdfData.salesPerson
-  ) {
+    const selectedSalesPerson =
+      localStorage.getItem(
+        "selectedSalesPerson"
+      );
   
-    setPdfData(prev => ({
-      ...prev,
-      salesPerson:
-        selectedSalesPerson
-    }));
-  }
+    // AUTO SET SALES PERSON
+    if (
+      selectedSalesPerson &&
+      !pdfData.salesPerson
+    ) {
+  
+      setPdfData(prev => ({
+        ...prev,
+        salesPerson:
+          selectedSalesPerson
+      }));
+  
+    }
   
   }, []);
   
