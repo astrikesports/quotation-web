@@ -35,7 +35,7 @@ import ItemForm from "./ItemForm";
   useEffect(() => {
 
   const previews = {};
-
+  
     paymentImages.forEach(
       (img, idx) => {
   
@@ -50,18 +50,18 @@ import ItemForm from "./ItemForm";
     setPreviewMap(previews);
   
   }, [paymentImages]);
-
+  
   const selectedSalesPerson =
     localStorage.getItem(
       "selectedSalesPerson"
     );
-
+  
   // AUTO SET SALES PERSON
   if (
     selectedSalesPerson &&
     !pdfData.salesPerson
   ) {
-
+  
     setPdfData(prev => ({
       ...prev,
       salesPerson:
