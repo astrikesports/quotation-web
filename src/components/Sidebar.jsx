@@ -34,20 +34,55 @@ import ItemForm from "./ItemForm";
 
   useEffect(() => {
 
+    if (!paymentImages?.length) {
+  
+      setPreviewMap({});
+      return;
+  
+    }
+  
     const previews = {};
   
     paymentImages.forEach(
       (img, idx) => {
   
-        previews[idx] =
-          typeof img === "string"
-            ? img
-            : URL.createObjectURL(img);
+        // OLD SAVED IMAGE URL
+        if (typeof img === "string") {
+  
+          previews[idx] = img;
+  
+        }
+  
+        // NEW FILE IMAGE
+        else if (img instanceof File) {
+  
+          previews[idx] =
+            URL.createObjectURL(img);
+  
+        }
   
       }
     );
   
     setPreviewMap(previews);
+  
+    // CLEANUP
+    return () => {
+  
+      Object.values(previews).forEach(url => {
+  
+        if (
+          typeof url === "string" &&
+          url.startsWith("blob:")
+        ) {
+  
+          URL.revokeObjectURL(url);
+  
+        }
+  
+      });
+  
+    };
   
   }, [paymentImages]);
   
