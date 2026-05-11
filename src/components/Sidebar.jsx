@@ -18,6 +18,10 @@ import ItemForm from "./ItemForm";
   removePaymentImage,
   }) {
 
+  const [previewMap,
+    setPreviewMap] =
+    useState({});
+
   const {
   party = "",
   phone = "",
@@ -29,6 +33,23 @@ import ItemForm from "./ItemForm";
   } = pdfData;
 
   useEffect(() => {
+
+  const previews = {};
+
+    paymentImages.forEach(
+      (img, idx) => {
+  
+        previews[idx] =
+          typeof img === "string"
+            ? img
+            : URL.createObjectURL(img);
+  
+      }
+    );
+  
+    setPreviewMap(previews);
+  
+  }, [paymentImages]);
 
   const selectedSalesPerson =
     localStorage.getItem(
