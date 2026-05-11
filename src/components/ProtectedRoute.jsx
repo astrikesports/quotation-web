@@ -1,35 +1,115 @@
 import { useEffect, useState } from "react";
 
-import { Navigate } from "react-router-dom";
+import {
+  Navigate,
+  useLocation
+} from "react-router-dom";
 
 import { supabase } from "../supabase";
 
-export default function ProtectedRoute({ children }) {
+import LoaderOverlay from "../components/LoaderOverlay";
 
-  const [loading, setLoading] = useState(true);
+export default function ProtectedRoute({
+  children
+}) {
 
-  const [session, setSession] = useState(null);
+  const location = useLocation();
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [isAuthenticated,
+    setIsAuthenticated] =
+    useState(false);
 
   useEffect(() => {
 
-    supabase.auth.getSession().then(({ data }) => {
-
-      setSession(data.session);
-
-      setLoading(false);
-    });
+    checkUser();
 
   }, []);
 
+  // CHECK LOGIN
+  const checkUser = async () => {
+
+    try {
+
+      // LOCAL USER
+      const localUser =
+        localStorage.getItem(
+          "user"
+        );
+
+      // NO USER
+      if (!localUser) {
+
+        setIsAuthenticated(false);
+
+        setLoading(false);
+
+        return;
+      }
+
+      // CHECK SESSION
+      const {
+        data,
+        error
+      } = await supabase.auth.getSession();
+
+      // SESSION INVALID
+      if (
+        error ||
+        !data?.session
+      ) {
+
+        localStorage.removeItem(
+          "user"
+        );
+
+        setIsAuthenticated(false);
+
+        setLoading(false);
+
+        return;
+      }
+
+      // VALID
+      setIsAuthenticated(true);
+
+      setLoading(false);
+
+    } catch (err) {
+
+      console.log(err);
+
+      setIsAuthenticated(false);
+
+      setLoading(false);
+    }
+
+  };
+
+  // LOADING
   if (loading) {
 
-    return <div>Loading...</div>;
+    return (
+      <LoaderOverlay text="Checking Access..." />
+    );
   }
 
-  if (!session) {
+  // BLOCK ACCESS
+  if (!isAuthenticated) {
 
-    return <Navigate to="/login" replace />;
+    return (
+      <Navigate
+        to="/login"
+        replace
+        state={{
+          from: location
+        }}
+      />
+    );
   }
 
+  // ACCESS GRANTED
   return children;
 }
