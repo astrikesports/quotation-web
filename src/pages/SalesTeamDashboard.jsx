@@ -327,6 +327,12 @@ export default function Dashboard({
 
           {salesPersons.map((person) => {
 
+            const isLocked =
+              person.locked;
+            
+            const personPin =
+              person.pin;
+
             const personQuotations =
               getPersonQuotations(person.name);
 
@@ -351,9 +357,32 @@ export default function Dashboard({
 
               <div
                 key={person.id}
-                onClick={() =>
-                  setSelectedPerson(person)
+                onClick={() => {
+
+                // LOCKED CARD
+                if (isLocked) {
+              
+                  const enteredPin =
+                    prompt(
+                      `Enter PIN for ${person.name}`
+                    );
+              
+                  // WRONG PIN
+                  if (
+                    enteredPin !==
+                    String(personPin)
+                  ) {
+              
+                    alert("Wrong PIN");
+              
+                    return;
+                  }
+              
                 }
+              
+                setSelectedPerson(person);
+              
+              }}
                 className="bg-white rounded-[32px] p-6 shadow-sm border cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 border-gray-100"
               >
 
@@ -362,9 +391,21 @@ export default function Dashboard({
 
                   <div>
 
-                    <h2 className="text-3xl font-black">
-                      {person.name}
-                    </h2>
+                    <div className="flex items-center gap-2">
+
+                      <h2 className="text-3xl font-black">
+                        {person.name}
+                      </h2>
+                    
+                      {isLocked && (
+                    
+                        <div className="w-8 h-8 rounded-xl bg-red-500 text-white flex items-center justify-center shadow-lg">
+                          🔒
+                        </div>
+                    
+                      )}
+                    
+                    </div>
 
                     <p className="text-gray-500 mt-2 font-medium">
                       Sales Executive
