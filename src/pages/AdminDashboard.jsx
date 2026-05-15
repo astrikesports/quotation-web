@@ -747,7 +747,21 @@ export default function AdminDashboard() {
             {/* GRID */}
             <div className="grid grid-cols-1 md:grid-cols-2">
       
-              {salesPersons.map((person, index) => {
+              {[...salesPersons]
+
+                .sort((a, b) => {
+              
+                  const salesA =
+                    getPersonSales(a.name);
+              
+                  const salesB =
+                    getPersonSales(b.name);
+              
+                  return salesB - salesA;
+              
+                })
+              
+                .map((person, index) => {
       
                 const sales =
                   getPersonSales(
