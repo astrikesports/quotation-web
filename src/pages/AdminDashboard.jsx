@@ -101,10 +101,16 @@ export default function AdminDashboard() {
 
     quotations.forEach((q) => {
 
+      // ONLY CONFIRMED
+      if (
+        q.status !==
+        "confirmed"
+      ) return;
+    
       total += Number(
         q.net_amount || 0
       );
-
+    
     });
 
     return total;
@@ -126,7 +132,11 @@ export default function AdminDashboard() {
     quotations.forEach((q) => {
 
       if (
-        q.sales_person === name
+
+        q.sales_person === name &&
+      
+        q.status === "confirmed"
+      
       ) {
 
         total += Number(
@@ -637,122 +647,235 @@ export default function AdminDashboard() {
 
       {/* DASHBOARD PAGE */}
       {activePage === "dashboard" && (
-
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-
-          {/* SALES */}
-          <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
-
-            <div className="flex items-center justify-between">
-
-              <div>
-
-                <p className="text-gray-500 font-semibold">
-                  Total Sales
-                </p>
-
-                <h2 className="text-4xl font-black mt-3">
-                  ₹{
-                    getTotalSales()
-                      .toLocaleString()
-                  }
-                </h2>
-
-              </div>
-
-              <div className="w-16 h-16 rounded-2xl bg-black text-white flex items-center justify-center text-2xl shadow-lg">
-                💰
-              </div>
-
+      
+        <div className="space-y-8">
+      
+          {/* TOP STATS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+      
+            {/* TOTAL SALES */}
+            <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
+      
+              <p className="text-gray-500 font-semibold">
+                Total Sales
+              </p>
+      
+              <h2 className="text-4xl font-black mt-3">
+                ₹{
+                  getTotalSales()
+                    .toLocaleString()
+                }
+              </h2>
+      
             </div>
-
-          </div>
-
-          {/* PROFIT */}
-          <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
-
-            <div className="flex items-center justify-between">
-
-              <div>
-
-                <p className="text-gray-500 font-semibold">
-                  Profit
-                </p>
-
-                <h2 className="text-4xl font-black mt-3 text-green-600">
-                  ₹{
-                    getProfit()
-                      .toFixed(0)
-                      .toLocaleString()
-                  }
-                </h2>
-
-              </div>
-
-              <div className="w-16 h-16 rounded-2xl bg-green-600 text-white flex items-center justify-center text-2xl shadow-lg">
-                📈
-              </div>
-
+      
+            {/* PROFIT */}
+            <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
+      
+              <p className="text-gray-500 font-semibold">
+                Profit
+              </p>
+      
+              <h2 className="text-4xl font-black mt-3 text-green-600">
+                ₹{
+                  getProfit()
+                    .toFixed(0)
+                    .toLocaleString()
+                }
+              </h2>
+      
             </div>
-
-          </div>
-
-          {/* ORDERS */}
-          <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
-
-            <div className="flex items-center justify-between">
-
-              <div>
-
-                <p className="text-gray-500 font-semibold">
-                  Orders
-                </p>
-
-                <h2 className="text-4xl font-black mt-3">
-                  {
-                    quotations.length
-                  }
-                </h2>
-
-              </div>
-
-              <div className="w-16 h-16 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl shadow-lg">
-                📦
-              </div>
-
+      
+            {/* ORDERS */}
+            <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
+      
+              <p className="text-gray-500 font-semibold">
+                Confirmed Orders
+              </p>
+      
+              <h2 className="text-4xl font-black mt-3">
+      
+                {
+                  quotations.filter(
+                    q =>
+                      q.status ===
+                      "confirmed"
+                  ).length
+                }
+      
+              </h2>
+      
             </div>
-
-          </div>
-
-          {/* TEAM */}
-          <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
-
-            <div className="flex items-center justify-between">
-
-              <div>
-
-                <p className="text-gray-500 font-semibold">
-                  Active Team
-                </p>
-
-                <h2 className="text-4xl font-black mt-3">
-                  {
-                    salesPersons.length
-                  }
-                </h2>
-
-              </div>
-
-              <div className="w-16 h-16 rounded-2xl bg-orange-500 text-white flex items-center justify-center text-2xl shadow-lg">
-                👥
-              </div>
-
+      
+            {/* TEAM */}
+            <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100">
+      
+              <p className="text-gray-500 font-semibold">
+                Active Team
+              </p>
+      
+              <h2 className="text-4xl font-black mt-3">
+                {
+                  salesPersons.length
+                }
+              </h2>
+      
             </div>
-
+      
           </div>
-
+      
+          {/* SALES PERSON ANALYTICS */}
+          <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
+      
+            {/* HEADER */}
+            <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
+      
+              <div>
+      
+                <h2 className="text-3xl font-black">
+                  Sales Team Analytics
+                </h2>
+      
+                <p className="text-gray-500 mt-2">
+                  Confirmed sales performance
+                </p>
+      
+              </div>
+      
+            </div>
+      
+            {/* GRID */}
+            <div className="grid grid-cols-1 md:grid-cols-2">
+      
+              {salesPersons.map((person, index) => {
+      
+                const sales =
+                  getPersonSales(
+                    person.name
+                  );
+      
+                const profit =
+                  sales * 0.095;
+      
+                const progress =
+                  getProgress(
+                    sales,
+                    person.target_amount
+                  );
+      
+                return (
+      
+                  <div
+                    key={person.id}
+                    className={`p-8 ${
+                      index % 2 === 0
+                        ? "border-r"
+                        : ""
+                    } border-b border-gray-100`}
+                  >
+      
+                    {/* TOP */}
+                    <div className="flex items-center justify-between">
+      
+                      <div>
+      
+                        <h3 className="text-2xl font-black">
+                          {person.name}
+                        </h3>
+      
+                        <p className="text-gray-500 mt-1">
+                          Sales Executive
+                        </p>
+      
+                      </div>
+      
+                      <div className="w-14 h-14 rounded-2xl bg-black text-white flex items-center justify-center text-xl font-black">
+                        {
+                          person.name?.charAt(
+                            0
+                          )
+                        }
+                      </div>
+      
+                    </div>
+      
+                    {/* STATS */}
+                    <div className="grid grid-cols-2 gap-4 mt-8">
+      
+                      {/* SALES */}
+                      <div>
+      
+                        <p className="text-gray-500 text-sm font-semibold">
+                          Sales
+                        </p>
+      
+                        <h2 className="text-3xl font-black mt-2">
+                          ₹{
+                            sales.toLocaleString()
+                          }
+                        </h2>
+      
+                      </div>
+      
+                      {/* PROFIT */}
+                      <div>
+      
+                        <p className="text-gray-500 text-sm font-semibold">
+                          Profit
+                        </p>
+      
+                        <h2 className="text-3xl font-black mt-2 text-green-600">
+                          ₹{
+                            profit
+                              .toFixed(0)
+                              .toLocaleString()
+                          }
+                        </h2>
+      
+                      </div>
+      
+                    </div>
+      
+                    {/* PROGRESS */}
+                    <div className="mt-8">
+      
+                      <div className="flex items-center justify-between mb-3">
+      
+                        <span className="text-sm text-gray-500 font-semibold">
+                          Progress
+                        </span>
+      
+                        <span className="font-black">
+                          {progress}%
+                        </span>
+      
+                      </div>
+      
+                      <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+      
+                        <div
+                          className="h-full bg-green-500 rounded-full"
+                          style={{
+                            width: `${progress}%`
+                          }}
+                        />
+      
+                      </div>
+      
+                    </div>
+      
+                  </div>
+      
+                );
+      
+              })}
+      
+            </div>
+      
+          </div>
+      
         </div>
-
+      
       )}
 
       {/* SALES PAGE */}
