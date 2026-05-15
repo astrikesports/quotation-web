@@ -13,6 +13,7 @@ export default function LoadQuotationModal({
 
   // 🔍 search + pagination state
   const [search, setSearch] = useState("");
+
   const [page, setPage] = useState(1);
 
   const formatDate = (d) =>
@@ -42,13 +43,57 @@ export default function LoadQuotationModal({
 
   /* 🔍 FILTER (SEARCH) */
   const filteredList = useMemo(() => {
-    if (!search.trim()) return list;
 
-    const q = search.toLowerCase();
-    return list.filter(it =>
-      (it.party || "").toLowerCase().includes(q) ||
-      (it.quotation_no || "").toLowerCase().includes(q)
+    const selectedSalesPerson =
+      localStorage.getItem(
+        "selectedSalesPerson"
+      );
+  
+    let filtered = [...list];
+  
+    // SALES PERSON FILTER
+    if (selectedSalesPerson) {
+  
+      filtered = filtered.filter(
+        (it) =>
+  
+          it.salesPerson ===
+            selectedSalesPerson ||
+  
+          it.sales_person ===
+            selectedSalesPerson
+      );
+  
+    }
+  
+    // SEARCH
+    if (!search.trim()) {
+  
+      return filtered;
+  
+    }
+  
+    const q =
+      search.toLowerCase();
+  
+    return filtered.filter(it =>
+  
+      (it.party || "")
+        .toLowerCase()
+        .includes(q)
+  
+      ||
+  
+      (
+        it.quotationNo ||
+        it.quotation_no ||
+        ""
+      )
+        .toLowerCase()
+        .includes(q)
+  
     );
+  
   }, [list, search]);
 
   /* 📄 PAGINATION */
