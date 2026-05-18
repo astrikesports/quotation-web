@@ -100,7 +100,7 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   
   p.desc === item.desc &&
   
-  p.rate === item.rate
+  p.mrp === item.mrp
   );
   
   let updatedItems = [...prev.items];
