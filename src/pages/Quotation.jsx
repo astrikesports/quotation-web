@@ -90,10 +90,66 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
 
   /* ================= ITEM ACTIONS ================= */
   function addItem(item) {
-  setPdfData(prev => ({
+  
+  setPdfData(prev => {
+  
+  // FIND SAME ITEM
+  const existingIndex =
+  prev.items.findIndex(
+  (p) =>
+  
+  p.desc === item.desc &&
+  
+  p.rate === item.rate
+  );
+  
+  let updatedItems = [...prev.items];
+  
+  // ITEM EXISTS
+  if (existingIndex !== -1) {
+  
+  const existing =
+  updatedItems[
+  existingIndex
+  ];
+  
+  // PCS
+  existing.pcs =
+  Number(existing.pcs || 0) +
+  Number(item.pcs || 0);
+  
+  // AMOUNT
+  existing.amount =
+  Number(existing.amount || 0) +
+  Number(item.amount || 0);
+  
+  // SIZE MERGE
+  existing.size =
+  existing.size
+  ? existing.size +
+  ", " +
+  item.size
+  : item.size;
+  
+  }
+  
+  // NEW ITEM
+  else {
+  
+  updatedItems.push(item);
+  
+  }
+  
+  return {
   ...prev,
-  items: applyAutoRates([...prev.items, item])
-  }));
+  items:
+  applyAutoRates(
+  updatedItems
+  )
+  };
+  
+  });
+  
   }
 
   function startEdit(index) {
