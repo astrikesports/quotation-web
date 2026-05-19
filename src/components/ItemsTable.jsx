@@ -43,8 +43,16 @@ export default function ItemsTable({ items, onDelete, onEdit, onUpdateItem  }) {
     const pcsPerBox = item.pcsPerBox || 1;
 
     const pcs = boxes * pcsPerBox;
-    const rate = Number(editRate);
-    const amount = pcs * rate;
+    
+    const finalRate =
+    Number(editRate || 0);
+    
+    const rate =
+    Number(finalRate || 0);
+    
+    const amount =
+    Number(pcs || 0) *
+    Number(rate || 0);
 
     onUpdateItem(i, {
       ...item,
