@@ -160,7 +160,7 @@ export default function ItemsTable({ items, onDelete, onEdit, onUpdateItem  }) {
                     ) : (
                       <>
                         <button
-                          onClick={() => startEdit(idx)}
+                          onClick={() => onEdit(idx)}
                           className="px-2 py-1 text-xs bg-yellow-400 rounded"
                         >
                           Edit
