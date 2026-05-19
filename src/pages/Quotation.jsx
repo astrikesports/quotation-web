@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
-import ConfirmDialog from "../components/ConfirmDialog";
-import Header from "../components/Header";
-import ItemsTable from "../components/ItemsTable";
-import LoaderOverlay from "../components/LoaderOverlay";
-import Sidebar from "../components/Sidebar";
-import Summary from "../components/Summary";
-import { clearSkuCache, loadSkuDB } from "../utils/skuService";
-
-
-
-
+  import { useEffect, useState } from "react";
+  import ConfirmDialog from "../components/ConfirmDialog";
+  import Header from "../components/Header";
+  import ItemsTable from "../components/ItemsTable";
+  import LoaderOverlay from "../components/LoaderOverlay";
+  import Sidebar from "../components/Sidebar";
+  import Summary from "../components/Summary";
+  import { clearSkuCache, loadSkuDB } from "../utils/skuService";
+  
+  
+  
+  
   export default function Quotation() {
-
+  
   /* ================= LOADER ================= */
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
@@ -21,8 +21,8 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   message: "",
   onConfirm: null
   });
-
-
+  
+  
   /* ================= SINGLE SOURCE OF TRUTH ================= */
   const [pdfData, setPdfData] = useState({
   party: "",
@@ -38,8 +38,8 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   advance: 0,
   paymentImages: [], // 🔥 MUST
   });
-
-
+  
+  
   const {
   items,
   rateDiscount,
@@ -48,29 +48,29 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   shipping,
   advance
   } = pdfData;
-
+  
   /* ================= EDIT FLOW ================= */
   const [editIndex, setEditIndex] = useState(null);
   const [editItem, setEditItem] = useState(null);
   const [paymentImages, setPaymentImages] = useState([]);
-
-
-
+  
+  
+  
   /* ================= CORE PYTHON RATE LOGIC ================= */
   function applyAutoRates(list) {
   return list.map(item => {
   if (item.isSample || item.isManual || !item.mrp) return item;
-
+  
   const mrp = Number(item.mrp);
-
+  
   let rate = (mrp * (100 - rateDiscount)) / 100;
-
+  
   if (spDiscount > 0) {
   rate = (rate * (100 - Math.min(spDiscount, 14))) / 100;
   }
-
+  
   rate = Math.round(rate);
-
+  
   return {
   ...item,
   rate,
@@ -78,8 +78,8 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   };
   });
   }
-
-
+  
+  
   /* ================= AUTO APPLY ON DISCOUNT CHANGE ================= */
   useEffect(() => {
   setPdfData(prev => ({
@@ -87,7 +87,7 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   items: applyAutoRates(prev.items)
   }));
   }, [rateDiscount, spDiscount]);
-
+  
   /* ================= ITEM ACTIONS ================= */
   function addItem(item) {
   
@@ -124,12 +124,53 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   Number(item.amount || 0);
   
   // SIZE MERGE
+  // SIZE MERGE
+  const sizeMap = {};
+  
+  // OLD SIZES
+  (existing.size || "")
+  .split(",")
+  .forEach(s => {
+  
+  const [
+  size,
+  qty
+  ] = s.trim().split("-");
+  
+  if (!size) return;
+  
+  sizeMap[size] =
+  (sizeMap[size] || 0) +
+  Number(qty || 0);
+  
+  });
+  
+  // NEW SIZES
+  (item.size || "")
+  .split(",")
+  .forEach(s => {
+  
+  const [
+  size,
+  qty
+  ] = s.trim().split("-");
+  
+  if (!size) return;
+  
+  sizeMap[size] =
+  (sizeMap[size] || 0) +
+  Number(qty || 0);
+  
+  });
+  
+  // FINAL STRING
   existing.size =
-  existing.size
-  ? existing.size +
-  ", " +
-  item.size
-  : item.size;
+  Object.entries(sizeMap)
+  .map(
+  ([k, v]) =>
+  `${k}-${v}`
+  )
+  .join(", ");
   
   }
   
@@ -151,12 +192,12 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   });
   
   }
-
+  
   function startEdit(index) {
   setEditIndex(index);
   setEditItem(items[index]);
   }
-
+  
   function updateItem(index, item) {
   setPdfData(prev => ({
   ...prev,
@@ -164,19 +205,19 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   }));
   cancelEdit();
   }
-
+  
   function cancelEdit() {
   setEditIndex(null);
   setEditItem(null);
   }
-
+  
   function deleteItem(index) {
   setPdfData(prev => ({
   ...prev,
   items: prev.items.filter((_, i) => i !== index)
   }));
   }
-    
+  
   /* ================= PAYMENT IMAGES (FILE BASED) ================= */
   function handlePaymentImage(e) {
   const file = e.target.files[0];
@@ -198,43 +239,43 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   reader.readAsDataURL(file);
   e.target.value = "";
   }
-
-
+  
+  
   function removePaymentImage(index) {
   setPdfData(prev => ({
   ...prev,
   paymentImages: prev.paymentImages.filter((_, i) => i !== index)
   }));
   }
-
-
+  
+  
   /* ================= REFRESH SKU ================= */
   async function refreshSkuData() {
   try {
   setLoading(true);
   setLoadingText("Refreshing Google Sheet...");
-
+  
   // 🔥 1. frontend cache clear
   clearSkuCache();
-
+  
   // 🔥 2. fresh SKU DB fetch
   await loadSkuDB(true);
-
+  
   // 🔥 3. IMPORTANT — applyAutoRates ko AWAIT karo
   const updatedItems = await applyAutoRates(pdfData.items);
-
+  
   // 🔥 4. state update with REAL items (not Promise)
   setPdfData(prev => ({
   ...prev,
   items: updatedItems
   }));
-
+  
   setConfirm({
   open: true,
   title: "Sheet Refreshed",
   message: "Google Sheet data updated successfully."
   });
-
+  
   } catch (e) {
   console.error(e);
   setConfirm({
@@ -246,8 +287,8 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   setLoading(false);
   }
   }
-
-      
+  
+  
   /* ================= NEW QUOTATION ================= */
   function newQuotation() {
   setConfirm({
@@ -256,10 +297,10 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   message: "Create new quotation? Current data will be cleared.",
   onConfirm: () => {
   setConfirm({ open: false });
-
+  
   setLoading(true);
   setLoadingText("Creating New Quotation...");
-
+  
   setTimeout(() => {
   setPdfData({
   party: "",
@@ -281,7 +322,7 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   }
   });
   }
-
+  
   /* ================= TOTALS ================= */
   const totalPCS = items.reduce((s, i) => s + i.pcs, 0);
   const totalAmount = items.reduce((s, i) => s + i.amount, 0);
@@ -290,11 +331,11 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   Number(billDiscount) +
   Number(shipping) -
   Number(advance);
-
+  
   /* ================= UI ================= */
   return (
   <div className="h-screen flex flex-col bg-blue-50">
-
+  
   <Header
   onNewQuotation={newQuotation}
   onRefreshSku={refreshSkuData}
@@ -307,32 +348,32 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   // ADD THIS
   net={net}
   />
-
+  
   <div className="flex flex-1 overflow-hidden">
-
+  
   <Sidebar
   pdfData={pdfData}
   setPdfData={setPdfData}
-
+  
   onAddItem={addItem}
   editIndex={editIndex}
   editItem={editItem}
   onUpdateItem={updateItem}
   onCancelEdit={cancelEdit}
-
+  
   handlePaymentImage={handlePaymentImage}
   paymentImages={pdfData.paymentImages}
   removePaymentImage={removePaymentImage}
-
+  
   />
-
+  
   <ItemsTable
   items={items}
   onDelete={deleteItem}
   onEdit={startEdit}
   />
   </div>
-
+  
   <Summary
   pcs={totalPCS}
   amount={totalAmount}
@@ -350,10 +391,10 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   }
   net={net}
   />
-
+  
   {/* 🔥 GLOBAL LOADER */}
   {loading && <LoaderOverlay text={loadingText} />}
-
+  
   <ConfirmDialog
   open={confirm.open}
   title={confirm.title}
@@ -361,8 +402,8 @@ import { clearSkuCache, loadSkuDB } from "../utils/skuService";
   onConfirm={confirm.onConfirm}
   onCancel={() => setConfirm({ open: false })}
   />
-
-
+  
+  
   </div>
   );
   }
