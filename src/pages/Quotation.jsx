@@ -199,11 +199,114 @@
   }
   
   function updateItem(index, item) {
-  setPdfData(prev => ({
+  
+  setPdfData(prev => {
+  
+  let updatedItems =
+  [...prev.items];
+  
+  // REMOVE CURRENT ITEM
+  updatedItems.splice(
+  index,
+  1
+  );
+  
+  // FIND SAME ITEM
+  const existingIndex =
+  updatedItems.findIndex(
+  (p) =>
+  
+  p.desc === item.desc
+  );
+  
+  // MERGE
+  if (existingIndex !== -1) {
+  
+  const existing =
+  updatedItems[
+  existingIndex
+  ];
+  
+  // PCS
+  existing.pcs =
+  Number(existing.pcs || 0) +
+  Number(item.pcs || 0);
+  
+  // AMOUNT
+  existing.amount =
+  Number(existing.amount || 0) +
+  Number(item.amount || 0);
+  
+  // SIZE MAP
+  const sizeMap = {};
+  
+  // OLD
+  (existing.size || "")
+  .split(",")
+  .forEach(s => {
+  
+  const [
+  size,
+  qty
+  ] =
+  s.trim().split("-");
+  
+  if (!size) return;
+  
+  sizeMap[size] =
+  (sizeMap[size] || 0) +
+  Number(qty || 0);
+  
+  });
+  
+  // NEW
+  (item.size || "")
+  .split(",")
+  .forEach(s => {
+  
+  const [
+  size,
+  qty
+  ] =
+  s.trim().split("-");
+  
+  if (!size) return;
+  
+  sizeMap[size] =
+  (sizeMap[size] || 0) +
+  Number(qty || 0);
+  
+  });
+  
+  existing.size =
+  Object.entries(sizeMap)
+  .map(
+  ([k, v]) =>
+  `${k}-${v}`
+  )
+  .join(", ");
+  
+  }
+  
+  // NEW
+  else {
+  
+  updatedItems.push(item);
+  
+  }
+  
+  return {
   ...prev,
-  items: prev.items.map((it, i) => (i === index ? item : it))
-  }));
+  items:
+  applyAutoRates(
+  updatedItems
+  )
+  };
+  
+  });
+  
   cancelEdit();
+  
   }
   
   function cancelEdit() {
