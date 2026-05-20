@@ -738,173 +738,306 @@ export default function AdminDashboard() {
       
           </div>
       
-          {/* SALES PERSON ANALYTICS */}
+          {/* ORDER ANALYTICS */}
           <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
-      
+          
             {/* HEADER */}
-            <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
-      
-              <div>
-      
-                <h2 className="text-3xl font-black">
-                  Sales Team Analytics
-                </h2>
-      
-                <p className="text-gray-500 mt-2">
-                  Confirmed sales performance
-                </p>
-      
-              </div>
-      
+            <div className="px-8 py-6 border-b border-gray-100">
+          
+              <h2 className="text-3xl font-black">
+                Order Analytics
+              </h2>
+          
+              <p className="text-gray-500 mt-2">
+                Live order performance summary
+              </p>
+          
             </div>
-      
+          
             {/* GRID */}
-            <div className="grid grid-cols-1 md:grid-cols-2">
-      
-              {[...salesPersons]
-
-                .sort((a, b) => {
-              
-                  const salesA =
-                    getPersonSales(a.name);
-              
-                  const salesB =
-                    getPersonSales(b.name);
-              
-                  return salesB - salesA;
-              
-                })
-              
-                .map((person, index) => {
-      
-                const sales =
-                  getPersonSales(
-                    person.name
-                  );
-      
-                const profit =
-                  sales * 0.095;
-      
-                const progress =
-                  getProgress(
-                    sales,
-                    person.target_amount
-                  );
-      
-                return (
-      
-                  <div
-                    key={person.id}
-                    className={`p-8 ${
-                      index % 2 === 0
-                        ? "border-r"
-                        : ""
-                    } border-b border-gray-100`}
-                  >
-      
-                    {/* TOP */}
-                    <div className="flex items-center justify-between">
-      
-                      <div>
-      
-                        <h3 className="text-2xl font-black">
-                          {person.name}
-                        </h3>
-      
-                        <p className="text-gray-500 mt-1">
-                          Sales Executive
-                        </p>
-      
-                      </div>
-      
-                      <div className="w-14 h-14 rounded-2xl bg-black text-white flex items-center justify-center text-xl font-black">
-                        {
-                          person.name?.charAt(
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
+          
+              {/* TODAY ORDERS */}
+              <div className="p-8 border-b xl:border-b-0 xl:border-r border-gray-100">
+          
+                <div className="flex items-center justify-between">
+          
+                  <div>
+          
+                    <p className="text-gray-500 text-sm font-semibold">
+                      Today Orders
+                    </p>
+          
+                    <h2 className="text-5xl font-black mt-4">
+          
+                      {
+                        quotations.filter(
+                          (q) =>
+                            q.created_at ===
+                            new Date()
+                              .toISOString()
+                              .split("T")[0]
+                        ).length
+                      }
+          
+                    </h2>
+          
+                  </div>
+          
+                  <div className="w-16 h-16 rounded-3xl bg-black text-white flex items-center justify-center text-3xl">
+                    📦
+                  </div>
+          
+                </div>
+          
+              </div>
+          
+              {/* TODAY SALES */}
+              <div className="p-8 border-b xl:border-b-0 xl:border-r border-gray-100">
+          
+                <div className="flex items-center justify-between">
+          
+                  <div>
+          
+                    <p className="text-gray-500 text-sm font-semibold">
+                      Today Sales
+                    </p>
+          
+                    <h2 className="text-5xl font-black mt-4 text-green-600">
+          
+                      ₹{
+          
+                        quotations
+          
+                          .filter(
+                            (q) =>
+                              q.created_at ===
+                              new Date()
+                                .toISOString()
+                                .split("T")[0]
+                          )
+          
+                          .reduce(
+                            (acc, q) =>
+                              acc +
+                              Number(
+                                q.net_amount || 0
+                              ),
                             0
                           )
-                        }
-                      </div>
-      
-                    </div>
-      
-                    {/* STATS */}
-                    <div className="grid grid-cols-2 gap-4 mt-8">
-      
-                      {/* SALES */}
-                      <div>
-      
-                        <p className="text-gray-500 text-sm font-semibold">
-                          Sales
-                        </p>
-      
-                        <h2 className="text-3xl font-black mt-2">
-                          ₹{
-                            sales.toLocaleString()
-                          }
-                        </h2>
-      
-                      </div>
-      
-                      {/* PROFIT */}
-                      <div>
-      
-                        <p className="text-gray-500 text-sm font-semibold">
-                          Profit
-                        </p>
-      
-                        <h2 className="text-3xl font-black mt-2 text-green-600">
-                          ₹{
-                            profit
-                              .toFixed(0)
-                              .toLocaleString()
-                          }
-                        </h2>
-      
-                      </div>
-      
-                    </div>
-      
-                    {/* PROGRESS */}
-                    <div className="mt-8">
-      
-                      <div className="flex items-center justify-between mb-3">
-      
-                        <span className="text-sm text-gray-500 font-semibold">
-                          Progress
-                        </span>
-      
-                        <span className="font-black">
-                          {progress}%
-                        </span>
-      
-                      </div>
-      
-                      <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-      
-                        <div
-                          className="h-full bg-green-500 rounded-full"
-                          style={{
-                            width: `${progress}%`
-                          }}
-                        />
-      
-                      </div>
-      
-                    </div>
-      
+          
+                          .toLocaleString()
+          
+                      }
+          
+                    </h2>
+          
                   </div>
-      
-                );
-      
-              })}
-      
+          
+                  <div className="w-16 h-16 rounded-3xl bg-green-500 text-black flex items-center justify-center text-3xl">
+                    💰
+                  </div>
+          
+                </div>
+          
+              </div>
+          
+              {/* TOTAL SHIPPED */}
+              <div className="p-8 border-b md:border-b-0 xl:border-r border-gray-100">
+          
+                <div className="flex items-center justify-between">
+          
+                  <div>
+          
+                    <p className="text-gray-500 text-sm font-semibold">
+                      Total Shipped
+                    </p>
+          
+                    <h2 className="text-5xl font-black mt-4 text-blue-600">
+          
+                      {
+                        quotations.filter(
+                          (q) =>
+                            q.status ===
+                            "shipped"
+                        ).length
+                      }
+          
+                    </h2>
+          
+                  </div>
+          
+                  <div className="w-16 h-16 rounded-3xl bg-blue-500 text-white flex items-center justify-center text-3xl">
+                    🚚
+                  </div>
+          
+                </div>
+          
+              </div>
+          
+              {/* TOTAL PENDING */}
+              <div className="p-8">
+          
+                <div className="flex items-center justify-between">
+          
+                  <div>
+          
+                    <p className="text-gray-500 text-sm font-semibold">
+                      Total Pending
+                    </p>
+          
+                    <h2 className="text-5xl font-black mt-4 text-yellow-500">
+          
+                      {
+                        quotations.filter(
+                          (q) =>
+                            q.status ===
+                            "pending"
+                        ).length
+                      }
+          
+                    </h2>
+          
+                  </div>
+          
+                  <div className="w-16 h-16 rounded-3xl bg-yellow-400 text-black flex items-center justify-center text-3xl">
+                    ⏳
+                  </div>
+          
+                </div>
+          
+              </div>
+          
+              {/* TOTAL PREPARING */}
+              <div className="p-8 border-t border-gray-100 xl:border-r">
+          
+                <div className="flex items-center justify-between">
+          
+                  <div>
+          
+                    <p className="text-gray-500 text-sm font-semibold">
+                      Total Preparing
+                    </p>
+          
+                    <h2 className="text-5xl font-black mt-4 text-orange-500">
+          
+                      {
+                        quotations.filter(
+                          (q) =>
+                            q.status ===
+                            "preparing"
+                        ).length
+                      }
+          
+                    </h2>
+          
+                  </div>
+          
+                  <div className="w-16 h-16 rounded-3xl bg-orange-500 text-white flex items-center justify-center text-3xl">
+                    📋
+                  </div>
+          
+                </div>
+          
+              </div>
+          
+              {/* TOTAL CONFIRMED */}
+              <div className="p-8 border-t border-gray-100 xl:border-r">
+          
+                <div className="flex items-center justify-between">
+          
+                  <div>
+          
+                    <p className="text-gray-500 text-sm font-semibold">
+                      Total Confirmed
+                    </p>
+          
+                    <h2 className="text-5xl font-black mt-4 text-green-500">
+          
+                      {
+                        quotations.filter(
+                          (q) =>
+                            q.status ===
+                            "confirmed"
+                        ).length
+                      }
+          
+                    </h2>
+          
+                  </div>
+          
+                  <div className="w-16 h-16 rounded-3xl bg-green-500 text-black flex items-center justify-center text-3xl">
+                    ✅
+                  </div>
+          
+                </div>
+          
+              </div>
+          
+              {/* TOTAL SALES */}
+              <div className="p-8 border-t border-gray-100 xl:border-r">
+          
+                <div className="flex items-center justify-between">
+          
+                  <div>
+          
+                    <p className="text-gray-500 text-sm font-semibold">
+                      Total Sales
+                    </p>
+          
+                    <h2 className="text-5xl font-black mt-4">
+          
+                      ₹{
+                        getTotalSales()
+                          .toLocaleString()
+                      }
+          
+                    </h2>
+          
+                  </div>
+          
+                  <div className="w-16 h-16 rounded-3xl bg-black text-white flex items-center justify-center text-3xl">
+                    📈
+                  </div>
+          
+                </div>
+          
+              </div>
+          
+              {/* TOTAL PROFIT */}
+              <div className="p-8 border-t border-gray-100">
+          
+                <div className="flex items-center justify-between">
+          
+                  <div>
+          
+                    <p className="text-gray-500 text-sm font-semibold">
+                      Total Profit
+                    </p>
+          
+                    <h2 className="text-5xl font-black mt-4 text-green-600">
+          
+                      ₹{
+                        getProfit()
+                          .toFixed(0)
+                          .toLocaleString()
+                      }
+          
+                    </h2>
+          
+                  </div>
+          
+                  <div className="w-16 h-16 rounded-3xl bg-green-500 text-black flex items-center justify-center text-3xl">
+                    🔥
+                  </div>
+          
+                </div>
+          
+              </div>
+          
             </div>
-      
+          
           </div>
-      
-        </div>
-      
-      )}
 
       {/* SALES PAGE */}
       {activePage === "sales" && (
