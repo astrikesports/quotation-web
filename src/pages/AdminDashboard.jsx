@@ -543,6 +543,19 @@ export default function AdminDashboard() {
                 ➕ Add Items
               </button>
 
+              <button
+                onClick={() =>
+                  setActivePage("order-status")
+                }
+                className={`h-12 px-6 rounded-2xl font-bold transition-all duration-200 ${
+                  activePage === "order-status"
+                    ? "bg-green-500 text-black shadow-2xl"
+                    : "bg-white/10 backdrop-blur-xl border border-white/10 text-white hover:bg-white/20"
+                }`}
+              >
+                🚚 Order Status
+              </button>
+
             </div>
 
           </div>
