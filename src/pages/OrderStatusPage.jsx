@@ -1,9 +1,18 @@
-import React from "react";
+import React, {
+  useMemo,
+  useState,
+} from "react";
 
 export default function OrderStatusPage({
   quotations = [],
 }) {
 
+  const [currentPage, setCurrentPage] =
+    useState(1);
+
+  const ordersPerPage = 10;
+
+  // FILTERS
   const confirmedOrders =
     quotations.filter(
       (q) =>
@@ -16,28 +25,62 @@ export default function OrderStatusPage({
         q.status === "pending"
     );
 
+  const preparingOrders =
+    quotations.filter(
+      (q) =>
+        q.status === "preparing"
+    );
+
   const shippedOrders =
     quotations.filter(
       (q) =>
         q.status === "shipped"
     );
 
+  // PAGINATION
+  const totalPages = Math.ceil(
+    confirmedOrders.length /
+      ordersPerPage
+  );
+
+  const paginatedOrders =
+    useMemo(() => {
+
+      const start =
+        (currentPage - 1) *
+        ordersPerPage;
+
+      const end =
+        start + ordersPerPage;
+
+      return confirmedOrders.slice(
+        start,
+        end
+      );
+
+    }, [
+      confirmedOrders,
+      currentPage,
+    ]);
+
   return (
 
     <div className="space-y-8">
 
       {/* TOP CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
 
         {/* CONFIRMED */}
         <div className="bg-green-500 rounded-[32px] p-8 text-black shadow-2xl">
 
           <p className="text-sm font-black tracking-[2px] uppercase">
-            Confirmed Orders
+            Confirmed
           </p>
 
           <h2 className="text-5xl font-black mt-4">
-            {confirmedOrders.length}
+            {
+              confirmedOrders.length
+            }
           </h2>
 
         </div>
@@ -46,11 +89,28 @@ export default function OrderStatusPage({
         <div className="bg-yellow-400 rounded-[32px] p-8 text-black shadow-2xl">
 
           <p className="text-sm font-black tracking-[2px] uppercase">
-            Pending Orders
+            Pending
           </p>
 
           <h2 className="text-5xl font-black mt-4">
-            {pendingOrders.length}
+            {
+              pendingOrders.length
+            }
+          </h2>
+
+        </div>
+
+        {/* PREPARING */}
+        <div className="bg-orange-500 rounded-[32px] p-8 text-white shadow-2xl">
+
+          <p className="text-sm font-black tracking-[2px] uppercase">
+            Preparing
+          </p>
+
+          <h2 className="text-5xl font-black mt-4">
+            {
+              preparingOrders.length
+            }
           </h2>
 
         </div>
@@ -59,30 +119,46 @@ export default function OrderStatusPage({
         <div className="bg-blue-500 rounded-[32px] p-8 text-white shadow-2xl">
 
           <p className="text-sm font-black tracking-[2px] uppercase">
-            Shipped Orders
+            Shipped
           </p>
 
           <h2 className="text-5xl font-black mt-4">
-            {shippedOrders.length}
+            {
+              shippedOrders.length
+            }
           </h2>
 
         </div>
 
       </div>
 
-      {/* CONFIRMED TABLE */}
+      {/* TABLE */}
       <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
 
         {/* HEADER */}
-        <div className="px-8 py-6 border-b border-gray-100">
+        <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
 
-          <h2 className="text-3xl font-black">
-            Confirmed Orders
-          </h2>
+          <div>
 
-          <p className="text-gray-500 mt-2">
-            All confirmed quotation data
-          </p>
+            <h2 className="text-3xl font-black">
+              Confirmed Orders
+            </h2>
+
+            <p className="text-gray-500 mt-2">
+              Showing confirmed orders
+            </p>
+
+          </div>
+
+          <div className="bg-black text-white px-5 py-3 rounded-2xl font-black">
+
+            Total :
+            {" "}
+            {
+              confirmedOrders.length
+            }
+
+          </div>
 
         </div>
 
@@ -94,6 +170,10 @@ export default function OrderStatusPage({
             <thead className="bg-black text-white">
 
               <tr>
+
+                <th className="text-left px-6 py-5 text-sm font-black">
+                  Quotation
+                </th>
 
                 <th className="text-left px-6 py-5 text-sm font-black">
                   Customer
@@ -117,7 +197,7 @@ export default function OrderStatusPage({
 
             <tbody>
 
-              {confirmedOrders.map(
+              {paginatedOrders.map(
                 (q) => (
 
                   <tr
@@ -125,16 +205,28 @@ export default function OrderStatusPage({
                     className="border-b border-gray-100 hover:bg-gray-50 transition-all duration-200"
                   >
 
+                    {/* QUOTATION */}
+                    <td className="px-6 py-5 font-black">
+                      {
+                        q.quotation_no ||
+                        "N/A"
+                      }
+                    </td>
+
                     {/* CUSTOMER */}
                     <td className="px-6 py-5 font-bold">
-                      {q.customer_name ||
-                        "N/A"}
+                      {
+                        q.party ||
+                        "N/A"
+                      }
                     </td>
 
                     {/* SALES PERSON */}
                     <td className="px-6 py-5">
-                      {q.sales_person ||
-                        "N/A"}
+                      {
+                        q.sales_person ||
+                        "N/A"
+                      }
                     </td>
 
                     {/* AMOUNT */}
@@ -165,6 +257,60 @@ export default function OrderStatusPage({
             </tbody>
 
           </table>
+
+        </div>
+
+        {/* PAGINATION */}
+        <div className="flex items-center justify-center gap-3 p-6 border-t border-gray-100">
+
+          {/* PREV */}
+          <button
+            disabled={
+              currentPage === 1
+            }
+            onClick={() =>
+              setCurrentPage(
+                currentPage - 1
+              )
+            }
+            className={`h-12 px-5 rounded-2xl font-black ${
+              currentPage === 1
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                : "bg-black text-white"
+            }`}
+          >
+            Prev
+          </button>
+
+          {/* PAGE NUMBER */}
+          <div className="h-12 px-6 rounded-2xl bg-green-500 text-black font-black flex items-center justify-center">
+
+            {currentPage}
+            {" / "}
+            {totalPages || 1}
+
+          </div>
+
+          {/* NEXT */}
+          <button
+            disabled={
+              currentPage ===
+              totalPages
+            }
+            onClick={() =>
+              setCurrentPage(
+                currentPage + 1
+              )
+            }
+            className={`h-12 px-5 rounded-2xl font-black ${
+              currentPage ===
+              totalPages
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                : "bg-black text-white"
+            }`}
+          >
+            Next
+          </button>
 
         </div>
 
