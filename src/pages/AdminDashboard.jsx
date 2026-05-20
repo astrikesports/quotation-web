@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabase";
+import OrderStatusPage from "./OrderStatusPage";
 import ConfirmDialog from "../components/ConfirmDialog";
 import LoaderOverlay from "../components/LoaderOverlay";
 
@@ -1461,6 +1462,13 @@ export default function AdminDashboard() {
 
         </div>
 
+      )}
+
+      {/* ORDER STATUS PAGE */}
+      {activePage === "order-status" && (
+        <OrderStatusPage
+          quotations={quotations}
+        />
       )}
 
     </div>
