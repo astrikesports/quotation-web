@@ -45,6 +45,7 @@ export default function OrderStatusPage() {
     }
 
     setLoading(false);
+
   };
 
   useEffect(() => {
@@ -52,6 +53,35 @@ export default function OrderStatusPage() {
     fetchOrders();
 
   }, []);
+
+  // =========================
+  // STATUS COLORS
+  // =========================
+
+  const getStatusColor = (
+    status
+  ) => {
+
+    switch (status) {
+
+      case "pending":
+        return "bg-yellow-100 text-yellow-700 border-yellow-200";
+
+      case "confirmed":
+        return "bg-green-100 text-green-700 border-green-200";
+
+      case "preparing":
+        return "bg-orange-100 text-orange-700 border-orange-200";
+
+      case "shipped":
+        return "bg-blue-100 text-blue-700 border-blue-200";
+
+      default:
+        return "bg-gray-100 text-gray-700 border-gray-200";
+
+    }
+
+  };
 
   // =========================
   // COUNTS
@@ -237,7 +267,7 @@ export default function OrderStatusPage() {
       .from("order_status")
 
       .update({
-        bill_url:
+        bill_image:
           publicUrlData.publicUrl,
       })
 
@@ -425,7 +455,7 @@ export default function OrderStatusPage() {
         {/* TABLE */}
         <div className="overflow-x-auto">
 
-          <table className="w-full min-w-[1700px]">
+          <table className="w-full min-w-[1800px]">
 
             <thead className="bg-black text-white">
 
@@ -464,7 +494,7 @@ export default function OrderStatusPage() {
                 </th>
 
                 <th className="text-left px-6 py-5 text-sm font-black">
-                  Quotation
+                  Quotation Image
                 </th>
 
                 <th className="text-left px-6 py-5 text-sm font-black">
@@ -482,7 +512,7 @@ export default function OrderStatusPage() {
 
                   <tr
                     key={order.id}
-                    className="border-b border-gray-100 hover:bg-gray-50"
+                    className="border-b border-gray-100 hover:bg-gray-50 transition-all duration-200"
                   >
 
                     {/* QUOTATION */}
@@ -496,14 +526,16 @@ export default function OrderStatusPage() {
                     {/* CUSTOMER */}
                     <td className="px-6 py-5 font-bold">
                       {
-                        order.customer_name
+                        order.customer_name ||
+                        "N/A"
                       }
                     </td>
 
                     {/* SALES PERSON */}
                     <td className="px-6 py-5">
                       {
-                        order.sales_person
+                        order.sales_person ||
+                        "N/A"
                       }
                     </td>
 
@@ -549,7 +581,9 @@ export default function OrderStatusPage() {
                             e.target.value
                           )
                         }
-                        className="h-11 rounded-2xl border border-gray-200 px-4 font-bold outline-none"
+                        className={`h-11 rounded-2xl border px-4 font-bold outline-none ${getStatusColor(
+                          order.status
+                        )}`}
                       >
 
                         <option value="pending">
@@ -586,8 +620,8 @@ export default function OrderStatusPage() {
                             e.target.value
                           )
                         }
-                        placeholder="Paste Link"
-                        className="w-56 h-11 rounded-2xl border border-gray-200 px-4 outline-none"
+                        placeholder="Paste AWB Link"
+                        className="w-64 h-11 rounded-2xl border border-gray-200 px-4 outline-none"
                       />
 
                     </td>
@@ -597,7 +631,7 @@ export default function OrderStatusPage() {
 
                       <div className="flex items-center gap-3">
 
-                        <label className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center cursor-pointer">
+                        <label className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center cursor-pointer hover:scale-105 transition-all duration-200">
 
                           📄
 
@@ -614,18 +648,15 @@ export default function OrderStatusPage() {
 
                         </label>
 
-                        {order.bill_url && (
+                        {order.bill_image && (
 
-                          <a
-                            href={
-                              order.bill_url
+                          <img
+                            src={
+                              order.bill_image
                             }
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-blue-600 font-bold"
-                          >
-                            View
-                          </a>
+                            alt="bill"
+                            className="w-14 h-14 rounded-2xl object-cover border"
+                          />
 
                         )}
 
@@ -638,7 +669,7 @@ export default function OrderStatusPage() {
 
                       <div className="flex items-center gap-3">
 
-                        <label className="w-12 h-12 rounded-2xl bg-green-500 text-black flex items-center justify-center cursor-pointer">
+                        <label className="w-12 h-12 rounded-2xl bg-green-500 text-black flex items-center justify-center cursor-pointer hover:scale-105 transition-all duration-200">
 
                           🖼️
 
@@ -657,16 +688,13 @@ export default function OrderStatusPage() {
 
                         {order.quotation_image && (
 
-                          <a
-                            href={
+                          <img
+                            src={
                               order.quotation_image
                             }
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-blue-600 font-bold"
-                          >
-                            View
-                          </a>
+                            alt="quotation"
+                            className="w-14 h-14 rounded-2xl object-cover border"
+                          />
 
                         )}
 
@@ -680,10 +708,10 @@ export default function OrderStatusPage() {
                       <button
                         onClick={() =>
                           alert(
-                            "Saved Successfully"
+                            "Order Updated Successfully"
                           )
                         }
-                        className="h-11 px-5 rounded-2xl bg-black text-white font-black"
+                        className="h-11 px-5 rounded-2xl bg-black text-white font-black hover:scale-[1.02] transition-all duration-200"
                       >
                         Save
                       </button>
@@ -716,7 +744,7 @@ export default function OrderStatusPage() {
             }
             className={`h-12 px-5 rounded-2xl font-black ${
               currentPage === 1
-                ? "bg-gray-200 text-gray-400"
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                 : "bg-black text-white"
             }`}
           >
@@ -746,7 +774,7 @@ export default function OrderStatusPage() {
             className={`h-12 px-5 rounded-2xl font-black ${
               currentPage ===
               totalPages
-                ? "bg-gray-200 text-gray-400"
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                 : "bg-black text-white"
             }`}
           >
