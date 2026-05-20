@@ -760,7 +760,7 @@ export default function AdminDashboard() {
               {/* TODAY ORDERS */}
               <div className="p-8 border-b xl:border-b-0 xl:border-r border-gray-100">
           
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between">
           
                   <div>
           
@@ -768,7 +768,7 @@ export default function AdminDashboard() {
                       Today Orders
                     </p>
           
-                    <h2 className="text-5xl font-black mt-4">
+                    <h2 className="text-5xl font-black mt-3">
           
                       {
                         quotations.filter(
@@ -782,6 +782,48 @@ export default function AdminDashboard() {
           
                     </h2>
           
+                    {/* SUB INFO */}
+                    <div className="mt-6 space-y-3">
+          
+                      <div>
+          
+                        <p className="text-xs text-gray-400 font-semibold uppercase">
+                          Total Sale
+                        </p>
+          
+                        <h3 className="text-2xl font-black text-green-600 mt-1">
+          
+                          ₹{
+          
+                            quotations
+          
+                              .filter(
+                                (q) =>
+                                  q.created_at ===
+                                  new Date()
+                                    .toISOString()
+                                    .split("T")[0]
+                              )
+          
+                              .reduce(
+                                (acc, q) =>
+                                  acc +
+                                  Number(
+                                    q.net_amount || 0
+                                  ),
+                                0
+                              )
+          
+                              .toLocaleString()
+          
+                          }
+          
+                        </h3>
+          
+                      </div>
+          
+                    </div>
+          
                   </div>
           
                   <div className="w-16 h-16 rounded-3xl bg-black text-white flex items-center justify-center text-3xl">
@@ -792,159 +834,10 @@ export default function AdminDashboard() {
           
               </div>
           
-              {/* TODAY SALES */}
+              {/* TOTAL CONFIRMED */}
               <div className="p-8 border-b xl:border-b-0 xl:border-r border-gray-100">
           
-                <div className="flex items-center justify-between">
-          
-                  <div>
-          
-                    <p className="text-gray-500 text-sm font-semibold">
-                      Today Sales
-                    </p>
-          
-                    <h2 className="text-5xl font-black mt-4 text-green-600">
-          
-                      ₹{
-          
-                        quotations
-          
-                          .filter(
-                            (q) =>
-                              q.created_at ===
-                              new Date()
-                                .toISOString()
-                                .split("T")[0]
-                          )
-          
-                          .reduce(
-                            (acc, q) =>
-                              acc +
-                              Number(
-                                q.net_amount || 0
-                              ),
-                            0
-                          )
-          
-                          .toLocaleString()
-          
-                      }
-          
-                    </h2>
-          
-                  </div>
-          
-                  <div className="w-16 h-16 rounded-3xl bg-green-500 text-black flex items-center justify-center text-3xl">
-                    💰
-                  </div>
-          
-                </div>
-          
-              </div>
-          
-              {/* TOTAL SHIPPED */}
-              <div className="p-8 border-b md:border-b-0 xl:border-r border-gray-100">
-          
-                <div className="flex items-center justify-between">
-          
-                  <div>
-          
-                    <p className="text-gray-500 text-sm font-semibold">
-                      Total Shipped
-                    </p>
-          
-                    <h2 className="text-5xl font-black mt-4 text-blue-600">
-          
-                      {
-                        quotations.filter(
-                          (q) =>
-                            q.status ===
-                            "shipped"
-                        ).length
-                      }
-          
-                    </h2>
-          
-                  </div>
-          
-                  <div className="w-16 h-16 rounded-3xl bg-blue-500 text-white flex items-center justify-center text-3xl">
-                    🚚
-                  </div>
-          
-                </div>
-          
-              </div>
-          
-              {/* TOTAL PENDING */}
-              <div className="p-8">
-          
-                <div className="flex items-center justify-between">
-          
-                  <div>
-          
-                    <p className="text-gray-500 text-sm font-semibold">
-                      Total Pending
-                    </p>
-          
-                    <h2 className="text-5xl font-black mt-4 text-yellow-500">
-          
-                      {
-                        quotations.filter(
-                          (q) =>
-                            q.status ===
-                            "pending"
-                        ).length
-                      }
-          
-                    </h2>
-          
-                  </div>
-          
-                  <div className="w-16 h-16 rounded-3xl bg-yellow-400 text-black flex items-center justify-center text-3xl">
-                    ⏳
-                  </div>
-          
-                </div>
-          
-              </div>
-          
-              {/* TOTAL PREPARING */}
-              <div className="p-8 border-t border-gray-100 xl:border-r">
-          
-                <div className="flex items-center justify-between">
-          
-                  <div>
-          
-                    <p className="text-gray-500 text-sm font-semibold">
-                      Total Preparing
-                    </p>
-          
-                    <h2 className="text-5xl font-black mt-4 text-orange-500">
-          
-                      {
-                        quotations.filter(
-                          (q) =>
-                            q.status ===
-                            "preparing"
-                        ).length
-                      }
-          
-                    </h2>
-          
-                  </div>
-          
-                  <div className="w-16 h-16 rounded-3xl bg-orange-500 text-white flex items-center justify-center text-3xl">
-                    📋
-                  </div>
-          
-                </div>
-          
-              </div>
-          
-              {/* TOTAL CONFIRMED */}
-              <div className="p-8 border-t border-gray-100 xl:border-r">
-          
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between">
           
                   <div>
           
@@ -952,7 +845,7 @@ export default function AdminDashboard() {
                       Total Confirmed
                     </p>
           
-                    <h2 className="text-5xl font-black mt-4 text-green-500">
+                    <h2 className="text-5xl font-black mt-3 text-green-500">
           
                       {
                         quotations.filter(
@@ -964,6 +857,28 @@ export default function AdminDashboard() {
           
                     </h2>
           
+                    {/* SUB INFO */}
+                    <div className="mt-6 space-y-3">
+          
+                      <div>
+          
+                        <p className="text-xs text-gray-400 font-semibold uppercase">
+                          Total Sale
+                        </p>
+          
+                        <h3 className="text-2xl font-black mt-1">
+          
+                          ₹{
+                            getTotalSales()
+                              .toLocaleString()
+                          }
+          
+                        </h3>
+          
+                      </div>
+          
+                    </div>
+          
                   </div>
           
                   <div className="w-16 h-16 rounded-3xl bg-green-500 text-black flex items-center justify-center text-3xl">
@@ -974,40 +889,10 @@ export default function AdminDashboard() {
           
               </div>
           
-              {/* TOTAL SALES */}
-              <div className="p-8 border-t border-gray-100 xl:border-r">
-          
-                <div className="flex items-center justify-between">
-          
-                  <div>
-          
-                    <p className="text-gray-500 text-sm font-semibold">
-                      Total Sales
-                    </p>
-          
-                    <h2 className="text-5xl font-black mt-4">
-          
-                      ₹{
-                        getTotalSales()
-                          .toLocaleString()
-                      }
-          
-                    </h2>
-          
-                  </div>
-          
-                  <div className="w-16 h-16 rounded-3xl bg-black text-white flex items-center justify-center text-3xl">
-                    📈
-                  </div>
-          
-                </div>
-          
-              </div>
-          
               {/* TOTAL PROFIT */}
-              <div className="p-8 border-t border-gray-100">
+              <div className="p-8 border-b md:border-b-0 xl:border-r border-gray-100">
           
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between">
           
                   <div>
           
@@ -1015,7 +900,7 @@ export default function AdminDashboard() {
                       Total Profit
                     </p>
           
-                    <h2 className="text-5xl font-black mt-4 text-green-600">
+                    <h2 className="text-5xl font-black mt-3 text-green-600">
           
                       ₹{
                         getProfit()
@@ -1025,10 +910,85 @@ export default function AdminDashboard() {
           
                     </h2>
           
+                    {/* SUB INFO */}
+                    <div className="mt-6 space-y-3">
+          
+                      <div>
+          
+                        <p className="text-xs text-gray-400 font-semibold uppercase">
+                          Profit %
+                        </p>
+          
+                        <h3 className="text-2xl font-black mt-1">
+                          9.5%
+                        </h3>
+          
+                      </div>
+          
+                    </div>
+          
                   </div>
           
                   <div className="w-16 h-16 rounded-3xl bg-green-500 text-black flex items-center justify-center text-3xl">
                     🔥
+                  </div>
+          
+                </div>
+          
+              </div>
+          
+              {/* TOTAL SHIPPED */}
+              <div className="p-8">
+          
+                <div className="flex items-start justify-between">
+          
+                  <div>
+          
+                    <p className="text-gray-500 text-sm font-semibold">
+                      Total Shipped
+                    </p>
+          
+                    <h2 className="text-5xl font-black mt-3 text-blue-600">
+          
+                      {
+                        quotations.filter(
+                          (q) =>
+                            q.status ===
+                            "shipped"
+                        ).length
+                      }
+          
+                    </h2>
+          
+                    {/* SUB INFO */}
+                    <div className="mt-6 space-y-3">
+          
+                      <div>
+          
+                        <p className="text-xs text-gray-400 font-semibold uppercase">
+                          Pending
+                        </p>
+          
+                        <h3 className="text-2xl font-black text-yellow-500 mt-1">
+          
+                          {
+                            quotations.filter(
+                              (q) =>
+                                q.status ===
+                                "pending"
+                            ).length
+                          }
+          
+                        </h3>
+          
+                      </div>
+          
+                    </div>
+          
+                  </div>
+          
+                  <div className="w-16 h-16 rounded-3xl bg-blue-500 text-white flex items-center justify-center text-3xl">
+                    🚚
                   </div>
           
                 </div>
