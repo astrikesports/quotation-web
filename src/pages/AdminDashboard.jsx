@@ -745,11 +745,11 @@ export default function AdminDashboard() {
             <div className="px-8 py-6 border-b border-gray-100">
           
               <h2 className="text-3xl font-black">
-                Order Analytics
+                Today Analytics
               </h2>
           
               <p className="text-gray-500 mt-2">
-                Live order performance summary
+                Today's live order summary
               </p>
           
             </div>
@@ -757,7 +757,7 @@ export default function AdminDashboard() {
             {/* GRID */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
           
-              {/* TODAY ORDERS */}
+              {/* TODAY CONFIRMED */}
               <div className="p-8 border-b xl:border-b-0 xl:border-r border-gray-100">
           
                 <div className="flex items-start justify-between">
@@ -765,84 +765,7 @@ export default function AdminDashboard() {
                   <div>
           
                     <p className="text-gray-500 text-sm font-semibold">
-                      Today Orders
-                    </p>
-          
-                    <h2 className="text-5xl font-black mt-3">
-          
-                      {
-                        quotations.filter(
-                          (q) =>
-                            q.created_at ===
-                            new Date()
-                              .toISOString()
-                              .split("T")[0]
-                        ).length
-                      }
-          
-                    </h2>
-          
-                    {/* SUB INFO */}
-                    <div className="mt-6 space-y-3">
-          
-                      <div>
-          
-                        <p className="text-xs text-gray-400 font-semibold uppercase">
-                          Total Sale
-                        </p>
-          
-                        <h3 className="text-2xl font-black text-green-600 mt-1">
-          
-                          ₹{
-          
-                            quotations
-          
-                              .filter(
-                                (q) =>
-                                  q.created_at ===
-                                  new Date()
-                                    .toISOString()
-                                    .split("T")[0]
-                              )
-          
-                              .reduce(
-                                (acc, q) =>
-                                  acc +
-                                  Number(
-                                    q.net_amount || 0
-                                  ),
-                                0
-                              )
-          
-                              .toLocaleString()
-          
-                          }
-          
-                        </h3>
-          
-                      </div>
-          
-                    </div>
-          
-                  </div>
-          
-                  <div className="w-16 h-16 rounded-3xl bg-black text-white flex items-center justify-center text-3xl">
-                    📦
-                  </div>
-          
-                </div>
-          
-              </div>
-          
-              {/* TOTAL CONFIRMED */}
-              <div className="p-8 border-b xl:border-b-0 xl:border-r border-gray-100">
-          
-                <div className="flex items-start justify-between">
-          
-                  <div>
-          
-                    <p className="text-gray-500 text-sm font-semibold">
-                      Total Confirmed
+                      Today Confirmed
                     </p>
           
                     <h2 className="text-5xl font-black mt-3 text-green-500">
@@ -851,31 +774,53 @@ export default function AdminDashboard() {
                         quotations.filter(
                           (q) =>
                             q.status ===
-                            "confirmed"
+                              "confirmed" &&
+                            q.created_at ===
+                              new Date()
+                                .toISOString()
+                                .split("T")[0]
                         ).length
                       }
           
                     </h2>
           
-                    {/* SUB INFO */}
-                    <div className="mt-6 space-y-3">
+                    {/* AMOUNT */}
+                    <div className="mt-6">
           
-                      <div>
+                      <p className="text-xs text-gray-400 font-semibold uppercase">
+                        Amount
+                      </p>
           
-                        <p className="text-xs text-gray-400 font-semibold uppercase">
-                          Total Sale
-                        </p>
+                      <h3 className="text-2xl font-black text-green-600 mt-1">
           
-                        <h3 className="text-2xl font-black mt-1">
+                        ₹{
           
-                          ₹{
-                            getTotalSales()
-                              .toLocaleString()
-                          }
+                          quotations
           
-                        </h3>
+                            .filter(
+                              (q) =>
+                                q.status ===
+                                  "confirmed" &&
+                                q.created_at ===
+                                  new Date()
+                                    .toISOString()
+                                    .split("T")[0]
+                            )
           
-                      </div>
+                            .reduce(
+                              (acc, q) =>
+                                acc +
+                                Number(
+                                  q.net_amount || 0
+                                ),
+                              0
+                            )
+          
+                            .toLocaleString()
+          
+                        }
+          
+                      </h3>
           
                     </div>
           
@@ -889,63 +834,15 @@ export default function AdminDashboard() {
           
               </div>
           
-              {/* TOTAL PROFIT */}
-              <div className="p-8 border-b md:border-b-0 xl:border-r border-gray-100">
+              {/* TODAY SHIPPED */}
+              <div className="p-8 border-b xl:border-b-0 xl:border-r border-gray-100">
           
                 <div className="flex items-start justify-between">
           
                   <div>
           
                     <p className="text-gray-500 text-sm font-semibold">
-                      Total Profit
-                    </p>
-          
-                    <h2 className="text-5xl font-black mt-3 text-green-600">
-          
-                      ₹{
-                        getProfit()
-                          .toFixed(0)
-                          .toLocaleString()
-                      }
-          
-                    </h2>
-          
-                    {/* SUB INFO */}
-                    <div className="mt-6 space-y-3">
-          
-                      <div>
-          
-                        <p className="text-xs text-gray-400 font-semibold uppercase">
-                          Profit %
-                        </p>
-          
-                        <h3 className="text-2xl font-black mt-1">
-                          9.5%
-                        </h3>
-          
-                      </div>
-          
-                    </div>
-          
-                  </div>
-          
-                  <div className="w-16 h-16 rounded-3xl bg-green-500 text-black flex items-center justify-center text-3xl">
-                    🔥
-                  </div>
-          
-                </div>
-          
-              </div>
-          
-              {/* TOTAL SHIPPED */}
-              <div className="p-8">
-          
-                <div className="flex items-start justify-between">
-          
-                  <div>
-          
-                    <p className="text-gray-500 text-sm font-semibold">
-                      Total Shipped
+                      Today Shipped
                     </p>
           
                     <h2 className="text-5xl font-black mt-3 text-blue-600">
@@ -954,34 +851,53 @@ export default function AdminDashboard() {
                         quotations.filter(
                           (q) =>
                             q.status ===
-                            "shipped"
+                              "shipped" &&
+                            q.created_at ===
+                              new Date()
+                                .toISOString()
+                                .split("T")[0]
                         ).length
                       }
           
                     </h2>
           
-                    {/* SUB INFO */}
-                    <div className="mt-6 space-y-3">
+                    {/* AMOUNT */}
+                    <div className="mt-6">
           
-                      <div>
+                      <p className="text-xs text-gray-400 font-semibold uppercase">
+                        Amount
+                      </p>
           
-                        <p className="text-xs text-gray-400 font-semibold uppercase">
-                          Pending
-                        </p>
+                      <h3 className="text-2xl font-black text-blue-600 mt-1">
           
-                        <h3 className="text-2xl font-black text-yellow-500 mt-1">
+                        ₹{
           
-                          {
-                            quotations.filter(
+                          quotations
+          
+                            .filter(
                               (q) =>
                                 q.status ===
-                                "pending"
-                            ).length
-                          }
+                                  "shipped" &&
+                                q.created_at ===
+                                  new Date()
+                                    .toISOString()
+                                    .split("T")[0]
+                            )
           
-                        </h3>
+                            .reduce(
+                              (acc, q) =>
+                                acc +
+                                Number(
+                                  q.net_amount || 0
+                                ),
+                              0
+                            )
           
-                      </div>
+                            .toLocaleString()
+          
+                        }
+          
+                      </h3>
           
                     </div>
           
@@ -989,6 +905,160 @@ export default function AdminDashboard() {
           
                   <div className="w-16 h-16 rounded-3xl bg-blue-500 text-white flex items-center justify-center text-3xl">
                     🚚
+                  </div>
+          
+                </div>
+          
+              </div>
+          
+              {/* TODAY PENDING */}
+              <div className="p-8 border-b md:border-b-0 xl:border-r border-gray-100">
+          
+                <div className="flex items-start justify-between">
+          
+                  <div>
+          
+                    <p className="text-gray-500 text-sm font-semibold">
+                      Today Pending
+                    </p>
+          
+                    <h2 className="text-5xl font-black mt-3 text-yellow-500">
+          
+                      {
+                        quotations.filter(
+                          (q) =>
+                            q.status ===
+                              "pending" &&
+                            q.created_at ===
+                              new Date()
+                                .toISOString()
+                                .split("T")[0]
+                        ).length
+                      }
+          
+                    </h2>
+          
+                    {/* AMOUNT */}
+                    <div className="mt-6">
+          
+                      <p className="text-xs text-gray-400 font-semibold uppercase">
+                        Amount
+                      </p>
+          
+                      <h3 className="text-2xl font-black text-yellow-500 mt-1">
+          
+                        ₹{
+          
+                          quotations
+          
+                            .filter(
+                              (q) =>
+                                q.status ===
+                                  "pending" &&
+                                q.created_at ===
+                                  new Date()
+                                    .toISOString()
+                                    .split("T")[0]
+                            )
+          
+                            .reduce(
+                              (acc, q) =>
+                                acc +
+                                Number(
+                                  q.net_amount || 0
+                                ),
+                              0
+                            )
+          
+                            .toLocaleString()
+          
+                        }
+          
+                      </h3>
+          
+                    </div>
+          
+                  </div>
+          
+                  <div className="w-16 h-16 rounded-3xl bg-yellow-400 text-black flex items-center justify-center text-3xl">
+                    ⏳
+                  </div>
+          
+                </div>
+          
+              </div>
+          
+              {/* TODAY PREPARING */}
+              <div className="p-8">
+          
+                <div className="flex items-start justify-between">
+          
+                  <div>
+          
+                    <p className="text-gray-500 text-sm font-semibold">
+                      Today Preparing
+                    </p>
+          
+                    <h2 className="text-5xl font-black mt-3 text-orange-500">
+          
+                      {
+                        quotations.filter(
+                          (q) =>
+                            q.status ===
+                              "preparing" &&
+                            q.created_at ===
+                              new Date()
+                                .toISOString()
+                                .split("T")[0]
+                        ).length
+                      }
+          
+                    </h2>
+          
+                    {/* AMOUNT */}
+                    <div className="mt-6">
+          
+                      <p className="text-xs text-gray-400 font-semibold uppercase">
+                        Amount
+                      </p>
+          
+                      <h3 className="text-2xl font-black text-orange-500 mt-1">
+          
+                        ₹{
+          
+                          quotations
+          
+                            .filter(
+                              (q) =>
+                                q.status ===
+                                  "preparing" &&
+                                q.created_at ===
+                                  new Date()
+                                    .toISOString()
+                                    .split("T")[0]
+                            )
+          
+                            .reduce(
+                              (acc, q) =>
+                                acc +
+                                Number(
+                                  q.net_amount || 0
+                                ),
+                              0
+                            )
+          
+                            .toLocaleString()
+          
+                        }
+          
+                      </h3>
+          
+                    </div>
+          
+                  </div>
+          
+                  <div className="w-16 h-16 rounded-3xl bg-orange-500 text-white flex items-center justify-center text-3xl">
+                    📋
                   </div>
           
                 </div>
