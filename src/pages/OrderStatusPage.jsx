@@ -6,7 +6,10 @@ import React, {
 
 import { supabase } from "../supabase";
 
-export default function OrderStatusPage() {
+export default function OrderStatusPage({
+  quotations = [],
+  orders = [],
+}) {
 
   const [orders, setOrders] =
     useState([]);
