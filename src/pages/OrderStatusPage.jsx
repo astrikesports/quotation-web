@@ -37,7 +37,7 @@ export default function OrderStatusPage({
         .select("*")
 
         .order("created_date", {
-          ascending: false,
+          ascending: true,
         });
 
     if (!error) {
