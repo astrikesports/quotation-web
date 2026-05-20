@@ -637,6 +637,7 @@ export default function OrderStatusPage() {
 
                           <input
                             type="file"
+                            accept="image/*,.pdf"
                             hidden
                             onChange={(e) =>
                               uploadBill(
@@ -650,13 +651,16 @@ export default function OrderStatusPage() {
 
                         {order.bill_image && (
 
-                          <img
-                            src={
+                          <a
+                            href={
                               order.bill_image
                             }
-                            alt="bill"
-                            className="w-14 h-14 rounded-2xl object-cover border"
-                          />
+                            target="_blank"
+                            rel="noreferrer"
+                            className="h-11 px-4 rounded-2xl bg-blue-500 text-white font-black flex items-center justify-center"
+                          >
+                            View
+                          </a>
 
                         )}
 
@@ -675,6 +679,7 @@ export default function OrderStatusPage() {
 
                           <input
                             type="file"
+                            accept="image/*"
                             hidden
                             onChange={(e) =>
                               uploadQuotationImage(
