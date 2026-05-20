@@ -841,6 +841,8 @@ export default function AdminDashboard() {
                 </div>
           
               </div>
+
+              )}
           
               {/* TOTAL SHIPPED */}
               <div className="p-8 border-b md:border-b-0 xl:border-r border-gray-100">
