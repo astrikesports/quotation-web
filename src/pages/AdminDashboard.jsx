@@ -35,9 +35,13 @@ export default function AdminDashboard() {
 
   // LOAD
   useEffect(() => {
-    fetchProducts();
-    fetchSalesPersons();
 
+    fetchProducts();
+  
+    fetchSalesPersons();
+  
+    fetchOrders();
+  
   }, []);
 
   // FETCH
@@ -107,7 +111,7 @@ export default function AdminDashboard() {
   
         .select("*")
   
-        .order("created_at", {
+        .order("created_date", {
           ascending: false,
         });
   
