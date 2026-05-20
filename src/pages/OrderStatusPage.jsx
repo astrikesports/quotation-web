@@ -488,7 +488,8 @@ export default function OrderStatusPage() {
                     {/* QUOTATION */}
                     <td className="px-6 py-5 font-black">
                       {
-                        order.quotation_id
+                        order.quotation_no ||
+                        "N/A"
                       }
                     </td>
 
