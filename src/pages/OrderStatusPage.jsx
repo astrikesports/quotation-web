@@ -141,11 +141,11 @@ export default function OrderStatusPage({
           <div>
 
             <h2 className="text-3xl font-black">
-              Confirmed Orders
+              Order Status
             </h2>
 
             <p className="text-gray-500 mt-2">
-              Showing confirmed orders
+              Manage all orders
             </p>
 
           </div>
@@ -165,7 +165,7 @@ export default function OrderStatusPage({
         {/* TABLE */}
         <div className="overflow-x-auto">
 
-          <table className="w-full">
+          <table className="w-full min-w-[1400px]">
 
             <thead className="bg-black text-white">
 
@@ -188,7 +188,27 @@ export default function OrderStatusPage({
                 </th>
 
                 <th className="text-left px-6 py-5 text-sm font-black">
+                  COD Amount
+                </th>
+
+                <th className="text-left px-6 py-5 text-sm font-black">
                   Status
+                </th>
+
+                <th className="text-left px-6 py-5 text-sm font-black">
+                  AWB Link
+                </th>
+
+                <th className="text-left px-6 py-5 text-sm font-black">
+                  Bill
+                </th>
+
+                <th className="text-left px-6 py-5 text-sm font-black">
+                  Quotation Img
+                </th>
+
+                <th className="text-left px-6 py-5 text-sm font-black">
+                  Action
                 </th>
 
               </tr>
@@ -238,14 +258,98 @@ export default function OrderStatusPage({
                       }
                     </td>
 
+                    {/* COD */}
+                    <td className="px-6 py-5">
+
+                      <input
+                        type="number"
+                        placeholder="COD"
+                        className="w-28 h-11 rounded-2xl border border-gray-200 px-4 outline-none"
+                      />
+
+                    </td>
+
                     {/* STATUS */}
                     <td className="px-6 py-5">
 
-                      <div className="inline-flex items-center px-4 py-2 rounded-2xl bg-green-100 text-green-700 text-sm font-black">
+                      <select
+                        defaultValue={
+                          q.status
+                        }
+                        className="h-11 rounded-2xl border border-gray-200 px-4 font-bold outline-none"
+                      >
 
-                        Confirmed
+                        <option value="pending">
+                          Pending
+                        </option>
 
-                      </div>
+                        <option value="confirmed">
+                          Confirmed
+                        </option>
+
+                        <option value="preparing">
+                          Preparing
+                        </option>
+
+                        <option value="shipped">
+                          Shipped
+                        </option>
+
+                      </select>
+
+                    </td>
+
+                    {/* AWB */}
+                    <td className="px-6 py-5">
+
+                      <input
+                        type="text"
+                        placeholder="Paste Link"
+                        className="w-48 h-11 rounded-2xl border border-gray-200 px-4 outline-none"
+                      />
+
+                    </td>
+
+                    {/* BILL */}
+                    <td className="px-6 py-5">
+
+                      <label className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center cursor-pointer hover:scale-105 transition-all duration-200">
+
+                        📄
+
+                        <input
+                          type="file"
+                          hidden
+                        />
+
+                      </label>
+
+                    </td>
+
+                    {/* QUOTATION IMAGE */}
+                    <td className="px-6 py-5">
+
+                      <label className="w-12 h-12 rounded-2xl bg-green-500 text-black flex items-center justify-center cursor-pointer hover:scale-105 transition-all duration-200">
+
+                        🖼️
+
+                        <input
+                          type="file"
+                          hidden
+                        />
+
+                      </label>
+
+                    </td>
+
+                    {/* ACTION */}
+                    <td className="px-6 py-5">
+
+                      <button
+                        className="h-11 px-5 rounded-2xl bg-black text-white font-black hover:scale-[1.02] transition-all duration-200"
+                      >
+                        Save
+                      </button>
 
                     </td>
 
@@ -282,7 +386,7 @@ export default function OrderStatusPage({
             Prev
           </button>
 
-          {/* PAGE NUMBER */}
+          {/* PAGE */}
           <div className="h-12 px-6 rounded-2xl bg-green-500 text-black font-black flex items-center justify-center">
 
             {currentPage}
