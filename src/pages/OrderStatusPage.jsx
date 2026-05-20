@@ -1,46 +1,92 @@
 import React, {
+  useEffect,
   useMemo,
   useState,
 } from "react";
 
-export default function OrderStatusPage({
-  quotations = [],
-}) {
+import { supabase } from "../supabase";
+
+export default function OrderStatusPage() {
+
+  const [orders, setOrders] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(false);
 
   const [currentPage, setCurrentPage] =
     useState(1);
 
   const ordersPerPage = 10;
 
-  // FILTERS
+  // =========================
+  // FETCH ORDERS
+  // =========================
+
+  const fetchOrders = async () => {
+
+    setLoading(true);
+
+    const { data, error } =
+      await supabase
+
+        .from("order_status")
+
+        .select("*")
+
+        .order("created_at", {
+          ascending: false,
+        });
+
+    if (!error) {
+
+      setOrders(data || []);
+
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+
+    fetchOrders();
+
+  }, []);
+
+  // =========================
+  // COUNTS
+  // =========================
+
   const confirmedOrders =
-    quotations.filter(
-      (q) =>
-        q.status === "confirmed"
+    orders.filter(
+      (o) =>
+        o.status === "confirmed"
     );
 
   const pendingOrders =
-    quotations.filter(
-      (q) =>
-        q.status === "pending"
+    orders.filter(
+      (o) =>
+        o.status === "pending"
     );
 
   const preparingOrders =
-    quotations.filter(
-      (q) =>
-        q.status === "preparing"
+    orders.filter(
+      (o) =>
+        o.status === "preparing"
     );
 
   const shippedOrders =
-    quotations.filter(
-      (q) =>
-        q.status === "shipped"
+    orders.filter(
+      (o) =>
+        o.status === "shipped"
     );
 
+  // =========================
   // PAGINATION
+  // =========================
+
   const totalPages = Math.ceil(
-    confirmedOrders.length /
-      ordersPerPage
+    orders.length / ordersPerPage
   );
 
   const paginatedOrders =
@@ -53,19 +99,235 @@ export default function OrderStatusPage({
       const end =
         start + ordersPerPage;
 
-      return confirmedOrders.slice(
+      return orders.slice(
         start,
         end
       );
 
-    }, [
-      confirmedOrders,
-      currentPage,
-    ]);
+    }, [orders, currentPage]);
+
+  // =========================
+  // UPDATE STATUS
+  // =========================
+
+  const updateStatus = async (
+    id,
+    status
+  ) => {
+
+    const { error } =
+      await supabase
+
+        .from("order_status")
+
+        .update({
+          status,
+        })
+
+        .eq("id", id);
+
+    if (!error) {
+
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.id === id
+            ? {
+                ...o,
+                status,
+              }
+            : o
+        )
+      );
+
+    }
+
+  };
+
+  // =========================
+  // UPDATE COD
+  // =========================
+
+  const updateCOD = async (
+    id,
+    cod_amount
+  ) => {
+
+    await supabase
+
+      .from("order_status")
+
+      .update({
+        cod_amount,
+      })
+
+      .eq("id", id);
+
+  };
+
+  // =========================
+  // UPDATE AWB
+  // =========================
+
+  const updateAWB = async (
+    id,
+    awb_link
+  ) => {
+
+    await supabase
+
+      .from("order_status")
+
+      .update({
+        awb_link,
+      })
+
+      .eq("id", id);
+
+  };
+
+  // =========================
+  // BILL UPLOAD
+  // =========================
+
+  const uploadBill = async (
+    e,
+    order
+  ) => {
+
+    const file =
+      e.target.files[0];
+
+    if (!file) return;
+
+    const fileName =
+      `bill-${Date.now()}-${file.name}`;
+
+    const { error } =
+      await supabase.storage
+
+        .from("bills")
+
+        .upload(
+          fileName,
+          file
+        );
+
+    if (error) {
+
+      alert(
+        "Bill Upload Failed"
+      );
+
+      return;
+
+    }
+
+    const {
+      data: publicUrlData,
+    } = supabase.storage
+
+      .from("bills")
+
+      .getPublicUrl(
+        fileName
+      );
+
+    await supabase
+
+      .from("order_status")
+
+      .update({
+        bill_url:
+          publicUrlData.publicUrl,
+      })
+
+      .eq("id", order.id);
+
+    fetchOrders();
+
+  };
+
+  // =========================
+  // QUOTATION IMAGE
+  // =========================
+
+  const uploadQuotationImage =
+    async (
+      e,
+      order
+    ) => {
+
+      const file =
+        e.target.files[0];
+
+      if (!file) return;
+
+      const fileName =
+        `quotation-${Date.now()}-${file.name}`;
+
+      const { error } =
+        await supabase.storage
+
+          .from("quotations")
+
+          .upload(
+            fileName,
+            file
+          );
+
+      if (error) {
+
+        alert(
+          "Quotation Upload Failed"
+        );
+
+        return;
+
+      }
+
+      const {
+        data: publicUrlData,
+      } = supabase.storage
+
+        .from("quotations")
+
+        .getPublicUrl(
+          fileName
+        );
+
+      await supabase
+
+        .from("order_status")
+
+        .update({
+          quotation_image:
+            publicUrlData.publicUrl,
+        })
+
+        .eq("id", order.id);
+
+      fetchOrders();
+
+    };
 
   return (
 
     <div className="space-y-8">
+
+      {/* LOADING */}
+      {loading && (
+
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+
+          <div className="bg-white px-8 py-5 rounded-3xl font-black text-xl">
+
+            Loading...
+
+          </div>
+
+        </div>
+
+      )}
 
       {/* TOP CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -154,9 +416,7 @@ export default function OrderStatusPage({
 
             Total :
             {" "}
-            {
-              confirmedOrders.length
-            }
+            {orders.length}
 
           </div>
 
@@ -165,7 +425,7 @@ export default function OrderStatusPage({
         {/* TABLE */}
         <div className="overflow-x-auto">
 
-          <table className="w-full min-w-[1400px]">
+          <table className="w-full min-w-[1700px]">
 
             <thead className="bg-black text-white">
 
@@ -188,7 +448,7 @@ export default function OrderStatusPage({
                 </th>
 
                 <th className="text-left px-6 py-5 text-sm font-black">
-                  COD Amount
+                  COD
                 </th>
 
                 <th className="text-left px-6 py-5 text-sm font-black">
@@ -204,7 +464,7 @@ export default function OrderStatusPage({
                 </th>
 
                 <th className="text-left px-6 py-5 text-sm font-black">
-                  Quotation Img
+                  Quotation
                 </th>
 
                 <th className="text-left px-6 py-5 text-sm font-black">
@@ -218,34 +478,31 @@ export default function OrderStatusPage({
             <tbody>
 
               {paginatedOrders.map(
-                (q) => (
+                (order) => (
 
                   <tr
-                    key={q.id}
-                    className="border-b border-gray-100 hover:bg-gray-50 transition-all duration-200"
+                    key={order.id}
+                    className="border-b border-gray-100 hover:bg-gray-50"
                   >
 
                     {/* QUOTATION */}
                     <td className="px-6 py-5 font-black">
                       {
-                        q.quotation_no ||
-                        "N/A"
+                        order.quotation_id
                       }
                     </td>
 
                     {/* CUSTOMER */}
                     <td className="px-6 py-5 font-bold">
                       {
-                        q.party ||
-                        "N/A"
+                        order.customer_name
                       }
                     </td>
 
                     {/* SALES PERSON */}
                     <td className="px-6 py-5">
                       {
-                        q.sales_person ||
-                        "N/A"
+                        order.sales_person
                       }
                     </td>
 
@@ -253,7 +510,7 @@ export default function OrderStatusPage({
                     <td className="px-6 py-5 font-black">
                       ₹{
                         Number(
-                          q.net_amount || 0
+                          order.total_amount || 0
                         ).toLocaleString()
                       }
                     </td>
@@ -263,6 +520,15 @@ export default function OrderStatusPage({
 
                       <input
                         type="number"
+                        defaultValue={
+                          order.cod_amount || ""
+                        }
+                        onBlur={(e) =>
+                          updateCOD(
+                            order.id,
+                            e.target.value
+                          )
+                        }
                         placeholder="COD"
                         className="w-28 h-11 rounded-2xl border border-gray-200 px-4 outline-none"
                       />
@@ -273,8 +539,14 @@ export default function OrderStatusPage({
                     <td className="px-6 py-5">
 
                       <select
-                        defaultValue={
-                          q.status
+                        value={
+                          order.status
+                        }
+                        onChange={(e) =>
+                          updateStatus(
+                            order.id,
+                            e.target.value
+                          )
                         }
                         className="h-11 rounded-2xl border border-gray-200 px-4 font-bold outline-none"
                       >
@@ -304,8 +576,17 @@ export default function OrderStatusPage({
 
                       <input
                         type="text"
+                        defaultValue={
+                          order.awb_link || ""
+                        }
+                        onBlur={(e) =>
+                          updateAWB(
+                            order.id,
+                            e.target.value
+                          )
+                        }
                         placeholder="Paste Link"
-                        className="w-48 h-11 rounded-2xl border border-gray-200 px-4 outline-none"
+                        className="w-56 h-11 rounded-2xl border border-gray-200 px-4 outline-none"
                       />
 
                     </td>
@@ -313,32 +594,82 @@ export default function OrderStatusPage({
                     {/* BILL */}
                     <td className="px-6 py-5">
 
-                      <label className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center cursor-pointer hover:scale-105 transition-all duration-200">
+                      <div className="flex items-center gap-3">
 
-                        📄
+                        <label className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center cursor-pointer">
 
-                        <input
-                          type="file"
-                          hidden
-                        />
+                          📄
 
-                      </label>
+                          <input
+                            type="file"
+                            hidden
+                            onChange={(e) =>
+                              uploadBill(
+                                e,
+                                order
+                              )
+                            }
+                          />
+
+                        </label>
+
+                        {order.bill_url && (
+
+                          <a
+                            href={
+                              order.bill_url
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-blue-600 font-bold"
+                          >
+                            View
+                          </a>
+
+                        )}
+
+                      </div>
 
                     </td>
 
                     {/* QUOTATION IMAGE */}
                     <td className="px-6 py-5">
 
-                      <label className="w-12 h-12 rounded-2xl bg-green-500 text-black flex items-center justify-center cursor-pointer hover:scale-105 transition-all duration-200">
+                      <div className="flex items-center gap-3">
 
-                        🖼️
+                        <label className="w-12 h-12 rounded-2xl bg-green-500 text-black flex items-center justify-center cursor-pointer">
 
-                        <input
-                          type="file"
-                          hidden
-                        />
+                          🖼️
 
-                      </label>
+                          <input
+                            type="file"
+                            hidden
+                            onChange={(e) =>
+                              uploadQuotationImage(
+                                e,
+                                order
+                              )
+                            }
+                          />
+
+                        </label>
+
+                        {order.quotation_image && (
+
+                          <a
+                            href={
+                              order.quotation_image
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-blue-600 font-bold"
+                          >
+                            View
+                          </a>
+
+                        )}
+
+                      </div>
 
                     </td>
 
@@ -346,7 +677,12 @@ export default function OrderStatusPage({
                     <td className="px-6 py-5">
 
                       <button
-                        className="h-11 px-5 rounded-2xl bg-black text-white font-black hover:scale-[1.02] transition-all duration-200"
+                        onClick={() =>
+                          alert(
+                            "Saved Successfully"
+                          )
+                        }
+                        className="h-11 px-5 rounded-2xl bg-black text-white font-black"
                       >
                         Save
                       </button>
@@ -379,7 +715,7 @@ export default function OrderStatusPage({
             }
             className={`h-12 px-5 rounded-2xl font-black ${
               currentPage === 1
-                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                ? "bg-gray-200 text-gray-400"
                 : "bg-black text-white"
             }`}
           >
@@ -409,7 +745,7 @@ export default function OrderStatusPage({
             className={`h-12 px-5 rounded-2xl font-black ${
               currentPage ===
               totalPages
-                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                ? "bg-gray-200 text-gray-400"
                 : "bg-black text-white"
             }`}
           >
