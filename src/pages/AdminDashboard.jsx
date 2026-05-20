@@ -745,11 +745,11 @@ export default function AdminDashboard() {
             <div className="px-8 py-6 border-b border-gray-100">
           
               <h2 className="text-3xl font-black">
-                Today Analytics
+                Order Analytics
               </h2>
           
               <p className="text-gray-500 mt-2">
-                Today's live order summary
+                Live order performance summary
               </p>
           
             </div>
@@ -834,7 +834,7 @@ export default function AdminDashboard() {
           
               </div>
           
-              {/* TODAY SHIPPED */}
+              {/* TOTAL SHIPPED */}
               <div className="p-8 border-b xl:border-b-0 xl:border-r border-gray-100">
           
                 <div className="flex items-start justify-between">
@@ -842,7 +842,7 @@ export default function AdminDashboard() {
                   <div>
           
                     <p className="text-gray-500 text-sm font-semibold">
-                      Today Shipped
+                      Total Shipped
                     </p>
           
                     <h2 className="text-5xl font-black mt-3 text-blue-600">
@@ -851,11 +851,7 @@ export default function AdminDashboard() {
                         quotations.filter(
                           (q) =>
                             q.status ===
-                              "shipped" &&
-                            q.created_at ===
-                              new Date()
-                                .toISOString()
-                                .split("T")[0]
+                            "shipped"
                         ).length
                       }
           
@@ -877,11 +873,7 @@ export default function AdminDashboard() {
                             .filter(
                               (q) =>
                                 q.status ===
-                                  "shipped" &&
-                                q.created_at ===
-                                  new Date()
-                                    .toISOString()
-                                    .split("T")[0]
+                                "shipped"
                             )
           
                             .reduce(
@@ -911,7 +903,7 @@ export default function AdminDashboard() {
           
               </div>
           
-              {/* TODAY PENDING */}
+              {/* TOTAL PENDING */}
               <div className="p-8 border-b md:border-b-0 xl:border-r border-gray-100">
           
                 <div className="flex items-start justify-between">
@@ -919,7 +911,7 @@ export default function AdminDashboard() {
                   <div>
           
                     <p className="text-gray-500 text-sm font-semibold">
-                      Today Pending
+                      Total Pending
                     </p>
           
                     <h2 className="text-5xl font-black mt-3 text-yellow-500">
@@ -928,11 +920,7 @@ export default function AdminDashboard() {
                         quotations.filter(
                           (q) =>
                             q.status ===
-                              "pending" &&
-                            q.created_at ===
-                              new Date()
-                                .toISOString()
-                                .split("T")[0]
+                            "pending"
                         ).length
                       }
           
@@ -954,11 +942,7 @@ export default function AdminDashboard() {
                             .filter(
                               (q) =>
                                 q.status ===
-                                  "pending" &&
-                                q.created_at ===
-                                  new Date()
-                                    .toISOString()
-                                    .split("T")[0]
+                                "pending"
                             )
           
                             .reduce(
@@ -988,7 +972,7 @@ export default function AdminDashboard() {
           
               </div>
           
-              {/* TODAY PREPARING */}
+              {/* TOTAL PREPARING */}
               <div className="p-8">
           
                 <div className="flex items-start justify-between">
@@ -996,7 +980,7 @@ export default function AdminDashboard() {
                   <div>
           
                     <p className="text-gray-500 text-sm font-semibold">
-                      Today Preparing
+                      Total Preparing
                     </p>
           
                     <h2 className="text-5xl font-black mt-3 text-orange-500">
@@ -1005,11 +989,7 @@ export default function AdminDashboard() {
                         quotations.filter(
                           (q) =>
                             q.status ===
-                              "preparing" &&
-                            q.created_at ===
-                              new Date()
-                                .toISOString()
-                                .split("T")[0]
+                            "preparing"
                         ).length
                       }
           
@@ -1031,11 +1011,7 @@ export default function AdminDashboard() {
                             .filter(
                               (q) =>
                                 q.status ===
-                                  "preparing" &&
-                                q.created_at ===
-                                  new Date()
-                                    .toISOString()
-                                    .split("T")[0]
+                                "preparing"
                             )
           
                             .reduce(
