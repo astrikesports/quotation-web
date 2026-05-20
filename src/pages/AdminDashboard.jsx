@@ -14,6 +14,8 @@ export default function AdminDashboard() {
 
   const [salesPersons, setSalesPersons] = useState([]);
 
+  const [orders, setOrders] = useState([]);
+
   const [quotations, setQuotations] = useState([]);
 
   const [products, setProducts] =
@@ -95,6 +97,28 @@ export default function AdminDashboard() {
     setLoading(false);
   };
 
+  // FETCH ORDERS
+  const fetchOrders = async () => {
+
+    const { data, error } =
+      await supabase
+  
+        .from("order_status")
+  
+        .select("*")
+  
+        .order("created_at", {
+          ascending: false,
+        });
+  
+    if (!error) {
+  
+      setOrders(data || []);
+  
+    }
+  
+  };
+  
   // TOTAL SALES
   const getTotalSales = () => {
 
