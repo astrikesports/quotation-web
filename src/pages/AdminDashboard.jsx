@@ -775,7 +775,8 @@ export default function AdminDashboard() {
                           (o) =>
                             o.status ===
                               "confirmed" &&
-                            o.created_at ===
+                            o.created_at
+                              ?.split(" ")[0] ===
                               new Date()
                                 .toISOString()
                                 .split("T")[0]
@@ -801,7 +802,8 @@ export default function AdminDashboard() {
                               (o) =>
                                 o.status ===
                                   "confirmed" &&
-                                o.created_at ===
+                                o.created_at
+                                  ?.split(" ")[0] ===
                                   new Date()
                                     .toISOString()
                                     .split("T")[0]
