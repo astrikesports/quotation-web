@@ -799,8 +799,7 @@ export default function AdminDashboard() {
                           (o) =>
                             o.status ===
                               "confirmed" &&
-                            o.created_at
-                              ?.split(" ")[0] ===
+                            o.created_date ===
                               new Date()
                                 .toISOString()
                                 .split("T")[0]
@@ -819,32 +818,31 @@ export default function AdminDashboard() {
                       <h3 className="text-2xl font-black text-green-600 mt-1">
           
                         ₹{
-          
-                          orders
-          
-                            .filter(
-                              (o) =>
-                                o.status ===
-                                  "confirmed" &&
-                                o.created_at
-                                  ?.split(" ")[0] ===
-                                  new Date()
-                                    .toISOString()
-                                    .split("T")[0]
-                            )
-          
-                            .reduce(
-                              (acc, o) =>
-                                acc +
-                                Number(
-                                  o.total_amount || 0
-                                ),
-                              0
-                            )
-          
-                            .toLocaleString()
-          
-                        }
+
+                            orders
+                          
+                              .filter(
+                                (o) =>
+                                  o.status ===
+                                    "confirmed" &&
+                                  o.created_date ===
+                                    new Date()
+                                      .toISOString()
+                                      .split("T")[0]
+                              )
+                          
+                              .reduce(
+                                (acc, o) =>
+                                  acc +
+                                  Number(
+                                    o.total_amount || 0
+                                  ),
+                                0
+                              )
+                          
+                              .toLocaleString()
+                          
+                          }
           
                       </h3>
           
@@ -893,27 +891,27 @@ export default function AdminDashboard() {
                       <h3 className="text-2xl font-black text-blue-600 mt-1">
           
                         ₹{
-          
-                          orders
-          
-                            .filter(
-                              (o) =>
-                                o.status ===
-                                "shipped"
-                            )
-          
-                            .reduce(
-                              (acc, o) =>
-                                acc +
-                                Number(
-                                  o.total_amount || 0
-                                ),
-                              0
-                            )
-          
-                            .toLocaleString()
-          
-                        }
+
+                            orders
+                          
+                              .filter(
+                                (o) =>
+                                  o.status ===
+                                  "shipped"
+                              )
+                          
+                              .reduce(
+                                (acc, o) =>
+                                  acc +
+                                  Number(
+                                    o.total_amount || 0
+                                  ),
+                                0
+                              )
+                          
+                              .toLocaleString()
+                          
+                          }
           
                       </h3>
           
@@ -943,12 +941,12 @@ export default function AdminDashboard() {
                     <h2 className="text-5xl font-black mt-3 text-yellow-500">
           
                       {
-                        orders.filter(
-                          (o) =>
-                            o.status ===
-                            "pending"
-                        ).length
-                      }
+                          orders.filter(
+                            (o) =>
+                              o.status ===
+                              "pending"
+                          ).length
+                        }
           
                     </h2>
           
