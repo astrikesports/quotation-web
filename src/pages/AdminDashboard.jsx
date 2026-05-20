@@ -749,7 +749,7 @@ export default function AdminDashboard() {
               </h2>
           
               <p className="text-gray-500 mt-2">
-                Live order performance summary
+                Live order status summary
               </p>
           
             </div>
@@ -771,11 +771,11 @@ export default function AdminDashboard() {
                     <h2 className="text-5xl font-black mt-3 text-green-500">
           
                       {
-                        quotations.filter(
-                          (q) =>
-                            q.status ===
+                        orders.filter(
+                          (o) =>
+                            o.status ===
                               "confirmed" &&
-                            q.created_at ===
+                            o.created_at ===
                               new Date()
                                 .toISOString()
                                 .split("T")[0]
@@ -795,23 +795,23 @@ export default function AdminDashboard() {
           
                         ₹{
           
-                          quotations
+                          orders
           
                             .filter(
-                              (q) =>
-                                q.status ===
+                              (o) =>
+                                o.status ===
                                   "confirmed" &&
-                                q.created_at ===
+                                o.created_at ===
                                   new Date()
                                     .toISOString()
                                     .split("T")[0]
                             )
           
                             .reduce(
-                              (acc, q) =>
+                              (acc, o) =>
                                 acc +
                                 Number(
-                                  q.net_amount || 0
+                                  o.total_amount || 0
                                 ),
                               0
                             )
@@ -848,9 +848,9 @@ export default function AdminDashboard() {
                     <h2 className="text-5xl font-black mt-3 text-blue-600">
           
                       {
-                        quotations.filter(
-                          (q) =>
-                            q.status ===
+                        orders.filter(
+                          (o) =>
+                            o.status ===
                             "shipped"
                         ).length
                       }
@@ -868,19 +868,19 @@ export default function AdminDashboard() {
           
                         ₹{
           
-                          quotations
+                          orders
           
                             .filter(
-                              (q) =>
-                                q.status ===
+                              (o) =>
+                                o.status ===
                                 "shipped"
                             )
           
                             .reduce(
-                              (acc, q) =>
+                              (acc, o) =>
                                 acc +
                                 Number(
-                                  q.net_amount || 0
+                                  o.total_amount || 0
                                 ),
                               0
                             )
@@ -917,9 +917,9 @@ export default function AdminDashboard() {
                     <h2 className="text-5xl font-black mt-3 text-yellow-500">
           
                       {
-                        quotations.filter(
-                          (q) =>
-                            q.status ===
+                        orders.filter(
+                          (o) =>
+                            o.status ===
                             "pending"
                         ).length
                       }
@@ -937,19 +937,19 @@ export default function AdminDashboard() {
           
                         ₹{
           
-                          quotations
+                          orders
           
                             .filter(
-                              (q) =>
-                                q.status ===
+                              (o) =>
+                                o.status ===
                                 "pending"
                             )
           
                             .reduce(
-                              (acc, q) =>
+                              (acc, o) =>
                                 acc +
                                 Number(
-                                  q.net_amount || 0
+                                  o.total_amount || 0
                                 ),
                               0
                             )
@@ -986,9 +986,9 @@ export default function AdminDashboard() {
                     <h2 className="text-5xl font-black mt-3 text-orange-500">
           
                       {
-                        quotations.filter(
-                          (q) =>
-                            q.status ===
+                        orders.filter(
+                          (o) =>
+                            o.status ===
                             "preparing"
                         ).length
                       }
@@ -1006,19 +1006,19 @@ export default function AdminDashboard() {
           
                         ₹{
           
-                          quotations
+                          orders
           
                             .filter(
-                              (q) =>
-                                q.status ===
+                              (o) =>
+                                o.status ===
                                 "preparing"
                             )
           
                             .reduce(
-                              (acc, q) =>
+                              (acc, o) =>
                                 acc +
                                 Number(
-                                  q.net_amount || 0
+                                  o.total_amount || 0
                                 ),
                               0
                             )
