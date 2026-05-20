@@ -1039,7 +1039,7 @@ export default function AdminDashboard() {
           
           </div>
 
-          )}
+        )}
 
       {/* SALES PAGE */}
       {activePage === "sales" && (
