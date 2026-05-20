@@ -8,14 +8,13 @@ import { supabase } from "../supabase";
 
 export default function OrderStatusPage({
   quotations = [],
-  orders = [],
 }) {
-
-  const [orders, setOrders] =
-    useState([]);
 
   const [loading, setLoading] =
     useState(false);
+
+  const [orders, setOrders] =
+  useState([]);
 
   const [currentPage, setCurrentPage] =
     useState(1);
@@ -37,7 +36,7 @@ export default function OrderStatusPage({
 
         .select("*")
 
-        .order("created_at", {
+        .order("created_date", {
           ascending: false,
         });
 
