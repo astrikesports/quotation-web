@@ -1639,6 +1639,7 @@ export default function AdminDashboard() {
       {activePage === "order-status" && (
         <OrderStatusPage
           quotations={quotations}
+          orders={orders}
         />
       )}
 
