@@ -254,8 +254,8 @@ export default function ItemForm({
         </button>
       </div>
 
-      {/* SAMPLE ITEM */}
-      <div className="border rounded-xl p-3 bg-yellow-50">
+      {/* SAMPLE ITEM 
+      <div className="border rounded-xl p-3 bg-yellow-50 ">
         <h4 className="text-sm font-semibold text-yellow-700 mb-2">
           Sample / Free Item
         </h4>
@@ -291,6 +291,7 @@ export default function ItemForm({
           🧪 Add Sample Item
         </button>
       </div>
+      */}
     </div>
   );
 }
