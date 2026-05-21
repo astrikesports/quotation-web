@@ -6,9 +6,7 @@ import React, {
 
 import { supabase } from "../supabase";
 
-export default function OrderStatusPage({
-  quotations = [],
-}) {
+export default function OrderStatusPage() {
 
   const [loading, setLoading] =
     useState(false);
@@ -364,7 +362,7 @@ export default function OrderStatusPage({
 
   return (
 
-    <div className="space-y-8">
+    <div className="space-y-8 w-full">
 
       {/* LOADING */}
       {loading && (
@@ -420,10 +418,6 @@ export default function OrderStatusPage({
                 }
               </h2>
 
-              <p className="mt-4 text-sm font-bold opacity-80">
-                Click to filter
-              </p>
-
             </div>
 
             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${
@@ -474,10 +468,6 @@ export default function OrderStatusPage({
                   pendingOrders.length
                 }
               </h2>
-
-              <p className="mt-4 text-sm font-bold opacity-80">
-                Click to filter
-              </p>
 
             </div>
 
@@ -530,10 +520,6 @@ export default function OrderStatusPage({
                 }
               </h2>
 
-              <p className="mt-4 text-sm font-bold opacity-80">
-                Click to filter
-              </p>
-
             </div>
 
             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${
@@ -585,10 +571,6 @@ export default function OrderStatusPage({
                 }
               </h2>
 
-              <p className="mt-4 text-sm font-bold opacity-80">
-                Click to filter
-              </p>
-
             </div>
 
             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${
@@ -607,7 +589,7 @@ export default function OrderStatusPage({
       </div>
 
       {/* TABLE */}
-      <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden w-full">
 
         {/* HEADER */}
         <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
@@ -637,55 +619,55 @@ export default function OrderStatusPage({
         </div>
 
         {/* TABLE */}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto w-full">
 
-          <table className="w-full min-w-[2000px]">
+          <table className="w-full">
 
-            <thead className="bg-black text-white">
+            <thead className="bg-black text-white sticky top-0 z-10">
 
               <tr>
 
-                <th className="text-left px-6 py-5 text-sm font-black">
+                <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[140px]">
                   Quotation
                 </th>
 
-                <th className="text-left px-6 py-5 text-sm font-black">
+                <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[130px]">
                   Date
                 </th>
 
-                <th className="text-left px-6 py-5 text-sm font-black">
+                <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[240px]">
                   Customer
                 </th>
 
-                <th className="text-left px-6 py-5 text-sm font-black">
+                <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[170px]">
                   Sales Person
                 </th>
 
-                <th className="text-left px-6 py-5 text-sm font-black">
+                <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[140px]">
                   Amount
                 </th>
 
-                <th className="text-left px-6 py-5 text-sm font-black">
+                <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[120px]">
                   COD
                 </th>
 
-                <th className="text-left px-6 py-5 text-sm font-black">
+                <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[170px]">
                   Status
                 </th>
 
-                <th className="text-left px-6 py-5 text-sm font-black">
+                <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[260px]">
                   AWB Link
                 </th>
 
-                <th className="text-left px-6 py-5 text-sm font-black">
+                <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[150px]">
                   Bill
                 </th>
 
-                <th className="text-left px-6 py-5 text-sm font-black">
+                <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[170px]">
                   Quotation Image
                 </th>
 
-                <th className="text-left px-6 py-5 text-sm font-black">
+                <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[120px]">
                   Action
                 </th>
 
@@ -703,35 +685,35 @@ export default function OrderStatusPage({
                     className="border-b border-gray-100 hover:bg-gray-50 transition-all duration-200"
                   >
 
-                    <td className="px-6 py-5 font-black">
+                    <td className="px-4 py-5 font-black whitespace-nowrap">
                       {
                         order.quotation_no ||
                         "N/A"
                       }
                     </td>
 
-                    <td className="px-6 py-5 font-semibold text-gray-600">
+                    <td className="px-4 py-5 font-semibold text-gray-600 whitespace-nowrap">
                       {
                         order.created_date ||
                         "N/A"
                       }
                     </td>
 
-                    <td className="px-6 py-5 font-bold">
+                    <td className="px-4 py-5 font-bold">
                       {
                         order.customer_name ||
                         "N/A"
                       }
                     </td>
 
-                    <td className="px-6 py-5">
+                    <td className="px-4 py-5 whitespace-nowrap">
                       {
                         order.sales_person ||
                         "N/A"
                       }
                     </td>
 
-                    <td className="px-6 py-5 font-black">
+                    <td className="px-4 py-5 font-black whitespace-nowrap">
                       ₹{
                         Number(
                           order.total_amount || 0
@@ -739,7 +721,7 @@ export default function OrderStatusPage({
                       }
                     </td>
 
-                    <td className="px-6 py-5">
+                    <td className="px-4 py-5">
 
                       <input
                         type="number"
@@ -753,12 +735,12 @@ export default function OrderStatusPage({
                           )
                         }
                         placeholder="COD"
-                        className="w-28 h-11 rounded-2xl border border-gray-200 px-4 outline-none"
+                        className="w-full min-w-[100px] h-11 rounded-2xl border border-gray-200 px-4 outline-none"
                       />
 
                     </td>
 
-                    <td className="px-6 py-5">
+                    <td className="px-4 py-5">
 
                       <select
                         value={
@@ -770,7 +752,7 @@ export default function OrderStatusPage({
                             e.target.value
                           )
                         }
-                        className={`h-11 rounded-2xl border px-4 font-bold outline-none ${getStatusColor(
+                        className={`w-full min-w-[150px] h-11 rounded-2xl border px-4 font-bold outline-none ${getStatusColor(
                           order.status
                         )}`}
                       >
@@ -795,7 +777,7 @@ export default function OrderStatusPage({
 
                     </td>
 
-                    <td className="px-6 py-5">
+                    <td className="px-4 py-5">
 
                       <input
                         type="text"
@@ -809,16 +791,16 @@ export default function OrderStatusPage({
                           )
                         }
                         placeholder="Paste AWB Link"
-                        className="w-64 h-11 rounded-2xl border border-gray-200 px-4 outline-none"
+                        className="w-full h-11 rounded-2xl border border-gray-200 px-4 outline-none"
                       />
 
                     </td>
 
-                    <td className="px-6 py-5">
+                    <td className="px-4 py-5">
 
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
 
-                        <label className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center cursor-pointer">
+                        <label className="w-11 h-11 rounded-2xl bg-black text-white flex items-center justify-center cursor-pointer shrink-0">
 
                           📄
 
@@ -844,7 +826,7 @@ export default function OrderStatusPage({
                             }
                             target="_blank"
                             rel="noreferrer"
-                            className="h-11 px-4 rounded-2xl bg-blue-500 text-white font-black flex items-center justify-center"
+                            className="h-11 px-4 rounded-2xl bg-blue-500 text-white font-black flex items-center justify-center whitespace-nowrap"
                           >
                             View
                           </a>
@@ -855,11 +837,11 @@ export default function OrderStatusPage({
 
                     </td>
 
-                    <td className="px-6 py-5">
+                    <td className="px-4 py-5">
 
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
 
-                        <label className="w-12 h-12 rounded-2xl bg-green-500 text-black flex items-center justify-center cursor-pointer">
+                        <label className="w-11 h-11 rounded-2xl bg-green-500 text-black flex items-center justify-center cursor-pointer shrink-0">
 
                           🖼️
 
@@ -884,7 +866,7 @@ export default function OrderStatusPage({
                               order.quotation_image
                             }
                             alt="quotation"
-                            className="w-14 h-14 rounded-2xl object-cover border"
+                            className="w-12 h-12 rounded-2xl object-cover border shrink-0"
                           />
 
                         )}
@@ -893,7 +875,7 @@ export default function OrderStatusPage({
 
                     </td>
 
-                    <td className="px-6 py-5">
+                    <td className="px-4 py-5">
 
                       <button
                         onClick={() =>
@@ -901,7 +883,7 @@ export default function OrderStatusPage({
                             "Order Updated Successfully"
                           )
                         }
-                        className="h-11 px-5 rounded-2xl bg-black text-white font-black hover:scale-[1.02] transition-all duration-200"
+                        className="w-full min-w-[90px] h-11 rounded-2xl bg-black text-white font-black hover:scale-[1.02] transition-all duration-200"
                       >
                         Save
                       </button>
