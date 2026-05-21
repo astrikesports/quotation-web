@@ -14,10 +14,13 @@ export default function OrderStatusPage({
     useState(false);
 
   const [orders, setOrders] =
-  useState([]);
+    useState([]);
 
   const [currentPage, setCurrentPage] =
     useState(1);
+
+  const [activeTab, setActiveTab] =
+    useState("all");
 
   const ordersPerPage = 10;
 
@@ -37,8 +40,8 @@ export default function OrderStatusPage({
         .select("*")
 
         .order("created_date", {
-        ascending: false,
-      });
+          ascending: false,
+        });
 
     if (!error) {
 
@@ -114,11 +117,25 @@ export default function OrderStatusPage({
     );
 
   // =========================
+  // FILTERED ORDERS
+  // =========================
+
+  const filteredOrders =
+    activeTab === "all"
+      ? orders
+      : orders.filter(
+          (o) =>
+            o.status ===
+            activeTab
+        );
+
+  // =========================
   // PAGINATION
   // =========================
 
   const totalPages = Math.ceil(
-    orders.length / ordersPerPage
+    filteredOrders.length /
+      ordersPerPage
   );
 
   const paginatedOrders =
@@ -131,12 +148,15 @@ export default function OrderStatusPage({
       const end =
         start + ordersPerPage;
 
-      return orders.slice(
+      return filteredOrders.slice(
         start,
         end
       );
 
-    }, [orders, currentPage]);
+    }, [
+      filteredOrders,
+      currentPage,
+    ]);
 
   // =========================
   // UPDATE STATUS
@@ -365,7 +385,22 @@ export default function OrderStatusPage({
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
 
         {/* CONFIRMED */}
-        <div className="bg-green-500 rounded-[32px] p-8 text-black shadow-2xl">
+        <button
+          onClick={() =>
+            setActiveTab(
+              activeTab ===
+                "confirmed"
+                ? "all"
+                : "confirmed"
+            )
+          }
+          className={`rounded-[32px] p-8 text-black shadow-2xl transition-all duration-200 text-left ${
+            activeTab ===
+            "confirmed"
+              ? "bg-green-600 scale-[1.02]"
+              : "bg-green-500"
+          }`}
+        >
 
           <p className="text-sm font-black tracking-[2px] uppercase">
             Confirmed
@@ -377,10 +412,25 @@ export default function OrderStatusPage({
             }
           </h2>
 
-        </div>
+        </button>
 
         {/* PENDING */}
-        <div className="bg-yellow-400 rounded-[32px] p-8 text-black shadow-2xl">
+        <button
+          onClick={() =>
+            setActiveTab(
+              activeTab ===
+                "pending"
+                ? "all"
+                : "pending"
+            )
+          }
+          className={`rounded-[32px] p-8 text-black shadow-2xl transition-all duration-200 text-left ${
+            activeTab ===
+            "pending"
+              ? "bg-yellow-500 scale-[1.02]"
+              : "bg-yellow-400"
+          }`}
+        >
 
           <p className="text-sm font-black tracking-[2px] uppercase">
             Pending
@@ -392,10 +442,25 @@ export default function OrderStatusPage({
             }
           </h2>
 
-        </div>
+        </button>
 
         {/* PREPARING */}
-        <div className="bg-orange-500 rounded-[32px] p-8 text-white shadow-2xl">
+        <button
+          onClick={() =>
+            setActiveTab(
+              activeTab ===
+                "preparing"
+                ? "all"
+                : "preparing"
+            )
+          }
+          className={`rounded-[32px] p-8 text-white shadow-2xl transition-all duration-200 text-left ${
+            activeTab ===
+            "preparing"
+              ? "bg-orange-600 scale-[1.02]"
+              : "bg-orange-500"
+          }`}
+        >
 
           <p className="text-sm font-black tracking-[2px] uppercase">
             Preparing
@@ -407,10 +472,25 @@ export default function OrderStatusPage({
             }
           </h2>
 
-        </div>
+        </button>
 
         {/* SHIPPED */}
-        <div className="bg-blue-500 rounded-[32px] p-8 text-white shadow-2xl">
+        <button
+          onClick={() =>
+            setActiveTab(
+              activeTab ===
+                "shipped"
+                ? "all"
+                : "shipped"
+            )
+          }
+          className={`rounded-[32px] p-8 text-white shadow-2xl transition-all duration-200 text-left ${
+            activeTab ===
+            "shipped"
+              ? "bg-blue-600 scale-[1.02]"
+              : "bg-blue-500"
+          }`}
+        >
 
           <p className="text-sm font-black tracking-[2px] uppercase">
             Shipped
@@ -422,7 +502,7 @@ export default function OrderStatusPage({
             }
           </h2>
 
-        </div>
+        </button>
 
       </div>
 
@@ -448,7 +528,9 @@ export default function OrderStatusPage({
 
             Total :
             {" "}
-            {orders.length}
+            {
+              filteredOrders.length
+            }
 
           </div>
 
@@ -457,7 +539,7 @@ export default function OrderStatusPage({
         {/* TABLE */}
         <div className="overflow-x-auto">
 
-          <table className="w-full min-w-[1800px]">
+          <table className="w-full min-w-[1900px]">
 
             <thead className="bg-black text-white">
 
@@ -465,6 +547,10 @@ export default function OrderStatusPage({
 
                 <th className="text-left px-6 py-5 text-sm font-black">
                   Quotation
+                </th>
+
+                <th className="text-left px-6 py-5 text-sm font-black">
+                  Date
                 </th>
 
                 <th className="text-left px-6 py-5 text-sm font-black">
@@ -499,10 +585,6 @@ export default function OrderStatusPage({
                   Quotation Image
                 </th>
 
-                <th className="text-left px-6 py-5 text-sm font-black">
-                  Action
-                </th>
-
               </tr>
 
             </thead>
@@ -521,6 +603,14 @@ export default function OrderStatusPage({
                     <td className="px-6 py-5 font-black">
                       {
                         order.quotation_no ||
+                        "N/A"
+                      }
+                    </td>
+
+                    {/* DATE */}
+                    <td className="px-6 py-5 font-semibold text-gray-600">
+                      {
+                        order.created_date ||
                         "N/A"
                       }
                     </td>
@@ -633,7 +723,7 @@ export default function OrderStatusPage({
 
                       <div className="flex items-center gap-3">
 
-                        <label className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center cursor-pointer hover:scale-105 transition-all duration-200">
+                        <label className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center cursor-pointer">
 
                           📄
 
@@ -675,7 +765,7 @@ export default function OrderStatusPage({
 
                       <div className="flex items-center gap-3">
 
-                        <label className="w-12 h-12 rounded-2xl bg-green-500 text-black flex items-center justify-center cursor-pointer hover:scale-105 transition-all duration-200">
+                        <label className="w-12 h-12 rounded-2xl bg-green-500 text-black flex items-center justify-center cursor-pointer">
 
                           🖼️
 
@@ -709,22 +799,6 @@ export default function OrderStatusPage({
 
                     </td>
 
-                    {/* ACTION */}
-                    <td className="px-6 py-5">
-
-                      <button
-                        onClick={() =>
-                          alert(
-                            "Order Updated Successfully"
-                          )
-                        }
-                        className="h-11 px-5 rounded-2xl bg-black text-white font-black hover:scale-[1.02] transition-all duration-200"
-                      >
-                        Save
-                      </button>
-
-                    </td>
-
                   </tr>
 
                 )
@@ -739,7 +813,6 @@ export default function OrderStatusPage({
         {/* PAGINATION */}
         <div className="flex items-center justify-center gap-3 p-6 border-t border-gray-100">
 
-          {/* PREV */}
           <button
             disabled={
               currentPage === 1
@@ -758,7 +831,6 @@ export default function OrderStatusPage({
             Prev
           </button>
 
-          {/* PAGE */}
           <div className="h-12 px-6 rounded-2xl bg-green-500 text-black font-black flex items-center justify-center">
 
             {currentPage}
@@ -767,7 +839,6 @@ export default function OrderStatusPage({
 
           </div>
 
-          {/* NEXT */}
           <button
             disabled={
               currentPage ===
@@ -795,4 +866,5 @@ export default function OrderStatusPage({
     </div>
 
   );
+
 }
