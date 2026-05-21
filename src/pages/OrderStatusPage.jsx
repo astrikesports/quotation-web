@@ -386,121 +386,221 @@ export default function OrderStatusPage({
 
         {/* CONFIRMED */}
         <button
-          onClick={() =>
+          onClick={() => {
+
+            setCurrentPage(1);
+
             setActiveTab(
               activeTab ===
                 "confirmed"
                 ? "all"
                 : "confirmed"
-            )
-          }
-          className={`rounded-[32px] p-8 text-black shadow-2xl transition-all duration-200 text-left ${
+            );
+
+          }}
+          className={`rounded-[32px] p-8 text-left shadow-2xl border-[4px] transition-all duration-200 hover:scale-[1.02] ${
             activeTab ===
             "confirmed"
-              ? "bg-green-600 scale-[1.02]"
-              : "bg-green-500"
+              ? "bg-green-600 border-black text-white"
+              : "bg-green-500 border-transparent text-black"
           }`}
         >
 
-          <p className="text-sm font-black tracking-[2px] uppercase">
-            Confirmed
-          </p>
+          <div className="flex items-start justify-between">
 
-          <h2 className="text-5xl font-black mt-4">
-            {
-              confirmedOrders.length
-            }
-          </h2>
+            <div>
+
+              <p className="text-sm font-black tracking-[2px] uppercase">
+                Confirmed
+              </p>
+
+              <h2 className="text-5xl font-black mt-4">
+                {
+                  confirmedOrders.length
+                }
+              </h2>
+
+              <p className="mt-4 text-sm font-bold opacity-80">
+                Click to filter
+              </p>
+
+            </div>
+
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${
+              activeTab ===
+              "confirmed"
+                ? "bg-white text-black"
+                : "bg-black text-white"
+            }`}>
+              ✅
+            </div>
+
+          </div>
 
         </button>
 
         {/* PENDING */}
         <button
-          onClick={() =>
+          onClick={() => {
+
+            setCurrentPage(1);
+
             setActiveTab(
               activeTab ===
                 "pending"
                 ? "all"
                 : "pending"
-            )
-          }
-          className={`rounded-[32px] p-8 text-black shadow-2xl transition-all duration-200 text-left ${
+            );
+
+          }}
+          className={`rounded-[32px] p-8 text-left shadow-2xl border-[4px] transition-all duration-200 hover:scale-[1.02] ${
             activeTab ===
             "pending"
-              ? "bg-yellow-500 scale-[1.02]"
-              : "bg-yellow-400"
+              ? "bg-yellow-500 border-black text-black"
+              : "bg-yellow-400 border-transparent text-black"
           }`}
         >
 
-          <p className="text-sm font-black tracking-[2px] uppercase">
-            Pending
-          </p>
+          <div className="flex items-start justify-between">
 
-          <h2 className="text-5xl font-black mt-4">
-            {
-              pendingOrders.length
-            }
-          </h2>
+            <div>
+
+              <p className="text-sm font-black tracking-[2px] uppercase">
+                Pending
+              </p>
+
+              <h2 className="text-5xl font-black mt-4">
+                {
+                  pendingOrders.length
+                }
+              </h2>
+
+              <p className="mt-4 text-sm font-bold opacity-80">
+                Click to filter
+              </p>
+
+            </div>
+
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${
+              activeTab ===
+              "pending"
+                ? "bg-black text-white"
+                : "bg-white text-black"
+            }`}>
+              ⏳
+            </div>
+
+          </div>
 
         </button>
 
         {/* PREPARING */}
         <button
-          onClick={() =>
+          onClick={() => {
+
+            setCurrentPage(1);
+
             setActiveTab(
               activeTab ===
                 "preparing"
                 ? "all"
                 : "preparing"
-            )
-          }
-          className={`rounded-[32px] p-8 text-white shadow-2xl transition-all duration-200 text-left ${
+            );
+
+          }}
+          className={`rounded-[32px] p-8 text-left shadow-2xl border-[4px] transition-all duration-200 hover:scale-[1.02] ${
             activeTab ===
             "preparing"
-              ? "bg-orange-600 scale-[1.02]"
-              : "bg-orange-500"
+              ? "bg-orange-600 border-black text-white"
+              : "bg-orange-500 border-transparent text-white"
           }`}
         >
 
-          <p className="text-sm font-black tracking-[2px] uppercase">
-            Preparing
-          </p>
+          <div className="flex items-start justify-between">
 
-          <h2 className="text-5xl font-black mt-4">
-            {
-              preparingOrders.length
-            }
-          </h2>
+            <div>
+
+              <p className="text-sm font-black tracking-[2px] uppercase">
+                Preparing
+              </p>
+
+              <h2 className="text-5xl font-black mt-4">
+                {
+                  preparingOrders.length
+                }
+              </h2>
+
+              <p className="mt-4 text-sm font-bold opacity-80">
+                Click to filter
+              </p>
+
+            </div>
+
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${
+              activeTab ===
+              "preparing"
+                ? "bg-white text-black"
+                : "bg-black text-white"
+            }`}>
+              📦
+            </div>
+
+          </div>
 
         </button>
 
         {/* SHIPPED */}
         <button
-          onClick={() =>
+          onClick={() => {
+
+            setCurrentPage(1);
+
             setActiveTab(
               activeTab ===
                 "shipped"
                 ? "all"
                 : "shipped"
-            )
-          }
-          className={`rounded-[32px] p-8 text-white shadow-2xl transition-all duration-200 text-left ${
+            );
+
+          }}
+          className={`rounded-[32px] p-8 text-left shadow-2xl border-[4px] transition-all duration-200 hover:scale-[1.02] ${
             activeTab ===
             "shipped"
-              ? "bg-blue-600 scale-[1.02]"
-              : "bg-blue-500"
+              ? "bg-blue-600 border-black text-white"
+              : "bg-blue-500 border-transparent text-white"
           }`}
         >
 
-          <p className="text-sm font-black tracking-[2px] uppercase">
-            Shipped
-          </p>
+          <div className="flex items-start justify-between">
 
-          <h2 className="text-5xl font-black mt-4">
-            {
-              shippedOrders.length
-            }
-          </h2>
+            <div>
+
+              <p className="text-sm font-black tracking-[2px] uppercase">
+                Shipped
+              </p>
+
+              <h2 className="text-5xl font-black mt-4">
+                {
+                  shippedOrders.length
+                }
+              </h2>
+
+              <p className="mt-4 text-sm font-bold opacity-80">
+                Click to filter
+              </p>
+
+            </div>
+
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${
+              activeTab ===
+              "shipped"
+                ? "bg-white text-black"
+                : "bg-black text-white"
+            }`}>
+              🚚
+            </div>
+
+          </div>
 
         </button>
 
@@ -539,7 +639,7 @@ export default function OrderStatusPage({
         {/* TABLE */}
         <div className="overflow-x-auto">
 
-          <table className="w-full min-w-[1900px]">
+          <table className="w-full min-w-[2000px]">
 
             <thead className="bg-black text-white">
 
@@ -585,6 +685,10 @@ export default function OrderStatusPage({
                   Quotation Image
                 </th>
 
+                <th className="text-left px-6 py-5 text-sm font-black">
+                  Action
+                </th>
+
               </tr>
 
             </thead>
@@ -599,7 +703,6 @@ export default function OrderStatusPage({
                     className="border-b border-gray-100 hover:bg-gray-50 transition-all duration-200"
                   >
 
-                    {/* QUOTATION */}
                     <td className="px-6 py-5 font-black">
                       {
                         order.quotation_no ||
@@ -607,7 +710,6 @@ export default function OrderStatusPage({
                       }
                     </td>
 
-                    {/* DATE */}
                     <td className="px-6 py-5 font-semibold text-gray-600">
                       {
                         order.created_date ||
@@ -615,7 +717,6 @@ export default function OrderStatusPage({
                       }
                     </td>
 
-                    {/* CUSTOMER */}
                     <td className="px-6 py-5 font-bold">
                       {
                         order.customer_name ||
@@ -623,7 +724,6 @@ export default function OrderStatusPage({
                       }
                     </td>
 
-                    {/* SALES PERSON */}
                     <td className="px-6 py-5">
                       {
                         order.sales_person ||
@@ -631,7 +731,6 @@ export default function OrderStatusPage({
                       }
                     </td>
 
-                    {/* AMOUNT */}
                     <td className="px-6 py-5 font-black">
                       ₹{
                         Number(
@@ -640,7 +739,6 @@ export default function OrderStatusPage({
                       }
                     </td>
 
-                    {/* COD */}
                     <td className="px-6 py-5">
 
                       <input
@@ -660,7 +758,6 @@ export default function OrderStatusPage({
 
                     </td>
 
-                    {/* STATUS */}
                     <td className="px-6 py-5">
 
                       <select
@@ -698,7 +795,6 @@ export default function OrderStatusPage({
 
                     </td>
 
-                    {/* AWB */}
                     <td className="px-6 py-5">
 
                       <input
@@ -718,7 +814,6 @@ export default function OrderStatusPage({
 
                     </td>
 
-                    {/* BILL */}
                     <td className="px-6 py-5">
 
                       <div className="flex items-center gap-3">
@@ -760,7 +855,6 @@ export default function OrderStatusPage({
 
                     </td>
 
-                    {/* QUOTATION IMAGE */}
                     <td className="px-6 py-5">
 
                       <div className="flex items-center gap-3">
@@ -796,6 +890,21 @@ export default function OrderStatusPage({
                         )}
 
                       </div>
+
+                    </td>
+
+                    <td className="px-6 py-5">
+
+                      <button
+                        onClick={() =>
+                          alert(
+                            "Order Updated Successfully"
+                          )
+                        }
+                        className="h-11 px-5 rounded-2xl bg-black text-white font-black hover:scale-[1.02] transition-all duration-200"
+                      >
+                        Save
+                      </button>
 
                     </td>
 
