@@ -114,9 +114,24 @@ export default function Dashboard({
   // GET PERSON QUOTATIONS
   const getPersonQuotations = (name) => {
 
-    return quotations.filter(
-      (q) => q.sales_person === name
-    );
+    return quotations
+
+  .filter(
+    (q) =>
+      q.sales_person === name
+  )
+
+  .sort(
+    (a, b) =>
+
+      Number(
+        b.net_amount || 0
+      ) -
+
+      Number(
+        a.net_amount || 0
+      )
+  );
   };
 
   // CALCULATE SALES
