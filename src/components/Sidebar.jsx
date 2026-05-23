@@ -93,6 +93,16 @@ import ItemForm from "./ItemForm";
         "selectedSalesPerson"
       );
   
+    // SALES PERSON NOT FOUND
+    if (!selectedSalesPerson) {
+  
+      window.location.href =
+        "/dashboard";
+  
+      return;
+  
+    }
+  
     // AUTO SET SALES PERSON
     if (
       selectedSalesPerson &&
