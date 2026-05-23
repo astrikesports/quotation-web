@@ -36,6 +36,12 @@ export default function AdminDashboard() {
   // =========================
   // LIVE REALTIME SYNC
   // =========================
+
+  .subscribe((status) => {
+
+    console.log(status);
+  
+  });
   
   useEffect(() => {
   
