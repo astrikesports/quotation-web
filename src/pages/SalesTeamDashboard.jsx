@@ -19,6 +19,9 @@ export default function Dashboard({
 
   const [quotations, setQuotations] = useState([]);
 
+  const [orderStatusData, setOrderStatusData] =
+  useState([]);
+
   const [selectedPerson, setSelectedPerson] =
     useState(null);
 
@@ -60,6 +63,20 @@ export default function Dashboard({
         ascending: false
       });
 
+    // ORDER STATUS
+    const {
+      data: orderData
+    } = await supabase
+    
+      .from("order_status")
+    
+      .select("*");
+    
+    setOrderStatusData(
+      orderData || []
+    );
+
+    
     // QUOTATIONS
     const {
       data: quotationData
@@ -78,6 +95,20 @@ export default function Dashboard({
     setQuotations(quotationData || []);
 
     setLoading(false);
+  };
+
+
+  // ORDER GET
+  const getOrderData = (
+    quotationNo
+  ) => {
+  
+    return orderStatusData.find(
+      (o) =>
+        o.quotation_no ===
+        quotationNo
+    );
+  
   };
 
   // GET PERSON QUOTATIONS
@@ -107,6 +138,8 @@ export default function Dashboard({
     return total;
   };
 
+
+  
   // =========================
   // ACTION FUNCTIONS START
   // =========================
@@ -685,6 +718,14 @@ export default function Dashboard({
                     <th className="text-left p-5 font-bold">
                       Status
                     </th>
+
+                    <th className="text-left p-5 font-bold">
+                      Tracking
+                    </th>
+                    
+                    <th className="text-left p-5 font-bold">
+                      Bill
+                    </th>
           
                     <th className="text-center p-5 font-bold">
                       Actions
@@ -698,8 +739,15 @@ export default function Dashboard({
           
                   {getPersonQuotations(
                     selectedPerson.name
-                  ).map((quote) => (
-          
+                  ).map((quote) => {
+                  
+                    const orderData =
+                      getOrderData(
+                        quote.quotation_no
+                      );
+                  
+                    return (
+                      
                     <tr
                       key={quote.id}
                       className="border-b border-gray-100 hover:bg-gray-50 transition-all"
@@ -798,6 +846,52 @@ export default function Dashboard({
                         </div>
                       
                       </td>
+
+                      {/* TRACKING */}
+                      <td className="p-5">
+                      
+                        {orderData ? (
+                      
+                          <div className="bg-green-100 text-green-700 px-4 py-2 rounded-2xl font-bold inline-flex items-center gap-2">
+                      
+                            🚚 {orderData.status}
+                      
+                          </div>
+                      
+                        ) : (
+                      
+                          <div className="text-gray-400">
+                            No Tracking
+                          </div>
+                      
+                        )}
+                      
+                      </td>
+                      
+                      {/* BILL */}
+                      <td className="p-5">
+                      
+                        {orderData?.bill_image ? (
+                      
+                          <a
+                            href={orderData.bill_image}
+                            target="_blank"
+                            rel="noreferrer"
+                      
+                            className="bg-blue-500 text-white px-4 py-2 rounded-2xl font-bold inline-flex items-center"
+                          >
+                            📄 Bill
+                          </a>
+                      
+                        ) : (
+                      
+                          <div className="text-gray-400">
+                            No Bill
+                          </div>
+                      
+                        )}
+                      
+                      </td>
                     
           
                       {/* ACTIONS */}
@@ -881,6 +975,8 @@ export default function Dashboard({
                       </td>
                       
                     </tr>
+
+                      );
           
                   ))}
           
