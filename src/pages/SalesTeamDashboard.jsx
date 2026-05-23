@@ -706,13 +706,13 @@ export default function Dashboard({
                     <th className="text-left p-5 font-bold">
                       Phone
                     </th>
-
-                    <th className="text-left p-5 font-bold">
-                      Net Amount
-                    </th>
                     
                     <th className="text-left p-5 font-bold">
                       Date
+                    </th>
+                    
+                    <th className="text-left p-5 font-bold">
+                      Net Amount
                     </th>
           
                     <th className="text-left p-5 font-bold">
