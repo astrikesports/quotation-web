@@ -36,12 +36,6 @@ export default function AdminDashboard() {
   // =========================
   // LIVE REALTIME SYNC
   // =========================
-
-  .subscribe((status) => {
-
-    console.log(status);
-  
-  });
   
   useEffect(() => {
   
@@ -52,11 +46,11 @@ export default function AdminDashboard() {
   
     fetchOrders();
   
-    // ================= PRODUCTS LIVE
-    const productsChannel = supabase
+    const channel = supabase
   
-      .channel("products-live")
+      .channel("live-dashboard")
   
+      // PRODUCTS
       .on(
         "postgres_changes",
         {
@@ -70,13 +64,7 @@ export default function AdminDashboard() {
         }
       )
   
-      .subscribe();
-  
-    // ================= SALES PERSON LIVE
-    const salesChannel = supabase
-  
-      .channel("sales-live")
-  
+      // SALES PERSONS
       .on(
         "postgres_changes",
         {
@@ -90,13 +78,7 @@ export default function AdminDashboard() {
         }
       )
   
-      .subscribe();
-  
-    // ================= QUOTATION LIVE
-    const quotationChannel = supabase
-  
-      .channel("quotation-live")
-  
+      // QUOTATIONS
       .on(
         "postgres_changes",
         {
@@ -110,13 +92,7 @@ export default function AdminDashboard() {
         }
       )
   
-      .subscribe();
-  
-    // ================= ORDER STATUS LIVE
-    const orderChannel = supabase
-  
-      .channel("orders-live")
-  
+      // ORDERS
       .on(
         "postgres_changes",
         {
@@ -130,25 +106,19 @@ export default function AdminDashboard() {
         }
       )
   
-      .subscribe();
+      .subscribe((status) => {
   
-    // ================= CLEANUP
+        console.log(
+          "Realtime:",
+          status
+        );
+  
+      });
+  
     return () => {
   
       supabase.removeChannel(
-        productsChannel
-      );
-  
-      supabase.removeChannel(
-        salesChannel
-      );
-  
-      supabase.removeChannel(
-        quotationChannel
-      );
-  
-      supabase.removeChannel(
-        orderChannel
+        channel
       );
   
     };
