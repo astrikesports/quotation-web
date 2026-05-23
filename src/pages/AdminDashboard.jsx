@@ -33,14 +33,119 @@ export default function AdminDashboard() {
   const [dialogConfig, setDialogConfig] =
     useState({});
 
-  // LOAD
+  // =========================
+  // LIVE REALTIME SYNC
+  // =========================
+  
   useEffect(() => {
-
+  
+    // INITIAL LOAD
     fetchProducts();
   
     fetchSalesPersons();
   
     fetchOrders();
+  
+    // ================= PRODUCTS LIVE
+    const productsChannel = supabase
+  
+      .channel("products-live")
+  
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "products",
+        },
+  
+        () => {
+          fetchProducts();
+        }
+      )
+  
+      .subscribe();
+  
+    // ================= SALES PERSON LIVE
+    const salesChannel = supabase
+  
+      .channel("sales-live")
+  
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "sales_persons",
+        },
+  
+        () => {
+          fetchSalesPersons();
+        }
+      )
+  
+      .subscribe();
+  
+    // ================= QUOTATION LIVE
+    const quotationChannel = supabase
+  
+      .channel("quotation-live")
+  
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "quotations",
+        },
+  
+        () => {
+          fetchSalesPersons();
+        }
+      )
+  
+      .subscribe();
+  
+    // ================= ORDER STATUS LIVE
+    const orderChannel = supabase
+  
+      .channel("orders-live")
+  
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "order_status",
+        },
+  
+        () => {
+          fetchOrders();
+        }
+      )
+  
+      .subscribe();
+  
+    // ================= CLEANUP
+    return () => {
+  
+      supabase.removeChannel(
+        productsChannel
+      );
+  
+      supabase.removeChannel(
+        salesChannel
+      );
+  
+      supabase.removeChannel(
+        quotationChannel
+      );
+  
+      supabase.removeChannel(
+        orderChannel
+      );
+  
+    };
   
   }, []);
 
