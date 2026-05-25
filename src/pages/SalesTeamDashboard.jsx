@@ -115,23 +115,24 @@ export default function Dashboard({
   const getPersonQuotations = (name) => {
 
     return quotations
-
-  .filter(
-    (q) =>
-      q.sales_person === name
-  )
-
-  .sort(
-    (a, b) =>
-
-      Number(
-        b.net_amount || 0
-      ) -
-
-      Number(
-        a.net_amount || 0
+  
+      .filter(
+        (q) =>
+          q.sales_person === name
       )
-  );
+  
+      .sort(
+        (a, b) =>
+  
+          new Date(
+            b.created_at
+          ) -
+  
+          new Date(
+            a.created_at
+          )
+      );
+  
   };
 
   // CALCULATE SALES
