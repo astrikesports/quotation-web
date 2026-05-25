@@ -94,14 +94,23 @@ import ItemForm from "./ItemForm";
       );
   
     // SALES PERSON NOT FOUND
-    if (!selectedSalesPerson) {
+    const selectedQuotationId =
+    localStorage.getItem(
+      "selectedQuotationId"
+    );
   
-      window.location.href =
-        "/dashboard";
+  // ONLY BLOCK NEW QUOTATION
+  if (
+    !selectedSalesPerson &&
+    !selectedQuotationId
+  ) {
   
-      return;
+    window.location.href =
+      "/dashboard";
   
-    }
+    return;
+  
+  }
   
     // AUTO SET SALES PERSON
     if (
