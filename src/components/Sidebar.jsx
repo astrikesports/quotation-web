@@ -87,30 +87,38 @@ import ItemForm from "./ItemForm";
   }, [paymentImages]);
   
   useEffect(() => {
-  
+
     const selectedSalesPerson =
       localStorage.getItem(
         "selectedSalesPerson"
       );
   
-    // SALES PERSON NOT FOUND
     const selectedQuotationId =
-    localStorage.getItem(
-      "selectedQuotationId"
-    );
+      localStorage.getItem(
+        "selectedQuotationId"
+      );
   
-  // ONLY BLOCK NEW QUOTATION
-  if (
-    !selectedSalesPerson &&
-    !selectedQuotationId
-  ) {
+    // CURRENT URL
+    const currentPath =
+      window.location.pathname;
   
-    window.location.href =
-      "/dashboard";
+    // BLOCK ONLY NEW QUOTATION PAGE
+    if (
   
-    return;
+      currentPath === "/quotation" &&
   
-  }
+      !selectedSalesPerson &&
+  
+      !selectedQuotationId
+  
+    ) {
+  
+      window.location.href =
+        "/dashboard";
+  
+      return;
+  
+    }
   
     // AUTO SET SALES PERSON
     if (
