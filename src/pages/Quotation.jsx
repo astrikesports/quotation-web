@@ -48,6 +48,16 @@
   shipping,
   advance
   } = pdfData;
+
+  const totalAmount =
+    items.reduce(
+      (acc, item) =>
+        acc +
+        Number(
+          item.amount || 0
+        ),
+      0
+    );
   
   /* ================= EDIT FLOW ================= */
   const [editIndex, setEditIndex] = useState(null);
