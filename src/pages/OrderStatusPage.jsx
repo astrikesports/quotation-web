@@ -842,7 +842,7 @@ export default function OrderStatusPage() {
                     <td className="px-4 py-5 font-black whitespace-nowrap">
                       ₹{
                         Number(
-                          order.total_amount || 0
+                          order.amount || order.total_amount || 0
                         ).toLocaleString()
                       }
                     </td>
