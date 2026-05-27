@@ -89,12 +89,27 @@ import {
   }));
 
   const payload = {
-  ...pdfData,
-  status: "pending",
-  // SAVE NET AMOUNT
-  netAmount: net,
-  items: cleanItems,
-  paymentImages: []
+    ...pdfData,
+  
+    status: "pending",
+  
+    // GROSS AMOUNT
+    amount:
+      pdfData.items.reduce(
+        (acc, item) =>
+          acc +
+          Number(
+            item.amount || 0
+          ),
+        0
+      ),
+  
+    // NET AMOUNT
+    netAmount: net,
+  
+    items: cleanItems,
+  
+    paymentImages: []
   };
 
   // ✅ 2️⃣ SAVE
