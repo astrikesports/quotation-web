@@ -76,7 +76,7 @@ export default function OrderStatusPage() {
       case "preparing":
         return "bg-orange-100 text-orange-700 border-orange-200";
 
-      case "booking_pending":
+      case "booking pending":
         return "bg-pink-100 text-pink-700 border-pink-200";
 
       case "shipped":
@@ -115,7 +115,7 @@ export default function OrderStatusPage() {
     orders.filter(
       (o) =>
         o.status ===
-        "booking_pending"
+        "booking pending"
     );
 
   const shippedOrders =
@@ -577,15 +577,15 @@ export default function OrderStatusPage() {
         
             setActiveTab(
               activeTab ===
-                "booking_pending"
+                "booking pending"
                 ? "all"
-                : "booking_pending"
+                : "booking pending"
             );
         
           }}
           className={`rounded-[32px] p-8 text-left shadow-2xl border-[4px] transition-all duration-200 hover:scale-[1.02] ${
             activeTab ===
-            "booking_pending"
+            "booking pending"
               ? "bg-pink-600 border-black text-white"
               : "bg-pink-500 border-transparent text-white"
           }`}
@@ -609,7 +609,7 @@ export default function OrderStatusPage() {
         
             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${
               activeTab ===
-              "booking_pending"
+              "booking pending"
                 ? "bg-white text-black"
                 : "bg-black text-white"
             }`}>
@@ -854,7 +854,7 @@ export default function OrderStatusPage() {
                           Preparing
                         </option>
 
-                        <option value="booking_pending">
+                        <option value="booking pending">
                           Booking Pending
                         </option>
 
