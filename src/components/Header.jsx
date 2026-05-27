@@ -88,22 +88,26 @@ import {
   size: typeof it.size === "string" ? it.size : ""
   }));
 
+
+  const totalAmount =
+    cleanItems.reduce(
+      (acc, item) =>
+        acc +
+        Number(
+          item.amount || 0
+        ),
+      0
+    );
+      
   const payload = {
     ...pdfData,
   
     status: "pending",
   
     // GROSS AMOUNT
-    amount:
-      pdfData.items.reduce(
-        (acc, item) =>
-          acc +
-          Number(
-            item.amount || 0
-          ),
-        0
-      ),
-  
+    // ✅ GROSS AMOUNT
+    amount: totalAmount,
+    
     // NET AMOUNT
     netAmount: net,
   
