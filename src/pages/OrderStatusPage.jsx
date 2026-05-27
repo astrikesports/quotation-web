@@ -638,8 +638,8 @@ export default function OrderStatusPage() {
             className={`rounded-[32px] p-8 text-left shadow-2xl border-[4px] transition-all duration-200 hover:scale-[1.02] ${
               activeTab ===
               "pending"
-              ? "bg-[#7f1d1d] border-white text-white"
-              : "bg-[#991b1b] border-transparent text-white"
+              ? "bg-red-700 border-white text-white"
+              : "bg-red-600 border-transparent text-white"
             }`}
           >
   
@@ -648,7 +648,7 @@ export default function OrderStatusPage() {
               <div>
   
                 <p className="text-sm font-black tracking-[2px] uppercase">
-                  Pending
+                  Pending | ERROR
                 </p>
   
                 <h2 className="text-5xl font-black mt-4">
