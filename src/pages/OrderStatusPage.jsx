@@ -68,7 +68,7 @@ export default function OrderStatusPage() {
     switch (status) {
 
       case "pending":
-        return "bg-yellow-100 text-yellow-700 border-yellow-200";
+        return "bg-red-100 text-red-700 bg-red-500";
 
       case "confirmed":
         return "bg-green-100 text-green-700 border-green-200";
