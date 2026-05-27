@@ -174,33 +174,44 @@ export default function OrderStatusPage() {
     id,
     status
   ) => {
-
+  
     const { error } =
       await supabase
-
+  
         .from("order_status")
-
+  
         .update({
-          status,
+          status:
+            String(status).trim(),
         })
-
-        .eq(   "id",   Number(id) );
-
-    if (!error) {
-
-      setOrders((prev) =>
-        prev.map((o) =>
-          o.id === id
-            ? {
-                ...o,
-                status,
-              }
-            : o
-        )
+  
+        .eq(
+          "id",
+          Number(id)
+        );
+  
+    if (error) {
+  
+      console.log(
+        "STATUS ERROR",
+        error
       );
-
+  
+      return;
+  
     }
-
+  
+    setOrders((prev) =>
+      prev.map((o) =>
+        o.id === id
+          ? {
+              ...o,
+              status,
+            }
+          : o
+      )
+    );
+  
   };
 
   // =========================
