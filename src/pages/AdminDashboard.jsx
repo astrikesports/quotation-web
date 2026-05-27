@@ -3,7 +3,6 @@ import { supabase } from "../supabase";
 import OrderStatusPage from "./OrderStatusPage";
 import ConfirmDialog from "../components/ConfirmDialog";
 import LoaderOverlay from "../components/LoaderOverlay";
-import toast from "react-hot-toast";
 
 export default function AdminDashboard() {
 
@@ -597,7 +596,6 @@ export default function AdminDashboard() {
   return (
 
     <div className="min-h-screen bg-[#f4f6f8] p-4 md:p-8">
-      <Toaster position="top-right" />
 
       {/* LOADER */}
       {loading && (
