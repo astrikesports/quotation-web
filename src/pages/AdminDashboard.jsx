@@ -508,7 +508,7 @@ export default function AdminDashboard() {
             "product_name",
             productName
           )
-          .single();
+          .maybeSingle();
   
         // UPDATE IF EXISTS
         if (existingProduct) {
