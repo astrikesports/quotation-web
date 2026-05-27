@@ -33,18 +33,59 @@ export default function AdminDashboard() {
   const [dialogConfig, setDialogConfig] =
     useState({});
 
+
   // =========================
   // LIVE REALTIME SYNC
   // =========================
   
   useEffect(() => {
-
+  
     // INITIAL LOAD
-    fetchData();
+    fetchProducts();
+  
+    fetchSalesPersons();
+  
+    fetchOrders();
   
     const channel = supabase
   
       .channel("dashboard-live")
+  
+      // PRODUCTS LIVE
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "products",
+        },
+  
+        async () => {
+  
+          await fetchProducts();
+  
+        }
+      )
+  
+      // SALES PERSONS LIVE
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "sales_persons",
+        },
+  
+        async () => {
+  
+          await fetchSalesPersons();
+  
+          toast.success(
+            "Sales Person Updated"
+          );
+  
+        }
+      )
   
       // QUOTATIONS LIVE
       .on(
@@ -57,7 +98,7 @@ export default function AdminDashboard() {
   
         async () => {
   
-          await fetchData();
+          await fetchSalesPersons();
   
           toast.success(
             "Quotation Updated"
@@ -77,7 +118,7 @@ export default function AdminDashboard() {
   
         async () => {
   
-          await fetchData();
+          await fetchOrders();
   
           toast.success(
             "Order Updated"
@@ -86,14 +127,7 @@ export default function AdminDashboard() {
         }
       )
   
-      .subscribe((status) => {
-  
-        console.log(
-          "Realtime:",
-          status
-        );
-  
-      });
+      .subscribe();
   
     return () => {
   
