@@ -76,6 +76,9 @@ export default function OrderStatusPage() {
       case "preparing":
         return "bg-orange-100 text-orange-700 border-orange-200";
 
+      case "booking_pending":
+        return "bg-pink-100 text-pink-700 border-pink-200";
+
       case "shipped":
         return "bg-blue-100 text-blue-700 border-blue-200";
 
@@ -106,6 +109,13 @@ export default function OrderStatusPage() {
     orders.filter(
       (o) =>
         o.status === "preparing"
+    );
+
+  const bookingPendingOrders =
+    orders.filter(
+      (o) =>
+        o.status ===
+        "booking_pending"
     );
 
   const shippedOrders =
@@ -535,6 +545,57 @@ export default function OrderStatusPage() {
 
         </button>
 
+        {/* BOOKING PENDING */}
+        <button
+          onClick={() => {
+        
+            setCurrentPage(1);
+        
+            setActiveTab(
+              activeTab ===
+                "booking_pending"
+                ? "all"
+                : "booking_pending"
+            );
+        
+          }}
+          className={`rounded-[32px] p-8 text-left shadow-2xl border-[4px] transition-all duration-200 hover:scale-[1.02] ${
+            activeTab ===
+            "booking_pending"
+              ? "bg-pink-600 border-black text-white"
+              : "bg-pink-500 border-transparent text-white"
+          }`}
+        >
+        
+          <div className="flex items-start justify-between">
+        
+            <div>
+        
+              <p className="text-sm font-black tracking-[2px] uppercase">
+                Booking Pending
+              </p>
+        
+              <h2 className="text-5xl font-black mt-4">
+                {
+                  bookingPendingOrders.length
+                }
+              </h2>
+        
+            </div>
+        
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${
+              activeTab ===
+              "booking_pending"
+                ? "bg-white text-black"
+                : "bg-black text-white"
+            }`}>
+              📌
+            </div>
+        
+          </div>
+        
+        </button>
+
         {/* SHIPPED */}
         <button
           onClick={() => {
@@ -767,6 +828,10 @@ export default function OrderStatusPage() {
 
                         <option value="preparing">
                           Preparing
+                        </option>
+
+                        <option value="booking_pending">
+                          Booking Pending
                         </option>
 
                         <option value="shipped">
