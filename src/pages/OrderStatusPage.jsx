@@ -184,7 +184,7 @@ export default function OrderStatusPage() {
           status,
         })
 
-        .eq("id", id);
+        .eq(   "id",   Number(id) );
 
     if (!error) {
 
@@ -220,7 +220,7 @@ export default function OrderStatusPage() {
         cod_amount,
       })
 
-      .eq("id", id);
+      .eq(   "id",   Number(id) );
 
   };
 
@@ -241,7 +241,7 @@ export default function OrderStatusPage() {
         awb_link,
       })
 
-      .eq("id", id);
+      .eq(   "id",   Number(id) );
 
   };
 
