@@ -18,7 +18,7 @@ export default function OrderStatusPage() {
     useState(1);
 
   const [activeTab, setActiveTab] =
-    useState("all");
+    useState("confirmed");
 
   const ordersPerPage = 10;
 
