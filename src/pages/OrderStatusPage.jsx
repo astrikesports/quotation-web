@@ -638,8 +638,8 @@ export default function OrderStatusPage() {
             className={`rounded-[32px] p-8 text-left shadow-2xl border-[4px] transition-all duration-200 hover:scale-[1.02] ${
               activeTab ===
               "pending"
-                ? "bg-red-500 border-white text-white"
-                : "bg-red-400 border-transparent text-white"
+              ? "bg-[#7f1d1d] border-white text-white"
+              : "bg-[#991b1b] border-transparent text-white"
             }`}
           >
   
