@@ -974,7 +974,12 @@ export default function AdminDashboard() {
                         orders.filter(
                           (o) =>
                             o.status ===
-                            "shipped"
+                            "shipped" &&
+                            
+                            o.created_date ===
+                            new Date()
+                              .toISOString()
+                              .split("T")[0]
                         ).length
                       }
           
@@ -996,7 +1001,12 @@ export default function AdminDashboard() {
                               .filter(
                                 (o) =>
                                   o.status ===
-                                  "shipped"
+                                  "shipped" &&
+                                  
+                                  o.created_date ===
+                                  new Date()
+                                    .toISOString()
+                                    .split("T")[0]
                               )
                           
                               .reduce(
@@ -1043,7 +1053,12 @@ export default function AdminDashboard() {
                           orders.filter(
                             (o) =>
                               o.status ===
-                              "pending"
+                              "pending"&&
+
+                              o.created_date ===
+                              new Date()
+                                .toISOString()
+                                .split("T")[0]
                           ).length
                         }
           
@@ -1065,7 +1080,12 @@ export default function AdminDashboard() {
                             .filter(
                               (o) =>
                                 o.status ===
-                                "pending"
+                                "pending" &&
+
+                                o.created_date ===
+                                new Date()
+                                  .toISOString()
+                                  .split("T")[0]
                             )
           
                             .reduce(
@@ -1112,7 +1132,12 @@ export default function AdminDashboard() {
                         orders.filter(
                           (o) =>
                             o.status ===
-                            "preparing"
+                            "preparing" &&
+
+                            o.created_date ===
+                            new Date()
+                              .toISOString()
+                              .split("T")[0]
                         ).length
                       }
           
@@ -1134,7 +1159,12 @@ export default function AdminDashboard() {
                             .filter(
                               (o) =>
                                 o.status ===
-                                "preparing"
+                                "preparing" &&
+
+                                o.created_date ===
+                                new Date()
+                                  .toISOString()
+                                  .split("T")[0]
                             )
           
                             .reduce(
