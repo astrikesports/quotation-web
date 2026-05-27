@@ -88,33 +88,33 @@ import {
   size: typeof it.size === "string" ? it.size : ""
   }));
 
-
-  const totalAmount =
-    cleanItems.reduce(
-      (acc, item) =>
-        acc +
-        Number(
-          item.amount || 0
-        ),
-      0
-    );
       
+  // ✅ PAYLOAD
   const payload = {
-    ...pdfData,
   
-    status: "pending",
+  ...pdfData,
   
-    // GROSS AMOUNT
-    // ✅ GROSS AMOUNT
-    amount: totalAmount,
-    
-    // NET AMOUNT
-    netAmount: net,
+  status: "pending",
   
-    items: cleanItems,
+  // ✅ GROSS AMOUNT
+  amount:
+  cleanItems.reduce(
+  (acc, item) =>
+  acc +
+  Number(
+  item.amount || 0
+  ),
+  0
+  ),
   
-    paymentImages: []
+  // ✅ NET AMOUNT
+  netAmount: net,
+  
+  items: cleanItems,
+  
+  paymentImages: []
   };
+
 
   // ✅ 2️⃣ SAVE
   const saved = pdfData.id
