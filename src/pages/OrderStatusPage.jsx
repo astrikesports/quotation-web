@@ -69,7 +69,7 @@ export default function OrderStatusPage() {
     switch (status) {
 
       case "pending":
-        return "bg-red-100 text-red-700 bg-red-500";
+        return "bg-yellow-100 text-yellow-700 bg-yellow-500";
 
       case "confirmed":
         return "bg-green-100 text-green-700 border-green-200";
@@ -486,8 +486,8 @@ export default function OrderStatusPage() {
           className={`rounded-[32px] p-8 text-left shadow-2xl border-[4px] transition-all duration-200 hover:scale-[1.02] ${
             activeTab ===
             "pending"
-              ? "bg-yellow-500 border-black text-black"
-              : "bg-yellow-400 border-transparent text-black"
+              ? "bg-red-500 border-white text-white"
+              : "bg-red-400 border-transparent text-white"
           }`}
         >
 
