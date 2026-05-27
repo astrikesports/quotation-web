@@ -773,6 +773,10 @@ export default function OrderStatusPage() {
                   Amount
                 </th>
 
+                <th className="px-4 py-5 text-left text-sm font-black whitespace-nowrap">
+                  Payment Type
+                </th>
+
                 <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[120px]">
                   COD
                 </th>
@@ -782,7 +786,7 @@ export default function OrderStatusPage() {
                 </th>
 
                 <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[260px]">
-                  AWB Link
+                  Bilti Upload
                 </th>
 
                 <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[150px]">
@@ -847,23 +851,88 @@ export default function OrderStatusPage() {
                       }
                     </td>
 
+
                     <td className="px-4 py-5">
 
-                      <input
-                        type="number"
-                        defaultValue={
-                          order.cod_amount || 0
+                      <select
+                    
+                        value={
+                          order.payment_type || "cod"
                         }
-                        onBlur={(e) =>
-                          updateCOD(
+                    
+                        onChange={(e) =>
+                          handleInputChange(
                             order.id,
+                            "payment_type",
                             e.target.value
                           )
                         }
-                        placeholder="COD"
-                        className="w-full min-w-[100px] h-11 rounded-2xl border border-gray-200 px-4 outline-none"
-                      />
+                    
+                        className={`
+                          h-12 px-4 rounded-2xl border font-bold outline-none
+                    
+                          ${
+                            (
+                              order.payment_type ||
+                              "cod"
+                            ) === "credit"
+                    
+                              ? "bg-blue-100 text-blue-700 border-blue-200"
+                    
+                              : "bg-yellow-100 text-yellow-700 border-yellow-200"
+                          }
+                        `}
+                      >
+                    
+                        <option value="cod">
+                          COD
+                        </option>
+                    
+                        <option value="credit">
+                          CREDIT
+                        </option>
+                    
+                      </select>
+                    
+                    </td>
 
+
+                  <td className="px-4 py-5">
+
+                  {
+                    (
+                      order.payment_type ||
+                      "cod"
+                    ) === "cod"
+                  
+                    ? (
+
+                    <input
+                      type="number"
+                      defaultValue={
+                        order.cod_amount || 0
+                      }
+                      onBlur={(e) =>
+                        updateCOD(
+                          order.id,
+                          e.target.value
+                        )
+                      }
+                      placeholder="COD"
+                      className="w-full min-w-[100px] h-11 rounded-2xl border border-gray-200 px-4 outline-none"
+                    />
+
+                        )
+
+                        : (
+                      
+                          <div className="text-sm font-bold text-gray-400">
+                            --
+                          </div>
+                      
+                        )
+                      }
+                      
                     </td>
 
                     <td className="px-4 py-5">
@@ -908,21 +977,59 @@ export default function OrderStatusPage() {
                     </td>
 
                     <td className="px-4 py-5">
-
-                      <input
-                        type="text"
-                        defaultValue={
-                          order.awb_link || ""
-                        }
-                        onBlur={(e) =>
-                          updateAWB(
-                            order.id,
-                            e.target.value
-                          )
-                        }
-                        placeholder="Paste AWB Link"
-                        className="w-full h-11 rounded-2xl border border-gray-200 px-4 outline-none"
-                      />
+                      {
+                        (
+                          order.payment_type ||
+                          "cod"
+                        ) === "credit"
+                      
+                        ? (
+                      
+                          <label className="w-14 h-14 rounded-2xl bg-blue-500 flex items-center justify-center cursor-pointer text-white text-xl">
+                      
+                            🚚
+                      
+                            <input
+                              type="file"
+                              hidden
+                      
+                              onChange={(e) =>
+                                handleFileUpload(
+                                  e,
+                                  order.id,
+                                  "bilti_image"
+                                )
+                              }
+                            />
+                      
+                          </label>
+                      
+                        )
+                      
+                        : (
+                      
+                          <input
+                            type="text"
+                      
+                            value={
+                              order.awb_link || ""
+                            }
+                      
+                            onChange={(e) =>
+                              handleInputChange(
+                                order.id,
+                                "awb_link",
+                                e.target.value
+                              )
+                            }
+                      
+                            placeholder="Paste AWB Link"
+                      
+                            className="w-56 h-12 rounded-2xl border border-gray-200 px-4 outline-none"
+                          />
+                      
+                        )
+                      }
 
                     </td>
 
