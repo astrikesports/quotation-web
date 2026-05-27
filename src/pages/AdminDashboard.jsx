@@ -1053,12 +1053,7 @@ export default function AdminDashboard() {
                           orders.filter(
                             (o) =>
                               o.status ===
-                              "pending"&&
-
-                              o.created_date ===
-                              new Date()
-                                .toISOString()
-                                .split("T")[0]
+                              "pending"
                           ).length
                         }
           
@@ -1080,12 +1075,7 @@ export default function AdminDashboard() {
                             .filter(
                               (o) =>
                                 o.status ===
-                                "pending" &&
-
-                                o.created_date ===
-                                new Date()
-                                  .toISOString()
-                                  .split("T")[0]
+                                "pending"
                             )
           
                             .reduce(
