@@ -17,6 +17,9 @@ export default function OrderStatusPage() {
   const [currentPage, setCurrentPage] =
     useState(1);
 
+  const [searchTerm, setSearchTerm] =
+    useState("");
+  
   const [activeTab, setActiveTab] =
     useState("confirmed");
 
@@ -129,13 +132,34 @@ export default function OrderStatusPage() {
   // =========================
 
   const filteredOrders =
-    activeTab === "all"
-      ? orders
-      : orders.filter(
-          (o) =>
-            o.status ===
-            activeTab
-        );
+    orders.filter((o) => {
+  
+      const matchesStatus =
+        activeTab === "all"
+          ? true
+          : o.status ===
+            activeTab;
+  
+      const matchesSearch =
+  
+        o.quotation_no
+          ?.toLowerCase()
+          .includes(
+            searchTerm.toLowerCase()
+          ) ||
+  
+        o.customer_name
+          ?.toLowerCase()
+          .includes(
+            searchTerm.toLowerCase()
+          );
+  
+      return (
+        matchesStatus &&
+        matchesSearch
+      );
+  
+    });
 
   // =========================
   // PAGINATION
@@ -678,7 +702,7 @@ export default function OrderStatusPage() {
       <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden w-full">
 
         {/* HEADER */}
-        <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
+        <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between gap-4 flex-wrap">
 
           <div>
 
@@ -691,6 +715,22 @@ export default function OrderStatusPage() {
             </p>
 
           </div>
+
+          <input
+              type="text"
+              placeholder="Search quotation / customer..."
+              value={searchTerm}
+              onChange={(e) => {
+            
+                setSearchTerm(
+                  e.target.value
+                );
+            
+                setCurrentPage(1);
+            
+              }}
+              className="w-[320px] h-14 rounded-2xl border border-gray-200 px-5 outline-none font-semibold"
+            />
 
           <div className="bg-black text-white px-5 py-3 rounded-2xl font-black">
 
