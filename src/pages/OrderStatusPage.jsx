@@ -14,6 +14,30 @@ export default function OrderStatusPage() {
   const [orders, setOrders] =
     useState([]);
 
+  const handleInputChange = (
+    id,
+    field,
+    value
+  ) => {
+  
+    setOrders((prev) =>
+  
+      prev.map((order) =>
+  
+        order.id === id
+  
+          ? {
+              ...order,
+              [field]: value
+            }
+  
+          : order
+      )
+  
+    );
+  
+  };
+
   const [currentPage, setCurrentPage] =
     useState(1);
 
