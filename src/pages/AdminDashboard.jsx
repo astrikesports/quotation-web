@@ -3,6 +3,7 @@ import { supabase } from "../supabase";
 import OrderStatusPage from "./OrderStatusPage";
 import ConfirmDialog from "../components/ConfirmDialog";
 import LoaderOverlay from "../components/LoaderOverlay";
+import toast from "react-hot-toast";
 
 export default function AdminDashboard() {
 
@@ -38,13 +39,15 @@ export default function AdminDashboard() {
   // =========================
   
   useEffect(() => {
-  
+
     // INITIAL LOAD
     fetchProducts();
   
     fetchSalesPersons();
   
     fetchOrders();
+  
+    fetchData();
   
     const channel = supabase
   
@@ -60,7 +63,13 @@ export default function AdminDashboard() {
         },
   
         () => {
+  
           fetchProducts();
+  
+          toast.success(
+            "Products Updated"
+          );
+  
         }
       )
   
@@ -74,7 +83,13 @@ export default function AdminDashboard() {
         },
   
         () => {
+  
           fetchSalesPersons();
+  
+          toast.success(
+            "Sales Person Updated"
+          );
+  
         }
       )
   
@@ -88,11 +103,19 @@ export default function AdminDashboard() {
         },
   
         () => {
+  
           fetchSalesPersons();
+  
+          fetchData();
+  
+          toast.success(
+            "Quotation Updated"
+          );
+  
         }
       )
   
-      // ORDERS
+      // ORDER STATUS
       .on(
         "postgres_changes",
         {
@@ -102,15 +125,22 @@ export default function AdminDashboard() {
         },
   
         () => {
+  
           fetchOrders();
+  
+          fetchData();
+  
+          toast.success(
+            "Order Updated"
+          );
+  
         }
       )
   
       .subscribe((status) => {
   
-        console.log(
-          "Realtime:",
-          status
+        toast.success(
+          `Realtime: ${status}`
         );
   
       });
@@ -567,6 +597,7 @@ export default function AdminDashboard() {
   return (
 
     <div className="min-h-screen bg-[#f4f6f8] p-4 md:p-8">
+      <Toaster position="top-right" />
 
       {/* LOADER */}
       {loading && (
