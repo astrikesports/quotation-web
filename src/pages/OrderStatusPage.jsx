@@ -5,6 +5,7 @@ import React, {
 } from "react";
 
 import { supabase } from "../supabase";
+import toast from "react-hot-toast";
 
 export default function OrderStatusPage() {
 
@@ -397,6 +398,7 @@ export default function OrderStatusPage() {
   return (
 
     <div className="space-y-8 w-full">
+    <Toaster position="top-right" />
 
       {/* LOADING */}
       {loading && (
