@@ -1,8 +1,6 @@
-import {
-  BrowserRouter,
-  Route,
-  Routes
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+import { Toaster } from "react-hot-toast";
 
 import Home from "./pages/Home";
 
@@ -15,54 +13,35 @@ import Quotation from "./pages/Quotation";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
-
   return (
-
     <BrowserRouter>
+      <Toaster position="top-right" />
 
       <Routes>
-
         {/* PUBLIC */}
-        <Route
-          path="/"
-          element={<Home />}
-        />
+        <Route path="/" element={<Home />} />
 
-        <Route
-          path="/login"
-          element={<Login />}
-        />
+        <Route path="/login" element={<Login />} />
 
         {/* PROTECTED */}
         <Route
           path="/dashboard"
           element={
-
             <ProtectedRoute>
-
               <Dashboard />
-
             </ProtectedRoute>
-
           }
         />
 
         <Route
           path="/quotation"
           element={
-
             <ProtectedRoute>
-
               <Quotation />
-
             </ProtectedRoute>
-
           }
         />
-
       </Routes>
-
     </BrowserRouter>
-
   );
 }
