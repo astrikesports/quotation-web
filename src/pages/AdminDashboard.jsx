@@ -46,8 +46,6 @@ export default function AdminDashboard() {
   
     fetchOrders();
   
-    fetchData();
-  
     const channel = supabase
   
       .channel("live-dashboard")
@@ -65,7 +63,7 @@ export default function AdminDashboard() {
   
           fetchProducts();
   
-          toast.success(
+          alert(
             "Products Updated"
           );
   
@@ -85,7 +83,7 @@ export default function AdminDashboard() {
   
           fetchSalesPersons();
   
-          toast.success(
+          alert(
             "Sales Person Updated"
           );
   
@@ -105,9 +103,9 @@ export default function AdminDashboard() {
   
           fetchSalesPersons();
   
-          fetchData();
+          fetchOrders();
   
-          toast.success(
+          alert(
             "Quotation Updated"
           );
   
@@ -127,22 +125,14 @@ export default function AdminDashboard() {
   
           fetchOrders();
   
-          fetchData();
-  
-          toast.success(
+          alert(
             "Order Updated"
           );
   
         }
       )
   
-      .subscribe((status) => {
-  
-        toast.success(
-          `Realtime: ${status}`
-        );
-  
-      });
+      .subscribe();
   
     return () => {
   
