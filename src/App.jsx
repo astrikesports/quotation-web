@@ -14,11 +14,16 @@ import Quotation from "./pages/Quotation";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
+import {
+  Toaster
+} from "react-hot-toast";
+
 export default function App() {
 
   return (
 
     <BrowserRouter>
+      <Toaster position="top-right" />
 
       <Routes>
 
