@@ -211,19 +211,32 @@ export default function OrderStatusPage() {
     id,
     cod_amount
   ) => {
-
-    await supabase
-
-      .from("order_status")
-
-      .update({
-        cod_amount,
-      })
-
-      .eq(   "id",   Number(id) );
-
+  
+    const { error } =
+      await supabase
+  
+        .from("order_status")
+  
+        .update({
+          cod_amount:
+            cod_amount
+              ? Number(cod_amount)
+              : null,
+        })
+  
+        .eq(
+          "id",
+          Number(id)
+        );
+  
+    if (error) {
+  
+      console.log(error);
+  
+    }
+  
   };
-
+  
   // =========================
   // UPDATE AWB
   // =========================
@@ -787,7 +800,7 @@ export default function OrderStatusPage() {
                       <input
                         type="number"
                         defaultValue={
-                          order.cod_amount || ""
+                          order.cod_amount || 0
                         }
                         onBlur={(e) =>
                           updateCOD(
