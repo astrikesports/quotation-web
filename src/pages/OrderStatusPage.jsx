@@ -467,56 +467,6 @@ export default function OrderStatusPage() {
 
         </button>
 
-        {/* PENDING */}
-        <button
-          onClick={() => {
-
-            setCurrentPage(1);
-
-            setActiveTab(
-              activeTab ===
-                "pending"
-                ? "all"
-                : "pending"
-            );
-
-          }}
-          className={`rounded-[32px] p-8 text-left shadow-2xl border-[4px] transition-all duration-200 hover:scale-[1.02] ${
-            activeTab ===
-            "pending"
-              ? "bg-red-500 border-white text-white"
-              : "bg-red-400 border-transparent text-white"
-          }`}
-        >
-
-          <div className="flex items-start justify-between">
-
-            <div>
-
-              <p className="text-sm font-black tracking-[2px] uppercase">
-                Pending
-              </p>
-
-              <h2 className="text-5xl font-black mt-4">
-                {
-                  pendingOrders.length
-                }
-              </h2>
-
-            </div>
-
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${
-              activeTab ===
-              "pending"
-                ? "bg-black text-white"
-                : "bg-white text-black"
-            }`}>
-              ⏳
-            </div>
-
-          </div>
-
-        </button>
 
         {/* PREPARING */}
         <button
@@ -670,6 +620,57 @@ export default function OrderStatusPage() {
           </div>
 
         </button>
+
+        {/* PENDING */}
+          <button
+            onClick={() => {
+  
+              setCurrentPage(1);
+  
+              setActiveTab(
+                activeTab ===
+                  "pending"
+                  ? "all"
+                  : "pending"
+              );
+  
+            }}
+            className={`rounded-[32px] p-8 text-left shadow-2xl border-[4px] transition-all duration-200 hover:scale-[1.02] ${
+              activeTab ===
+              "pending"
+                ? "bg-red-500 border-white text-white"
+                : "bg-red-400 border-transparent text-white"
+            }`}
+          >
+  
+            <div className="flex items-start justify-between">
+  
+              <div>
+  
+                <p className="text-sm font-black tracking-[2px] uppercase">
+                  Pending
+                </p>
+  
+                <h2 className="text-5xl font-black mt-4">
+                  {
+                    pendingOrders.length
+                  }
+                </h2>
+  
+              </div>
+  
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${
+                activeTab ===
+                "pending"
+                  ? "bg-black text-white"
+                  : "bg-white text-black"
+              }`}>
+                ⏳
+              </div>
+  
+            </div>
+  
+          </button>
 
       </div>
 
