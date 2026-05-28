@@ -1265,14 +1265,33 @@ export default function OrderStatusPage() {
 
                         {order.quotation_image && (
 
-                          <img
-                            src={
-                              order.quotation_image
-                            }
-                            alt="quotation"
-                            className="w-12 h-12 rounded-2xl object-cover border shrink-0"
-                          />
-
+                          <div className="flex items-center gap-2">
+                          
+                            <img
+                              src={
+                                order.quotation_image
+                              }
+                              alt="quotation"
+                              className="w-12 h-12 rounded-2xl object-cover border shrink-0"
+                            />
+                        
+                            <button
+                        
+                              onClick={() =>
+                                handleInputChange(
+                                  order.id,
+                                  "quotation_image",
+                                  ""
+                                )
+                              }
+                        
+                              className="w-11 h-11 rounded-2xl bg-red-500 text-white font-black"
+                            >
+                              ✕
+                            </button>
+                        
+                          </div>
+                        
                         )}
 
                       </div>
@@ -1324,24 +1343,32 @@ export default function OrderStatusPage() {
                               .from("order_status")
                       
                               .update({
-                      
-                                status: order.status,
-                      
-                                cod_amount:
-                                  order.cod_amount,
-                      
-                                awb_link:
-                                  order.awb_link,
-                      
-                                payment_type:
-                                  order.payment_type,
 
-                                remark: order.remark,
-                      
-                                bilti_image:
-                                  order.bilti_image
-                      
-                              })
+                                  status:
+                                    order.status,
+                                
+                                  cod_amount:
+                                    order.cod_amount,
+                                
+                                  awb_link:
+                                    order.awb_link,
+                                
+                                  payment_type:
+                                    order.payment_type,
+                                
+                                  remark:
+                                    order.remark,
+                                
+                                  bilti_image:
+                                    order.bilti_image,
+                                
+                                  bill_image:
+                                    order.bill_image,
+                                
+                                  quotation_image:
+                                    order.quotation_image
+                                
+                                })
                       
                               .eq(
                                 "id",
