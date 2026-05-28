@@ -38,6 +38,38 @@ export default function OrderStatusPage() {
   
   };
 
+  const handleFileUpload = (
+    e,
+    id,
+    field
+  ) => {
+  
+    const file =
+      e.target.files?.[0];
+  
+    if (!file) return;
+  
+    const fileUrl =
+      URL.createObjectURL(file);
+  
+    setOrders((prev) =>
+  
+      prev.map((order) =>
+  
+        order.id === id
+  
+          ? {
+              ...order,
+              [field]: fileUrl
+            }
+  
+          : order
+      )
+  
+    );
+  
+  };
+
   const [currentPage, setCurrentPage] =
     useState(1);
 
@@ -1139,11 +1171,60 @@ export default function OrderStatusPage() {
                     <td className="px-4 py-5">
 
                       <button
-                        onClick={() =>
+                        onClick={async () => {
+                      
+                          setLoading(true);
+                      
+                          const { error } =
+                            await supabase
+                      
+                              .from("order_status")
+                      
+                              .update({
+                      
+                                status: order.status,
+                      
+                                cod_amount:
+                                  order.cod_amount,
+                      
+                                awb_link:
+                                  order.awb_link,
+                      
+                                payment_type:
+                                  order.payment_type,
+                      
+                                bilti_image:
+                                  order.bilti_image
+                      
+                              })
+                      
+                              .eq(
+                                "id",
+                                order.id
+                              );
+                      
+                          setLoading(false);
+                      
+                          if (error) {
+                      
+                            alert(
+                              "Update Failed"
+                            );
+                      
+                            console.log(error);
+                      
+                            return;
+                      
+                          }
+                      
                           alert(
                             "Order Updated Successfully"
-                          )
-                        }
+                          );
+                      
+                          fetchOrders();
+                      
+                        }}
+                      
                         className="w-full min-w-[90px] h-11 rounded-2xl bg-black text-white font-black hover:scale-[1.02] transition-all duration-200"
                       >
                         Save
