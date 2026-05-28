@@ -829,29 +829,69 @@ export default function OrderStatusPage() {
                   Amount
                 </th>
                     
-                <th className="px-4 py-5 text-left text-sm font-black whitespace-nowrap">
-                  Payment Type
-                </th>
+                {
+                  activeTab !== "pending" && (
+                
+                    <th className="px-4 py-5 text-left text-sm font-black whitespace-nowrap">
+                
+                      Payment Type
+                
+                    </th>
+                
+                  )
+                }
                     
-                <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[120px]">
-                  COD
-                </th>
+                {
+                  activeTab !== "pending" && (
+                
+                    <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[120px]">
+                
+                      COD
+                
+                    </th>
+                
+                  )
+                }
 
                 <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[170px]">
                   Status
                 </th>
                     
-                <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[260px]">
-                  Bilti Upload
-                </th>
+                {
+                  activeTab !== "pending" && (
+                
+                    <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[260px]">
+                
+                      Bilti Upload
+                
+                    </th>
+                
+                  )
+                }
                     
-                <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[150px]">
-                  Bill
-                </th>
+                {
+                  activeTab !== "pending" && (
+                
+                    <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[150px]">
+                
+                      Bill
+                
+                    </th>
+                
+                  )
+                }
                     
-                <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[170px]">
-                  Quotation Image
-                </th>
+                {
+                  activeTab !== "pending" && (
+                
+                    <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[170px]">
+                
+                      Quotation Image
+                
+                    </th>
+                
+                  )
+                }
 
                 {
                   activeTab === "pending" && (
@@ -1047,6 +1087,9 @@ export default function OrderStatusPage() {
 
                     </td>
 
+                    {
+                      order.status !== "pending" && (
+                        
                     <td className="px-4 py-5">
                       {
                         (
@@ -1101,9 +1144,14 @@ export default function OrderStatusPage() {
                       
                         )
                       }
+                    )
+                  }
 
                     </td>
 
+                    {
+                      activeTab !== "pending" && (
+                        
                     <td className="px-4 py-5">
 
                       <div className="flex items-center gap-2">
@@ -1144,7 +1192,12 @@ export default function OrderStatusPage() {
                       </div>
 
                     </td>
+                      )
+                    }
 
+                    {
+                      activeTab !== "pending" && (
+                        
                     <td className="px-4 py-5">
 
                       <div className="flex items-center gap-2">
@@ -1182,6 +1235,9 @@ export default function OrderStatusPage() {
                       </div>
 
                     </td>
+
+                        )
+                      }
 
                     {
                       order.status === "pending" && (
