@@ -853,6 +853,18 @@ export default function OrderStatusPage() {
                   Quotation Image
                 </th>
 
+                {
+                  activeTab === "pending" && (
+                
+                    <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[300px]">
+                
+                      Remark
+                
+                    </th>
+                
+                  )
+                }
+
                 <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[120px]">
                   Action
                 </th>
@@ -906,8 +918,10 @@ export default function OrderStatusPage() {
                         ).toLocaleString()
                       }
                     </td>
-
-
+      
+                    {
+                      order.status !== "pending" && (
+                        
                     <td className="px-4 py-5">
 
                       <select
@@ -951,7 +965,8 @@ export default function OrderStatusPage() {
                       </select>
                     
                     </td>
-
+                      )
+                    }
 
                   <td className="px-4 py-5">
 
