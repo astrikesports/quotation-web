@@ -1093,7 +1093,7 @@ export default function OrderStatusPage() {
 
                     <td className="px-4 py-5">
 
-                      <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-3">
                     
                         {/* AWB LINK */}
                     
@@ -1125,9 +1125,30 @@ export default function OrderStatusPage() {
                             "cod"
                           ) === "credit" && (
                     
-                            <label className="w-14 h-14 rounded-2xl bg-blue-500 flex items-center justify-center cursor-pointer text-white text-xl">
-                    
-                              🚚
+                            <label className="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center cursor-pointer text-white text-xl">
+
+                              {
+                                order.bilti_image && (
+                              
+                                  <button
+                              
+                                    onClick={() =>
+                                      handleInputChange(
+                                        order.id,
+                                        "bilti_image",
+                                        ""
+                                      )
+                                    }
+                              
+                                    className="w-12 h-12 rounded-2xl bg-red-500 text-white font-black"
+                                  >
+                                    ✕
+                                  </button>
+                              
+                                )
+                              }
+                                                  
+                              BILTI-📦
                     
                               <input
                                 type="file"
@@ -1178,17 +1199,36 @@ export default function OrderStatusPage() {
 
                         {order.bill_image && (
 
-                          <a
-                            href={
-                              order.bill_image
-                            }
-                            target="_blank"
-                            rel="noreferrer"
-                            className="h-11 px-4 rounded-2xl bg-blue-500 text-white font-black flex items-center justify-center whitespace-nowrap"
-                          >
-                            View
-                          </a>
-
+                          <div className="flex items-center gap-2">
+                        
+                            <a
+                              href={
+                                order.bill_image
+                              }
+                              target="_blank"
+                              rel="noreferrer"
+                              className="h-11 px-4 rounded-2xl bg-blue-500 text-white font-black flex items-center justify-center whitespace-nowrap"
+                            >
+                              View
+                            </a>
+                        
+                            <button
+                        
+                              onClick={() =>
+                                handleInputChange(
+                                  order.id,
+                                  "bill_image",
+                                  ""
+                                )
+                              }
+                        
+                              className="w-11 h-11 rounded-2xl bg-red-500 text-white font-black"
+                            >
+                              ✕
+                            </button>
+                        
+                          </div>
+                        
                         )}
 
                       </div>
