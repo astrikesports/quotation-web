@@ -87,6 +87,51 @@
   items: applyAutoRates(prev.items)
   }));
   }, [rateDiscount, spDiscount]);
+
+
+  /* ================= AUTO RELOAD ================= */
+
+  useEffect(() => {
+  
+    const handleReload = () => {
+  
+      window.location.reload();
+  
+    };
+  
+    // TAB ACTIVE
+    window.addEventListener(
+      "focus",
+      handleReload
+    );
+  
+    // MOBILE APP RETURN
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+  
+        if (
+          document.visibilityState ===
+          "visible"
+        ) {
+  
+          window.location.reload();
+  
+        }
+  
+      }
+    );
+  
+    return () => {
+  
+      window.removeEventListener(
+        "focus",
+        handleReload
+      );
+  
+    };
+  
+  }, []);
   
   /* ================= ITEM ACTIONS ================= */
   function addItem(item) {
