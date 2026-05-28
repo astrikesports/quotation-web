@@ -868,28 +868,56 @@ export default function Dashboard({
                       
                         {orderData ? (
                       
-                          <div className="bg-green-100 text-green-700 px-4 py-2 rounded-2xl font-bold inline-flex items-center gap-2">
+                          <div className="inline-flex items-center gap-2">
                       
                             {orderData.status === "shipped" ? (
-
-                              <a
-                                href={orderData.awb_link}
-                                target="_blank"
-                                rel="noreferrer"
-                            
-                                className="bg-blue-500 text-white px-4 py-2 rounded-2xl font-bold inline-flex items-center gap-2"
-                              >
-                                🚚 Track Order
-                              </a>
-                            
+                      
+                              orderData.payment_type === "credit" ? (
+                      
+                                orderData.bilti_image ? (
+                      
+                                  <a
+                                    href={orderData.bilti_image}
+                                    target="_blank"
+                                    rel="noreferrer"
+                      
+                                    className="bg-purple-500 text-white px-4 py-2 rounded-2xl font-bold inline-flex items-center gap-2"
+                                  >
+                                    📦 View Bilti
+                                  </a>
+                      
+                                ) : (
+                      
+                                  <div className="bg-gray-100 text-gray-500 px-4 py-2 rounded-2xl font-bold">
+                      
+                                    No Bilti
+                      
+                                  </div>
+                      
+                                )
+                      
+                              ) : (
+                      
+                                <a
+                                  href={orderData.awb_link}
+                                  target="_blank"
+                                  rel="noreferrer"
+                      
+                                  className="bg-blue-500 text-white px-4 py-2 rounded-2xl font-bold inline-flex items-center gap-2"
+                                >
+                                  🚚 Track Order
+                                </a>
+                      
+                              )
+                      
                             ) : (
-                            
+                      
                               <div className="bg-green-100 text-green-700 px-4 py-2 rounded-2xl font-bold inline-flex items-center gap-2">
-                            
+                      
                                 🚚 {orderData.status}
-                            
+                      
                               </div>
-                            
+                      
                             )}
                       
                           </div>
