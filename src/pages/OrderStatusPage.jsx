@@ -1091,69 +1091,65 @@ export default function OrderStatusPage() {
 
                     </td>
 
-                    {
-                      order.status !== "pending" && (
+                    <td className="px-4 py-5">
+
+                      <div className="flex flex-col gap-3">
                     
-                        <td className="px-4 py-5">
+                        {/* AWB LINK */}
                     
-                          {
-                            (
-                              order.payment_type ||
-                              "cod"
-                            ) === "credit"
+                        <input
+                          type="text"
                     
-                            ? (
+                          value={
+                            order.awb_link || ""
+                          }
                     
-                              <label className="w-14 h-14 rounded-2xl bg-blue-500 flex items-center justify-center cursor-pointer text-white text-xl">
-                    
-                                🚚
-                    
-                                <input
-                                  type="file"
-                                  hidden
-                    
-                                  onChange={(e) =>
-                                    handleFileUpload(
-                                      e,
-                                      order.id,
-                                      "bilti_image"
-                                    )
-                                  }
-                                />
-                    
-                              </label>
-                    
-                            )
-                    
-                            : (
-                    
-                              <input
-                                type="text"
-                    
-                                value={
-                                  order.awb_link || ""
-                                }
-                    
-                                onChange={(e) =>
-                                  handleInputChange(
-                                    order.id,
-                                    "awb_link",
-                                    e.target.value
-                                  )
-                                }
-                    
-                                placeholder="Paste AWB Link"
-                    
-                                className="w-56 h-12 rounded-2xl border border-gray-200 px-4 outline-none"
-                              />
-                    
+                          onChange={(e) =>
+                            handleInputChange(
+                              order.id,
+                              "awb_link",
+                              e.target.value
                             )
                           }
                     
-                        </td>
+                          placeholder="Paste AWB Link"
                     
-                      )
-                    }
+                          className="w-56 h-12 rounded-2xl border border-gray-200 px-4 outline-none"
+                        />
+                    
+                        {/* CREDIT ONLY BILTI */}
+                    
+                        {
+                          (
+                            order.payment_type ||
+                            "cod"
+                          ) === "credit" && (
+                    
+                            <label className="w-14 h-14 rounded-2xl bg-blue-500 flex items-center justify-center cursor-pointer text-white text-xl">
+                    
+                              🚚
+                    
+                              <input
+                                type="file"
+                                hidden
+                    
+                                onChange={(e) =>
+                                  handleFileUpload(
+                                    e,
+                                    order.id,
+                                    "bilti_image"
+                                  )
+                                }
+                              />
+                    
+                            </label>
+                    
+                          )
+                        }
+                    
+                      </div>
+                    
+                    </td>
 
                     {
                       activeTab !== "pending" && (
