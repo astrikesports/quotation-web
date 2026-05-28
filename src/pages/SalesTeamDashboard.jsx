@@ -728,7 +728,7 @@ export default function Dashboard({
                     </th>
                     
                     <th className="text-left p-5 font-bold">
-                      Net Amount
+                      Amount
                     </th>
           
                     <th className="text-left p-5 font-bold">
@@ -796,14 +796,14 @@ export default function Dashboard({
           
                       </td>
                       
-                      {/* NET AMOUNT */}
+                      {/* AMOUNT */}
                       <td className="p-5">
                       
                         <div className="font-black text-lg text-green-600">
                       
                           ₹{
                             Number(
-                              quote.net_amount || 0
+                              quote.amount || 0
                             ).toLocaleString()
                           }
                       
