@@ -3,6 +3,7 @@ import { supabase } from "../supabase";
 import OrderStatusPage from "./OrderStatusPage";
 import ConfirmDialog from "../components/ConfirmDialog";
 import LoaderOverlay from "../components/LoaderOverlay";
+import toast from "react-hot-toast";
 
 export default function AdminDashboard() {
 
