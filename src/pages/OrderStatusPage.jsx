@@ -1148,7 +1148,7 @@ export default function OrderStatusPage() {
                                 )
                               }
                                                   
-                              BILTI-📦
+                              📦
                     
                               <input
                                 type="file"
