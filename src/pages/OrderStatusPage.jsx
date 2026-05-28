@@ -1183,6 +1183,35 @@ export default function OrderStatusPage() {
 
                     </td>
 
+                    {
+                      order.status === "pending" && (
+                    
+                        <td className="px-4 py-5 min-w-[300px]">
+                    
+                          <textarea
+                    
+                            value={
+                              order.remark || ""
+                            }
+                    
+                            onChange={(e) =>
+                              handleInputChange(
+                                order.id,
+                                "remark",
+                                e.target.value
+                              )
+                            }
+                    
+                            placeholder="Enter pending remark..."
+                    
+                            className="w-full min-h-[90px] rounded-2xl border border-gray-200 p-4 outline-none resize-none font-semibold"
+                          />
+                    
+                        </td>
+                    
+                      )
+                    }
+
                     <td className="px-4 py-5">
 
                       <button
