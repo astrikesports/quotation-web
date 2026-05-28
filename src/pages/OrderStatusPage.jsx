@@ -1008,43 +1008,47 @@ export default function OrderStatusPage() {
                       )
                     }
 
-                  <td className="px-4 py-5">
-
                   {
-                    (
-                      order.payment_type ||
-                      "cod"
-                    ) === "cod"
+                    order.status !== "pending" && (
                   
-                    ? (
-
-                    <input
-                      type="number"
-                      defaultValue={
-                        order.cod_amount || 0
-                      }
-                      onBlur={(e) =>
-                        updateCOD(
-                          order.id,
-                          e.target.value
-                        )
-                      }
-                      placeholder="COD"
-                      className="w-full min-w-[100px] h-11 rounded-2xl border border-gray-200 px-4 outline-none"
-                    />
-
-                        )
-
-                        : (
-                      
-                          <div className="text-sm font-bold text-gray-400">
-                            --
-                          </div>
-                      
-                        )
-                      }
-                      
-                    </td>
+                      <td className="px-4 py-5">
+                  
+                        {
+                          (
+                            order.payment_type ||
+                            "cod"
+                          ) === "cod"
+                  
+                          ? (
+                  
+                            <input
+                              type="number"
+                              defaultValue={
+                                order.cod_amount || 0
+                              }
+                              onBlur={(e) =>
+                                updateCOD(
+                                  order.id,
+                                  e.target.value
+                                )
+                              }
+                              placeholder="COD"
+                              className="w-full min-w-[100px] h-11 rounded-2xl border border-gray-200 px-4 outline-none"
+                            />
+                  
+                          ) : (
+                  
+                            <div className="text-sm font-bold text-gray-400">
+                              --
+                            </div>
+                  
+                          )
+                        }
+                  
+                      </td>
+                  
+                    )
+                  }
 
                     <td className="px-4 py-5">
 
@@ -1292,6 +1296,8 @@ export default function OrderStatusPage() {
                       
                                 payment_type:
                                   order.payment_type,
+
+                                remark: order.remark,
                       
                                 bilti_image:
                                   order.bilti_image
