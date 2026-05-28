@@ -825,69 +825,33 @@ export default function OrderStatusPage() {
                   Sales Person
                 </th>
                 
-                {
-                  activeTab === "pending" && (
-                    
                 <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[140px]">
                   Amount
                 </th>
-
-                  )
-                }
-
-                {
-                  activeTab === "pending" && (
                     
                 <th className="px-4 py-5 text-left text-sm font-black whitespace-nowrap">
                   Payment Type
                 </th>
-
-                  )
-                }
-
-                {
-                  activeTab === "pending" && (
                     
                 <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[120px]">
                   COD
                 </th>
 
-                  )
-                }
-
                 <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[170px]">
                   Status
                 </th>
-
-                {
-                  activeTab === "pending" && (
                     
                 <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[260px]">
                   Bilti Upload
                 </th>
                     
-                  )
-                }
-                    
-                {
-                  activeTab === "pending" && (
-                    
                 <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[150px]">
                   Bill
                 </th>
                     
-                  )
-                }
-
-                {
-                  activeTab === "pending" && (
-                    
                 <th className="text-left px-4 py-5 text-sm font-black whitespace-nowrap min-w-[170px]">
                   Quotation Image
                 </th>
-
-                  )
-                }
 
                 {
                   activeTab === "pending" && (
