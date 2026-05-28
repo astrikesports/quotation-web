@@ -1092,86 +1092,92 @@ export default function OrderStatusPage() {
 
                     </td>
 
-                    <td className="px-4 py-5">
-
-                      <div className="flex items-center gap-3">
+                    {
+                      order.status !== "pending" && (
                     
-                        {/* AWB LINK */}
+                        <td className="px-4 py-5">
                     
-                        <input
-                          type="text"
-                    
-                          value={
-                            order.awb_link || ""
-                          }
-                    
-                          onChange={(e) =>
-                            handleInputChange(
-                              order.id,
-                              "awb_link",
-                              e.target.value
-                            )
-                          }
-                    
-                          placeholder="Paste AWB Link"
-                    
-                          className="w-56 h-12 rounded-2xl border border-gray-200 px-4 outline-none"
-                        />
-                    
-                        {/* CREDIT ONLY BILTI */}
-                    
-                        {
-                          (
-                            order.payment_type ||
-                            "cod"
-                          ) === "credit" && (
-                    
-                            <label className="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center cursor-pointer text-white text-xl">
-
-                              {
-                                order.bilti_image && (
-                              
-                                  <button
-                              
-                                    onClick={() =>
-                                      handleInputChange(
-                                        order.id,
-                                        "bilti_image",
-                                        ""
-                                      )
-                                    }
-                              
-                                    className="w-12 h-12 rounded-2xl bg-red-500 text-white font-black"
-                                  >
-                                    ✕
-                                  </button>
-                              
+                          <div className="flex items-center gap-3">
+                        
+                            {/* AWB LINK */}
+                        
+                            <input
+                              type="text"
+                        
+                              value={
+                                order.awb_link || ""
+                              }
+                        
+                              onChange={(e) =>
+                                handleInputChange(
+                                  order.id,
+                                  "awb_link",
+                                  e.target.value
                                 )
                               }
-                                                  
-                              📦
+                        
+                              placeholder="Paste AWB Link"
+                        
+                              className="w-56 h-12 rounded-2xl border border-gray-200 px-4 outline-none"
+                            />
+                        
+                            {/* CREDIT ONLY BILTI */}
+                        
+                            {
+                              (
+                                order.payment_type ||
+                                "cod"
+                              ) === "credit" && (
+                        
+                                <label className="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center cursor-pointer text-white text-xl">
                     
-                              <input
-                                type="file"
-                                hidden
+                                  {
+                                    order.bilti_image && (
+                                  
+                                      <button
+                                  
+                                        onClick={() =>
+                                          handleInputChange(
+                                            order.id,
+                                            "bilti_image",
+                                            ""
+                                          )
+                                        }
+                                  
+                                        className="w-12 h-12 rounded-2xl bg-red-500 text-white font-black"
+                                      >
+                                        ✕
+                                      </button>
+                                  
+                                    )
+                                  }
+                                                              
+                                  📦
+                        
+                                  <input
+                                    type="file"
+                                    hidden
+                        
+                                    onChange={(e) =>
+                                      handleFileUpload(
+                                        e,
+                                        order.id,
+                                        "bilti_image"
+                                      )
+                                    }
+                                  />
+                        
+                                </label>
+                        
+                              )
+                            }
+                        
+                          </div>
+                        
+                        </td>
                     
-                                onChange={(e) =>
-                                  handleFileUpload(
-                                    e,
-                                    order.id,
-                                    "bilti_image"
-                                  )
-                                }
-                              />
-                    
-                            </label>
-                    
-                          )
-                        }
-                    
-                      </div>
-                    
-                    </td>
+                      )
+                    }
 
                     {
                       activeTab !== "pending" && (
