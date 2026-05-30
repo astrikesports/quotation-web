@@ -1215,7 +1215,7 @@ export default function AdminDashboard() {
         
               {salesPersons
         
-                // ONLY TODAY SALES > 0
+                // ONLY SALES > 0
                 .filter((person) => {
         
                   const todaySales = quotations
@@ -1225,18 +1225,14 @@ export default function AdminDashboard() {
                         q.sales_person ===
                           person.name &&
                         q.status ===
-                          "confirmed" &&
-                        q.created_date ===
-                          new Date()
-                            .toISOString()
-                            .split("T")[0]
+                          "confirmed"
                     )
         
                     .reduce(
                       (acc, q) =>
                         acc +
                         Number(
-                          q.net_amount || 0
+                          q.amount || 0
                         ),
                       0
                     );
@@ -1253,11 +1249,7 @@ export default function AdminDashboard() {
                         q.sales_person ===
                           person.name &&
                         q.status ===
-                          "confirmed" &&
-                        q.created_date ===
-                          new Date()
-                            .toISOString()
-                            .split("T")[0]
+                          "confirmed"
                     );
         
                   // TODAY SALES
@@ -1266,7 +1258,7 @@ export default function AdminDashboard() {
                       (acc, q) =>
                         acc +
                         Number(
-                          q.net_amount || 0
+                          q.amount || 0
                         ),
                       0
                     );
@@ -1275,7 +1267,7 @@ export default function AdminDashboard() {
         
                     <div
                       key={person.id}
-                      className="border border-gray-100 rounded-[30px] p-6 hover:shadow-xl transition-all duration-300"
+                      className="border border-gray-100 rounded-[30px] p-6 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50"
                     >
         
                       {/* TOP */}
@@ -1283,13 +1275,13 @@ export default function AdminDashboard() {
         
                         <div className="flex items-center gap-4">
         
-                          <div className="w-16 h-16 rounded-3xl bg-black text-white flex items-center justify-center text-2xl font-black">
+                          <div className="w-16 h-16 rounded-3xl bg-black text-white flex items-center justify-center text-2xl font-black shadow-lg">
                             {person.name?.charAt(0)}
                           </div>
         
                           <div>
         
-                            <h3 className="text-2xl font-black">
+                            <h3 className="text-2xl font-black leading-tight">
                               {person.name}
                             </h3>
         
@@ -1314,7 +1306,7 @@ export default function AdminDashboard() {
                           Today Sales
                         </p>
         
-                        <h2 className="text-4xl font-black text-green-600 mt-3">
+                        <h2 className="text-5xl font-black text-green-600 mt-3">
         
                           ₹{todaySales.toLocaleString()}
         
@@ -1322,9 +1314,10 @@ export default function AdminDashboard() {
         
                       </div>
         
-                      {/* ORDERS */}
+                      {/* BOTTOM */}
                       <div className="mt-8 flex items-center justify-between">
         
+                        {/* ORDERS */}
                         <div>
         
                           <p className="text-xs text-gray-400 font-bold uppercase tracking-[2px]">
@@ -1337,7 +1330,8 @@ export default function AdminDashboard() {
         
                         </div>
         
-                        <div className="w-16 h-16 rounded-3xl bg-green-500 text-black flex items-center justify-center text-3xl">
+                        {/* ICON */}
+                        <div className="w-16 h-16 rounded-3xl bg-green-500 text-black flex items-center justify-center text-3xl shadow-xl">
                           💰
                         </div>
         
