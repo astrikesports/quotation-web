@@ -234,7 +234,7 @@ export default function AdminDashboard() {
       if (
         q.status !==
           "confirmed" ||
-        !filterByDate(
+        !filterByDate(   o.status_updated_at ||
           q.created_at
         )
       )
@@ -270,7 +270,7 @@ export default function AdminDashboard() {
           name &&
         q.status ===
           "confirmed" &&
-        filterByDate(
+        filterByDate(   o.status_updated_at ||
           q.created_at
         )
       
@@ -527,7 +527,7 @@ export default function AdminDashboard() {
     
         return orders.filter(
           (o) =>
-            filterByDate(
+            filterByDate(   o.status_updated_at ||
               o.created_date
             )
         );
@@ -542,7 +542,7 @@ export default function AdminDashboard() {
     
         return quotations.filter(
           (q) =>
-            filterByDate(
+            filterByDate(   o.status_updated_at ||
               q.created_at
             )
         );
@@ -1266,7 +1266,7 @@ export default function AdminDashboard() {
                     (q) =>
                       q.status ===
                         "confirmed" &&
-                      filterByDate(
+                      filterByDate(   o.status_updated_at ||
                         q.created_at
                       )
                   ).length
@@ -1330,7 +1330,7 @@ export default function AdminDashboard() {
                           (o) =>
                             o.status ===
                               "confirmed" &&
-                            filterByDate(
+                            filterByDate(   o.status_updated_at ||
                             o.created_date
                           )
                         ).length
@@ -1353,7 +1353,7 @@ export default function AdminDashboard() {
                                 (o) =>
                                   o.status ===
                                     "confirmed" &&
-                                  filterByDate(
+                                  filterByDate(   o.status_updated_at ||
                                   o.created_date
                                 )
                               )
@@ -1404,7 +1404,7 @@ export default function AdminDashboard() {
                             o.status ===
                             "shipped" &&
                             
-                            filterByDate(
+                            filterByDate(   o.status_updated_at ||
                             o.created_date
                           )
                         ).length
@@ -1428,7 +1428,7 @@ export default function AdminDashboard() {
                                   o.status ===
                                   "shipped" &&
                                   
-                                  filterByDate(
+                                  filterByDate(   o.status_updated_at ||
                                   o.created_date
                                 )
                               )
@@ -1478,7 +1478,7 @@ export default function AdminDashboard() {
                             (o) =>
                               o.status ===
                                 "pending" &&
-                              filterByDate(
+                              filterByDate(   o.status_updated_at ||
                                 o.created_date
                               )
                           ).length
@@ -1501,7 +1501,7 @@ export default function AdminDashboard() {
                             (o) =>
                               o.status ===
                                 "pending" &&
-                              filterByDate(
+                              filterByDate(   o.status_updated_at ||
                                 o.created_date
                               )
                           )
@@ -1552,7 +1552,7 @@ export default function AdminDashboard() {
                             o.status ===
                             "preparing" &&
 
-                            filterByDate(
+                            filterByDate(   o.status_updated_at ||
                             o.created_date
                           )
                         ).length
@@ -1576,7 +1576,7 @@ export default function AdminDashboard() {
                                 o.status ===
                                 "preparing" &&
 
-                                filterByDate(
+                                filterByDate(   o.status_updated_at ||
                                 o.created_date
                               )
                             )
