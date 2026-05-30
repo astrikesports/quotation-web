@@ -235,7 +235,6 @@ export default function AdminDashboard() {
         q.status !==
           "confirmed" ||
         !filterByDate(   
-          o.status_updated_at ||
           q.created_at
         )
       )
@@ -272,7 +271,6 @@ export default function AdminDashboard() {
         q.status ===
           "confirmed" &&
         filterByDate(   
-          o.status_updated_at ||
           q.created_at
         )
       
@@ -1272,7 +1270,6 @@ export default function AdminDashboard() {
                       q.status ===
                         "confirmed" &&
                       filterByDate(   
-                        o.status_updated_at ||
                         q.created_at
                       )
                   ).length
