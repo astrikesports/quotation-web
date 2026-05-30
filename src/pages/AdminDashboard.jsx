@@ -1215,38 +1215,29 @@ export default function AdminDashboard() {
         
               {salesPersons
         
-                // ONLY TODAY SALES > 0
                 .filter((person) => {
         
-                  const todaySales = quotations
+                  const todaySales = orders
         
-                    .filter((q) => {
+                    .filter((o) => {
         
-                      // TODAY DATE
                       const today =
                         new Date()
                           .toISOString()
                           .split("T")[0];
         
-                      // QUOTATION DATE
-                      const quoteDate =
-                        q.created_at
-                          ?.split("T")[0];
-        
                       return (
-                        q.sales_person ===
-                          person.name &&
-                        q.status ===
-                          "confirmed" &&
-                        quoteDate === today
+                        o.sales_person === person.name &&
+                        o.status === "confirmed" &&
+                        o.created_date === today
                       );
                     })
         
                     .reduce(
-                      (acc, q) =>
+                      (acc, o) =>
                         acc +
                         Number(
-                          q.amount || 0
+                          o.total_amount || 0
                         ),
                       0
                     );
@@ -1258,33 +1249,27 @@ export default function AdminDashboard() {
         
                   // TODAY ORDERS
                   const todayOrders =
-                    quotations.filter((q) => {
+                    orders.filter((o) => {
         
                       const today =
                         new Date()
                           .toISOString()
                           .split("T")[0];
         
-                      const quoteDate =
-                        q.created_at
-                          ?.split("T")[0];
-        
                       return (
-                        q.sales_person ===
-                          person.name &&
-                        q.status ===
-                          "confirmed" &&
-                        quoteDate === today
+                        o.sales_person === person.name &&
+                        o.status === "confirmed" &&
+                        o.created_date === today
                       );
                     });
         
                   // TODAY SALES
                   const todaySales =
                     todayOrders.reduce(
-                      (acc, q) =>
+                      (acc, o) =>
                         acc +
                         Number(
-                          q.amount || 0
+                          o.total_amount || 0
                         ),
                       0
                     );
@@ -1343,7 +1328,6 @@ export default function AdminDashboard() {
                       {/* BOTTOM */}
                       <div className="mt-8 flex items-center justify-between">
         
-                        {/* ORDERS */}
                         <div>
         
                           <p className="text-xs text-gray-400 font-bold uppercase tracking-[2px]">
@@ -1356,7 +1340,6 @@ export default function AdminDashboard() {
         
                         </div>
         
-                        {/* ICON */}
                         <div className="w-16 h-16 rounded-3xl bg-green-500 text-black flex items-center justify-center text-3xl shadow-xl">
                           💰
                         </div>
