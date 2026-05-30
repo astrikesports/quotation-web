@@ -1215,18 +1215,32 @@ export default function AdminDashboard() {
         
               {salesPersons
         
-                // ONLY SALES > 0
+                // ONLY TODAY SALES > 0
                 .filter((person) => {
         
                   const todaySales = quotations
         
-                    .filter(
-                      (q) =>
+                    .filter((q) => {
+        
+                      // TODAY DATE
+                      const today =
+                        new Date()
+                          .toISOString()
+                          .split("T")[0];
+        
+                      // QUOTATION DATE
+                      const quoteDate =
+                        q.created_at
+                          ?.split("T")[0];
+        
+                      return (
                         q.sales_person ===
                           person.name &&
                         q.status ===
-                          "confirmed"
-                    )
+                          "confirmed" &&
+                        quoteDate === today
+                      );
+                    })
         
                     .reduce(
                       (acc, q) =>
@@ -1244,13 +1258,25 @@ export default function AdminDashboard() {
         
                   // TODAY ORDERS
                   const todayOrders =
-                    quotations.filter(
-                      (q) =>
+                    quotations.filter((q) => {
+        
+                      const today =
+                        new Date()
+                          .toISOString()
+                          .split("T")[0];
+        
+                      const quoteDate =
+                        q.created_at
+                          ?.split("T")[0];
+        
+                      return (
                         q.sales_person ===
                           person.name &&
                         q.status ===
-                          "confirmed"
-                    );
+                          "confirmed" &&
+                        quoteDate === today
+                      );
+                    });
         
                   // TODAY SALES
                   const todaySales =
