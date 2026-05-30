@@ -1191,170 +1191,187 @@ export default function AdminDashboard() {
           
         </div>
 
-        )}
-
-      {/* TODAY SALES TEAM */}
-        <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden mt-8">
-        
-          {/* HEADER */}
-          <div className="px-8 py-6 border-b border-gray-100">
-        
-            <h2 className="text-3xl font-black">
-              Today Sales Team
-            </h2>
-        
-            <p className="text-gray-500 mt-2">
-              Today confirmed sales by sales person
-            </p>
-        
-          </div>
-        
-          <div className="p-6">
-        
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        
-              {salesPersons
-        
-                .filter((person) => {
-        
-                  const todaySales = orders
-        
-                    .filter((o) => {
-        
-                      const today =
-                        new Date()
-                          .toISOString()
-                          .split("T")[0];
-        
-                      return (
-                        o.sales_person === person.name &&
-                        o.status === "confirmed" &&
-                        o.created_date === today
-                      );
-                    })
-        
-                    .reduce(
-                      (acc, o) =>
-                        acc +
-                        Number(
-                          o.total_amount || 0
-                        ),
-                      0
-                    );
-        
-                  return todaySales > 0;
-                })
-        
-                .map((person) => {
-        
-                  // TODAY ORDERS
-                  const todayOrders =
-                    orders.filter((o) => {
-        
-                      const today =
-                        new Date()
-                          .toISOString()
-                          .split("T")[0];
-        
-                      return (
-                        o.sales_person === person.name &&
-                        o.status === "confirmed" &&
-                        o.created_date === today
-                      );
-                    });
-        
-                  // TODAY SALES
-                  const todaySales =
-                    todayOrders.reduce(
-                      (acc, o) =>
-                        acc +
-                        Number(
-                          o.total_amount || 0
-                        ),
-                      0
-                    );
-        
-                  return (
-        
-                    <div
-                      key={person.id}
-                      className="border border-gray-100 rounded-[30px] p-6 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50"
-                    >
-        
-                      {/* TOP */}
-                      <div className="flex items-center justify-between">
-        
-                        <div className="flex items-center gap-4">
-        
-                          <div className="w-16 h-16 rounded-3xl bg-black text-white flex items-center justify-center text-2xl font-black shadow-lg">
-                            {person.name?.charAt(0)}
-                          </div>
-        
-                          <div>
-        
-                            <h3 className="text-2xl font-black leading-tight">
-                              {person.name}
-                            </h3>
-        
-                            <p className="text-sm text-gray-500 mt-1">
-                              Sales Executive
-                            </p>
-        
-                          </div>
-        
-                        </div>
-        
-                        <div className="bg-green-100 text-green-700 px-4 py-2 rounded-2xl text-sm font-black">
-                          ACTIVE
-                        </div>
-        
-                      </div>
-        
-                      {/* SALES */}
-                      <div className="mt-8">
-        
-                        <p className="text-xs text-gray-400 font-bold uppercase tracking-[2px]">
-                          Today Sales
-                        </p>
-        
-                        <h2 className="text-5xl font-black text-green-600 mt-3">
-        
-                          ₹{todaySales.toLocaleString()}
-        
-                        </h2>
-        
-                      </div>
-        
-                      {/* BOTTOM */}
-                      <div className="mt-8 flex items-center justify-between">
-        
-                        <div>
-        
-                          <p className="text-xs text-gray-400 font-bold uppercase tracking-[2px]">
-                            Confirmed Orders
-                          </p>
-        
-                          <h3 className="text-3xl font-black mt-2">
-                            {todayOrders.length}
-                          </h3>
-        
-                        </div>
-        
-                        <div className="w-16 h-16 rounded-3xl bg-green-500 text-black flex items-center justify-center text-3xl shadow-xl">
-                          💰
-                        </div>
-        
-                      </div>
-        
-                    </div>
-                  );
-                })}
-        
+         {/* TODAY SALES TEAM */}
+          <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden mt-8">
+          
+            {/* HEADER */}
+            <div className="px-8 py-6 border-b border-gray-100">
+          
+              <h2 className="text-3xl font-black">
+                Today Sales Team
+              </h2>
+          
+              <p className="text-gray-500 mt-2">
+                Today confirmed sales by sales person
+              </p>
+          
             </div>
-        
+          
+            <div className="p-6">
+          
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          
+                {salesPersons
+          
+                  // ONLY TODAY SALES > 0
+                  .filter((person) => {
+          
+                    const todaySales = quotations
+          
+                      .filter((q) => {
+          
+                        // TODAY DATE
+                        const today =
+                          new Date()
+                            .toISOString()
+                            .split("T")[0];
+          
+                        // QUOTATION DATE
+                        const quoteDate =
+                          q.created_at
+                            ?.split("T")[0];
+          
+                        return (
+                          q.sales_person ===
+                            person.name &&
+                          q.status ===
+                            "confirmed" &&
+                          quoteDate === today
+                        );
+                      })
+          
+                      .reduce(
+                        (acc, q) =>
+                          acc +
+                          Number(
+                            q.amount || 0
+                          ),
+                        0
+                      );
+          
+                    return todaySales > 0;
+                  })
+          
+                  .map((person) => {
+          
+                    // TODAY ORDERS
+                    const todayOrders =
+                      quotations.filter((q) => {
+          
+                        const today =
+                          new Date()
+                            .toISOString()
+                            .split("T")[0];
+          
+                        const quoteDate =
+                          q.created_at
+                            ?.split("T")[0];
+          
+                        return (
+                          q.sales_person ===
+                            person.name &&
+                          q.status ===
+                            "confirmed" &&
+                          quoteDate === today
+                        );
+                      });
+          
+                    // TODAY SALES
+                    const todaySales =
+                      todayOrders.reduce(
+                        (acc, q) =>
+                          acc +
+                          Number(
+                            q.amount || 0
+                          ),
+                        0
+                      );
+          
+                    return (
+          
+                      <div
+                        key={person.id}
+                        className="border border-gray-100 rounded-[30px] p-6 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50"
+                      >
+          
+                        {/* TOP */}
+                        <div className="flex items-center justify-between">
+          
+                          <div className="flex items-center gap-4">
+          
+                            <div className="w-16 h-16 rounded-3xl bg-black text-white flex items-center justify-center text-2xl font-black shadow-lg">
+                              {person.name?.charAt(0)}
+                            </div>
+          
+                            <div>
+          
+                              <h3 className="text-2xl font-black leading-tight">
+                                {person.name}
+                              </h3>
+          
+                              <p className="text-sm text-gray-500 mt-1">
+                                Sales Executive
+                              </p>
+          
+                            </div>
+          
+                          </div>
+          
+                          <div className="bg-green-100 text-green-700 px-4 py-2 rounded-2xl text-sm font-black">
+                            ACTIVE
+                          </div>
+          
+                        </div>
+          
+                        {/* SALES */}
+                        <div className="mt-8">
+          
+                          <p className="text-xs text-gray-400 font-bold uppercase tracking-[2px]">
+                            Today Sales
+                          </p>
+          
+                          <h2 className="text-5xl font-black text-green-600 mt-3">
+          
+                            ₹{todaySales.toLocaleString()}
+          
+                          </h2>
+          
+                        </div>
+          
+                        {/* BOTTOM */}
+                        <div className="mt-8 flex items-center justify-between">
+          
+                          {/* ORDERS */}
+                          <div>
+          
+                            <p className="text-xs text-gray-400 font-bold uppercase tracking-[2px]">
+                              Confirmed Orders
+                            </p>
+          
+                            <h3 className="text-3xl font-black mt-2">
+                              {todayOrders.length}
+                            </h3>
+          
+                          </div>
+          
+                          {/* ICON */}
+                          <div className="w-16 h-16 rounded-3xl bg-green-500 text-black flex items-center justify-center text-3xl shadow-xl">
+                            💰
+                          </div>
+          
+                        </div>
+          
+                      </div>
+                    );
+                  })}
+          
+              </div>
+          
+            </div>
+          
           </div>
-        
-        </div>
+
+        )}
 
       {/* SALES PAGE */}
       {activePage === "sales" && (
