@@ -42,6 +42,7 @@ function mapFromDB(row) {
     advance: Number(row.advance ?? 0),
     amount: Number(row.amount ?? 0),
     netAmount: Number(row.net_amount ?? 0),
+    quotationNo: row.quotation_no ?? "",
 
     createdAt: row.created_at,
     updatedAt: row.updated_at,
