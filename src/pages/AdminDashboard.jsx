@@ -240,7 +240,7 @@ export default function AdminDashboard() {
         return;
     
       total += Number(
-        q.net_amount || 0
+        q.amount || 0
       );
     
     });
@@ -276,7 +276,7 @@ export default function AdminDashboard() {
       ) {
 
         total += Number(
-          q.net_amount || 0
+          q.amount || 0
         );
       }
 
