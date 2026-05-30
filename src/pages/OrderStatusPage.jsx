@@ -264,6 +264,9 @@ export default function OrderStatusPage() {
         .update({
           status:
             String(status).trim(),
+
+          status_updated_at:
+            new Date().toISOString()
         })
   
         .eq(
