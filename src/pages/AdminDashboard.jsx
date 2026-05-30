@@ -529,7 +529,10 @@ export default function AdminDashboard() {
     
         return orders.filter(
           (o) =>
-            filterByDate(   o.status_updated_at ||
+            filterByDate(
+    
+              o.status_updated_at ||
+    
               o.created_date
             )
         );
@@ -544,7 +547,7 @@ export default function AdminDashboard() {
     
         return quotations.filter(
           (q) =>
-            filterByDate(   o.status_updated_at ||
+            filterByDate(
               q.created_at
             )
         );
