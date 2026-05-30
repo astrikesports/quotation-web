@@ -1193,6 +1193,157 @@ export default function AdminDashboard() {
 
         )}
 
+      {/* TODAY SALES PERSON TABLE */}
+        <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden mt-8">
+        
+          {/* HEADER */}
+          <div className="px-8 py-6 border-b border-gray-100">
+        
+            <h2 className="text-3xl font-black">
+              Today Sales Team
+            </h2>
+        
+            <p className="text-gray-500 mt-2">
+              Today confirmed sales by sales person
+            </p>
+        
+          </div>
+        
+          <div className="overflow-x-auto">
+        
+            <table className="w-full">
+        
+              {/* TABLE HEAD */}
+              <thead className="bg-black text-white">
+        
+                <tr>
+        
+                  <th className="text-left px-6 py-5 text-sm font-black">
+                    Sales Person
+                  </th>
+        
+                  <th className="text-left px-6 py-5 text-sm font-black">
+                    Today Orders
+                  </th>
+        
+                  <th className="text-left px-6 py-5 text-sm font-black">
+                    Today Sales
+                  </th>
+        
+                  <th className="text-left px-6 py-5 text-sm font-black">
+                    Status
+                  </th>
+        
+                </tr>
+        
+              </thead>
+        
+              {/* TABLE BODY */}
+              <tbody>
+        
+                {salesPersons.map((person) => {
+        
+                  // TODAY CONFIRMED ORDERS
+                  const todayOrders = quotations.filter(
+                    (q) =>
+                      q.sales_person === person.name &&
+                      q.status === "confirmed" &&
+                      q.created_date ===
+                        new Date()
+                          .toISOString()
+                          .split("T")[0]
+                  );
+        
+                  // TOTAL SALES
+                  const todaySales = todayOrders.reduce(
+                    (acc, q) =>
+                      acc + Number(q.net_amount || 0),
+                    0
+                  );
+        
+                  return (
+        
+                    <tr
+                      key={person.id}
+                      className="border-b border-gray-100 hover:bg-gray-50 transition-all duration-200"
+                    >
+        
+                      {/* NAME */}
+                      <td className="px-6 py-5">
+        
+                        <div className="flex items-center gap-3">
+        
+                          <div className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center font-black">
+                            {person.name?.charAt(0)}
+                          </div>
+        
+                          <div>
+        
+                            <h3 className="font-black text-lg">
+                              {person.name}
+                            </h3>
+        
+                            <p className="text-sm text-gray-500">
+                              Sales Executive
+                            </p>
+        
+                          </div>
+        
+                        </div>
+        
+                      </td>
+        
+                      {/* TODAY ORDERS */}
+                      <td className="px-6 py-5">
+        
+                        <h3 className="text-2xl font-black">
+                          {todayOrders.length}
+                        </h3>
+        
+                      </td>
+        
+                      {/* TODAY SALES */}
+                      <td className="px-6 py-5">
+        
+                        <h3 className="text-2xl font-black text-green-600">
+        
+                          ₹{todaySales.toLocaleString()}
+        
+                        </h3>
+        
+                      </td>
+        
+                      {/* STATUS */}
+                      <td className="px-6 py-5">
+        
+                        <div
+                          className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-black ${
+                            todaySales > 0
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-600"
+                          }`}
+                        >
+        
+                          {todaySales > 0
+                            ? "ACTIVE"
+                            : "NO SALES"}
+        
+                        </div>
+        
+                      </td>
+        
+                    </tr>
+                  );
+                })}
+        
+              </tbody>
+        
+            </table>
+        
+          </div>
+        
+        </div>
+
       {/* SALES PAGE */}
       {activePage === "sales" && (
 
