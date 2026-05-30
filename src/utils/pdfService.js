@@ -58,6 +58,7 @@ import { parseSizes } from "../utils/sizeHelper";
   address,
   salesPerson,
   remark,
+  quotationNo,
   rateDiscount = 0,
   spDiscount = 0,
   items = [],
@@ -241,7 +242,7 @@ import { parseSizes } from "../utils/sizeHelper";
   margin: [0, 4, 0, 8]
   },
   {
-  text: "QUOTATION",
+  text: `QUOTATION ${quotationNo ? `- ${quotationNo}` : ""}`,
   alignment: "center",
   fontSize: 13,
   bold: true,
