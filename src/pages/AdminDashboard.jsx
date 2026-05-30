@@ -1239,104 +1239,151 @@ export default function AdminDashboard() {
               </thead>
         
               {/* TABLE BODY */}
-              <tbody>
-        
-                {salesPersons.map((person) => {
-        
-                  // TODAY CONFIRMED ORDERS
-                  const todayOrders = quotations.filter(
-                    (q) =>
-                      q.sales_person === person.name &&
-                      q.status === "confirmed" &&
-                      q.created_date ===
-                        new Date()
-                          .toISOString()
-                          .split("T")[0]
-                  );
-        
-                  // TOTAL SALES
-                  const todaySales = todayOrders.reduce(
-                    (acc, q) =>
-                      acc + Number(q.net_amount || 0),
-                    0
-                  );
-        
-                  return (
-        
-                    <tr
-                      key={person.id}
-                      className="border-b border-gray-100 hover:bg-gray-50 transition-all duration-200"
-                    >
-        
-                      {/* NAME */}
-                      <td className="px-6 py-5">
-        
-                        <div className="flex items-center gap-3">
-        
-                          <div className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center font-black">
-                            {person.name?.charAt(0)}
-                          </div>
-        
-                          <div>
-        
-                            <h3 className="font-black text-lg">
-                              {person.name}
-                            </h3>
-        
-                            <p className="text-sm text-gray-500">
-                              Sales Executive
-                            </p>
-        
-                          </div>
-        
-                        </div>
-        
-                      </td>
-        
-                      {/* TODAY ORDERS */}
-                      <td className="px-6 py-5">
-        
-                        <h3 className="text-2xl font-black">
-                          {todayOrders.length}
-                        </h3>
-        
-                      </td>
-        
-                      {/* TODAY SALES */}
-                      <td className="px-6 py-5">
-        
-                        <h3 className="text-2xl font-black text-green-600">
-        
-                          ₹{todaySales.toLocaleString()}
-        
-                        </h3>
-        
-                      </td>
-        
-                      {/* STATUS */}
-                      <td className="px-6 py-5">
-        
-                        <div
-                          className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-black ${
-                            todaySales > 0
-                              ? "bg-green-100 text-green-700"
-                              : "bg-red-100 text-red-600"
-                          }`}
+                <tbody>
+                
+                  {Array.from(
+                    {
+                      length: Math.ceil(
+                        salesPersons.length / 3
+                      ),
+                    },
+                    (_, rowIndex) => {
+                
+                      const rowPersons =
+                        salesPersons.slice(
+                          rowIndex * 3,
+                          rowIndex * 3 + 3
+                        );
+                
+                      return (
+                
+                        <tr
+                          key={rowIndex}
+                          className="border-b border-gray-100"
                         >
-        
-                          {todaySales > 0
-                            ? "ACTIVE"
-                            : "NO SALES"}
-        
-                        </div>
-        
-                      </td>
-        
-                    </tr>
-                  );
-                })}
-        
-              </tbody>
+                
+                          {rowPersons.map((person) => {
+                
+                            const todayOrders =
+                              quotations.filter(
+                                (q) =>
+                                  q.sales_person ===
+                                    person.name &&
+                                  q.status ===
+                                    "confirmed" &&
+                                  q.created_date ===
+                                    new Date()
+                                      .toISOString()
+                                      .split("T")[0]
+                              );
+                
+                            const todaySales =
+                              todayOrders.reduce(
+                                (acc, q) =>
+                                  acc +
+                                  Number(
+                                    q.net_amount || 0
+                                  ),
+                                0
+                              );
+                
+                            return (
+                
+                              <td
+                                key={person.id}
+                                className="p-6 align-top w-1/3"
+                              >
+                
+                                <div className="border border-gray-100 rounded-[28px] p-5 hover:shadow-lg transition-all duration-200">
+                
+                                  {/* TOP */}
+                                  <div className="flex items-center gap-3">
+                
+                                    <div className="w-14 h-14 rounded-2xl bg-black text-white flex items-center justify-center text-xl font-black">
+                                      {person.name?.charAt(0)}
+                                    </div>
+                
+                                    <div>
+                
+                                      <h3 className="text-xl font-black">
+                                        {person.name}
+                                      </h3>
+                
+                                      <p className="text-sm text-gray-500">
+                                        Sales Executive
+                                      </p>
+                
+                                    </div>
+                
+                                  </div>
+                
+                                  {/* SALES */}
+                                  <div className="mt-6">
+                
+                                    <p className="text-xs text-gray-400 font-bold uppercase">
+                                      Today Sales
+                                    </p>
+                
+                                    <h2 className="text-3xl font-black text-green-600 mt-2">
+                
+                                      ₹{todaySales.toLocaleString()}
+                
+                                    </h2>
+                
+                                  </div>
+                
+                                  {/* ORDERS */}
+                                  <div className="mt-5 flex items-center justify-between">
+                
+                                    <div>
+                
+                                      <p className="text-xs text-gray-400 font-bold uppercase">
+                                        Orders
+                                      </p>
+                
+                                      <h3 className="text-2xl font-black mt-1">
+                                        {todayOrders.length}
+                                      </h3>
+                
+                                    </div>
+                
+                                    <div
+                                      className={`px-4 py-2 rounded-2xl text-sm font-black ${
+                                        todaySales > 0
+                                          ? "bg-green-100 text-green-700"
+                                          : "bg-red-100 text-red-600"
+                                      }`}
+                                    >
+                
+                                      {todaySales > 0
+                                        ? "ACTIVE"
+                                        : "NO SALES"}
+                
+                                    </div>
+                
+                                  </div>
+                
+                                </div>
+                
+                              </td>
+                            );
+                          })}
+                
+                          {/* EMPTY CELLS */}
+                          {rowPersons.length < 3 &&
+                            Array.from({
+                              length:
+                                3 - rowPersons.length,
+                            }).map((_, i) => (
+                              <td key={i}></td>
+                            ))}
+                
+                        </tr>
+                      );
+                    }
+                  )}
+                
+                </tbody>
         
             </table>
         
