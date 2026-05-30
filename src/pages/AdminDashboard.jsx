@@ -34,6 +34,9 @@ export default function AdminDashboard() {
   const [dialogConfig, setDialogConfig] =
     useState({});
 
+  const [globalFilter, setGlobalFilter] =
+  useState("today");
+
 
   // =========================
   // LIVE REALTIME SYNC
@@ -229,8 +232,12 @@ export default function AdminDashboard() {
       // ONLY CONFIRMED
       if (
         q.status !==
-        "confirmed"
-      ) return;
+          "confirmed" ||
+        !filterByDate(
+          q.created_at
+        )
+      )
+        return;
     
       total += Number(
         q.net_amount || 0
@@ -258,9 +265,13 @@ export default function AdminDashboard() {
 
       if (
 
-        q.sales_person === name &&
-      
-        q.status === "confirmed"
+        q.sales_person ===
+          name &&
+        q.status ===
+          "confirmed" &&
+        filterByDate(
+          q.created_at
+        )
       
       ) {
 
@@ -449,7 +460,80 @@ export default function AdminDashboard() {
   // =========================
   // SAMPLE CSV DOWNLOAD END
   // =========================
+
+
+  const filterByDate = (
+      dateString
+    ) => {
+    
+      if (!dateString)
+        return false;
+    
+      const itemDate =
+        new Date(dateString);
+    
+      const today =
+        new Date();
+    
+      // TODAY
+      if (
+        globalFilter ===
+        "today"
+      ) {
+    
+        return (
+          itemDate
+            .toISOString()
+            .split("T")[0] ===
+          today
+            .toISOString()
+            .split("T")[0]
+        );
+      }
+    
+      // THIS MONTH
+      if (
+        globalFilter ===
+        "thisMonth"
+      ) {
+    
+        return (
+          itemDate.getMonth() ===
+            today.getMonth() &&
+          itemDate.getFullYear() ===
+            today.getFullYear()
+        );
+      }
+    
+      // LAST MONTH
+      const lastMonth =
+        new Date(
+          today.getFullYear(),
+          today.getMonth() - 1,
+          1
+        );
+    
+      return (
+        itemDate.getMonth() ===
+          lastMonth.getMonth() &&
+        itemDate.getFullYear() ===
+          lastMonth.getFullYear()
+      );
+    };
   
+    const filteredOrders =
+      orders.filter((o) =>
+        filterByDate(
+          o.created_date
+        )
+      );
+    
+    const filteredQuotations =
+      quotations.filter((q) =>
+        filterByDate(
+          q.created_at
+        )
+      );
   
   // =========================
   // CSV UPLOAD START
@@ -683,6 +767,46 @@ export default function AdminDashboard() {
 
             </div>
 
+            {/* GLOBAL FILTERS */}
+              <div className="flex flex-wrap gap-3 mt-4">
+              
+                {[
+                  {
+                    label: "Today",
+                    value: "today"
+                  },
+                  {
+                    label: "This Month",
+                    value: "thisMonth"
+                  },
+                  {
+                    label: "Last Month",
+                    value: "lastMonth"
+                  }
+                ].map((item) => (
+              
+                  <button
+                    key={item.value}
+                    onClick={() =>
+                      setGlobalFilter(
+                        item.value
+                      )
+                    }
+                    className={`h-11 px-5 rounded-2xl font-bold transition-all duration-200 ${
+                      globalFilter ===
+                      item.value
+                        ? "bg-green-500 text-black shadow-2xl"
+                        : "bg-white/10 backdrop-blur-xl border border-white/10 text-white hover:bg-white/20"
+                    }`}
+                  >
+              
+                    {item.label}
+              
+                  </button>
+                ))}
+              
+              </div>
+
           </div>
 
           {/* RIGHT STATS */}
@@ -835,9 +959,12 @@ export default function AdminDashboard() {
       
                 {
                   quotations.filter(
-                    q =>
+                    (q) =>
                       q.status ===
-                      "confirmed"
+                        "confirmed" &&
+                      filterByDate(
+                        q.created_at
+                      )
                   ).length
                 }
       
@@ -895,14 +1022,13 @@ export default function AdminDashboard() {
                     <h2 className="text-5xl font-black mt-3 text-green-500">
           
                       {
-                        orders.filter(
+                        filteredOrders.filter(
                           (o) =>
                             o.status ===
                               "confirmed" &&
-                            o.created_date ===
-                              new Date()
-                                .toISOString()
-                                .split("T")[0]
+                            filterByDate(
+                            o.created_date
+                          )
                         ).length
                       }
           
@@ -919,16 +1045,13 @@ export default function AdminDashboard() {
           
                         ₹{
 
-                            orders
-                          
-                              .filter(
+                            filteredOrders.filter(
                                 (o) =>
                                   o.status ===
                                     "confirmed" &&
-                                  o.created_date ===
-                                    new Date()
-                                      .toISOString()
-                                      .split("T")[0]
+                                  filterByDate(
+                                  o.created_date
+                                )
                               )
                           
                               .reduce(
@@ -972,15 +1095,14 @@ export default function AdminDashboard() {
                     <h2 className="text-5xl font-black mt-3 text-blue-600">
           
                       {
-                        orders.filter(
+                        filteredOrders.filter(
                           (o) =>
                             o.status ===
                             "shipped" &&
                             
-                            o.created_date ===
-                            new Date()
-                              .toISOString()
-                              .split("T")[0]
+                            filterByDate(
+                            o.created_date
+                          )
                         ).length
                       }
           
@@ -997,17 +1119,14 @@ export default function AdminDashboard() {
           
                         ₹{
 
-                            orders
-                          
-                              .filter(
+                            filteredOrders.filter(
                                 (o) =>
                                   o.status ===
                                   "shipped" &&
                                   
-                                  o.created_date ===
-                                  new Date()
-                                    .toISOString()
-                                    .split("T")[0]
+                                  filterByDate(
+                                  o.created_date
+                                )
                               )
                           
                               .reduce(
@@ -1051,10 +1170,13 @@ export default function AdminDashboard() {
                     <h2 className="text-5xl font-black mt-3 text-yellow-500">
           
                       {
-                          orders.filter(
+                          filteredOrders.filter(
                             (o) =>
                               o.status ===
-                              "pending"
+                                "pending" &&
+                              filterByDate(
+                                o.created_date
+                              )
                           ).length
                         }
           
@@ -1071,13 +1193,14 @@ export default function AdminDashboard() {
           
                         ₹{
           
-                          orders
-          
-                            .filter(
-                              (o) =>
-                                o.status ===
-                                "pending"
-                            )
+                          filteredOrders.filter(
+                            (o) =>
+                              o.status ===
+                                "pending" &&
+                              filterByDate(
+                                o.created_date
+                              )
+                          )
           
                             .reduce(
                               (acc, o) =>
@@ -1120,15 +1243,14 @@ export default function AdminDashboard() {
                     <h2 className="text-5xl font-black mt-3 text-orange-500">
           
                       {
-                        orders.filter(
+                        filteredOrders.filter(
                           (o) =>
                             o.status ===
                             "preparing" &&
 
-                            o.created_date ===
-                            new Date()
-                              .toISOString()
-                              .split("T")[0]
+                            filterByDate(
+                            o.created_date
+                          )
                         ).length
                       }
           
@@ -1145,17 +1267,14 @@ export default function AdminDashboard() {
           
                         ₹{
           
-                          orders
-          
-                            .filter(
+                          filteredOrders.filter(
                               (o) =>
                                 o.status ===
                                 "preparing" &&
 
-                                o.created_date ===
-                                new Date()
-                                  .toISOString()
-                                  .split("T")[0]
+                                filterByDate(
+                                o.created_date
+                              )
                             )
           
                             .reduce(
@@ -1189,185 +1308,212 @@ export default function AdminDashboard() {
           
           </div>
 
-          {/* TODAY SALES TEAM */}
-          <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden mt-8">
-          
-            {/* HEADER */}
-            <div className="px-8 py-6 border-b border-gray-100">
-          
-              <h2 className="text-3xl font-black">
-                Today Sales Team
-              </h2>
-          
-              <p className="text-gray-500 mt-2">
-                Today confirmed sales by sales person
-              </p>
-          
-            </div>
-          
-            <div className="p-6">
-          
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          
-                {salesPersons
-          
-                  // ONLY TODAY SALES > 0
-                  .filter((person) => {
-          
-                    const todaySales = quotations
-          
-                      .filter((q) => {
-          
-                        // TODAY DATE
-                        const today =
-                          new Date()
-                            .toISOString()
-                            .split("T")[0];
-          
-                        // QUOTATION DATE
-                        const quoteDate =
-                          q.created_at
-                            ?.split("T")[0];
-          
-                        return (
-                          q.sales_person ===
-                            person.name &&
-                          q.status ===
-                            "confirmed" &&
-                          quoteDate === today
-                        );
-                      })
-          
-                      .reduce(
-                        (acc, q) =>
-                          acc +
-                          Number(
-                            q.amount || 0
-                          ),
-                        0
-                      );
-          
-                    return todaySales > 0;
-                  })
-          
-                  .map((person) => {
-          
-                    // TODAY ORDERS
-                    const todayOrders =
-                      quotations.filter((q) => {
-          
-                        const today =
-                          new Date()
-                            .toISOString()
-                            .split("T")[0];
-          
-                        const quoteDate =
-                          q.created_at
-                            ?.split("T")[0];
-          
-                        return (
-                          q.sales_person ===
-                            person.name &&
-                          q.status ===
-                            "confirmed" &&
-                          quoteDate === today
-                        );
-                      });
-          
-                    // TODAY SALES
-                    const todaySales =
-                      todayOrders.reduce(
-                        (acc, q) =>
-                          acc +
-                          Number(
-                            q.amount || 0
-                          ),
-                        0
-                      );
-          
-                    return (
-          
-                      <div
-                        key={person.id}
-                        className="border border-gray-100 rounded-[30px] p-6 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50"
-                      >
-          
-                        {/* TOP */}
-                        <div className="flex items-center justify-between">
-          
-                          <div className="flex items-center gap-4">
-          
-                            <div className="w-16 h-16 rounded-3xl bg-black text-white flex items-center justify-center text-2xl font-black shadow-lg">
-                              {person.name?.charAt(0)}
-                            </div>
-          
-                            <div>
-          
-                              <h3 className="text-2xl font-black leading-tight">
-                                {person.name}
-                              </h3>
-          
-                              <p className="text-sm text-gray-500 mt-1">
-                                Sales Executive
-                              </p>
-          
-                            </div>
-          
-                          </div>
-          
-                          <div className="bg-green-100 text-green-700 px-4 py-2 rounded-2xl text-sm font-black">
-                            ACTIVE
-                          </div>
-          
-                        </div>
-          
-                        {/* SALES */}
-                        <div className="mt-8">
-          
-                          <p className="text-xs text-gray-400 font-bold uppercase tracking-[2px]">
-                            Today Sales
-                          </p>
-          
-                          <h2 className="text-5xl font-black text-green-600 mt-3">
-          
-                            ₹{todaySales.toLocaleString()}
-          
-                          </h2>
-          
-                        </div>
-          
-                        {/* BOTTOM */}
-                        <div className="mt-8 flex items-center justify-between">
-          
-                          {/* ORDERS */}
-                          <div>
-          
-                            <p className="text-xs text-gray-400 font-bold uppercase tracking-[2px]">
-                              Confirmed Orders
-                            </p>
-          
-                            <h3 className="text-3xl font-black mt-2">
-                              {todayOrders.length}
-                            </h3>
-          
-                          </div>
-          
-                          {/* ICON */}
-                          <div className="w-16 h-16 rounded-3xl bg-green-500 text-black flex items-center justify-center text-3xl shadow-xl">
-                            💰
-                          </div>
-          
-                        </div>
-          
-                      </div>
-                    );
-                  })}
-          
+          {/* SALES TEAM */}
+            <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden mt-8">
+            
+              {/* HEADER */}
+              <div className="px-8 py-6 border-b border-gray-100">
+            
+                <h2 className="text-3xl font-black">
+            
+                  {globalFilter === "today" &&
+                    "Today Sales Team"}
+            
+                  {globalFilter ===
+                    "thisMonth" &&
+                    "This Month Sales Team"}
+            
+                  {globalFilter ===
+                    "lastMonth" &&
+                    "Last Month Sales Team"}
+            
+                </h2>
+            
+                <p className="text-gray-500 mt-2">
+            
+                  {globalFilter === "today" &&
+                    "Today confirmed sales by sales person"}
+            
+                  {globalFilter ===
+                    "thisMonth" &&
+                    "This month confirmed sales by sales person"}
+            
+                  {globalFilter ===
+                    "lastMonth" &&
+                    "Last month confirmed sales by sales person"}
+            
+                </p>
+            
               </div>
-          
+            
+              <div className="p-6">
+            
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            
+                  {salesPersons
+            
+                    // ONLY SALES > 0
+                    .filter((person) => {
+            
+                      const personSales =
+                        filteredQuotations
+            
+                          .filter(
+                            (q) =>
+            
+                              q.sales_person ===
+                                person.name &&
+            
+                              q.status ===
+                                "confirmed"
+                          )
+            
+                          .reduce(
+                            (acc, q) =>
+                              acc +
+                              Number(
+                                q.amount || 0
+                              ),
+                            0
+                          );
+            
+                      return personSales > 0;
+                    })
+            
+                    .map((person) => {
+            
+                      // PERSON ORDERS
+                      const personOrders =
+                        filteredQuotations.filter(
+                          (q) =>
+            
+                            q.sales_person ===
+                              person.name &&
+            
+                            q.status ===
+                              "confirmed"
+                        );
+            
+                      // PERSON SALES
+                      const personSales =
+                        personOrders.reduce(
+                          (acc, q) =>
+                            acc +
+                            Number(
+                              q.amount || 0
+                            ),
+                          0
+                        );
+            
+                      return (
+            
+                        <div
+                          key={person.id}
+                          className="border border-gray-100 rounded-[30px] p-6 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50"
+                        >
+            
+                          {/* TOP */}
+                          <div className="flex items-center justify-between">
+            
+                            <div className="flex items-center gap-4">
+            
+                              <div className="w-16 h-16 rounded-3xl bg-black text-white flex items-center justify-center text-2xl font-black shadow-lg">
+            
+                                {person.name?.charAt(0)}
+            
+                              </div>
+            
+                              <div>
+            
+                                <h3 className="text-2xl font-black leading-tight">
+            
+                                  {person.name}
+            
+                                </h3>
+            
+                                <p className="text-sm text-gray-500 mt-1">
+            
+                                  Sales Executive
+            
+                                </p>
+            
+                              </div>
+            
+                            </div>
+            
+                            <div className="bg-green-100 text-green-700 px-4 py-2 rounded-2xl text-sm font-black">
+            
+                              ACTIVE
+            
+                            </div>
+            
+                          </div>
+            
+                          {/* SALES */}
+                          <div className="mt-8">
+            
+                            <p className="text-xs text-gray-400 font-bold uppercase tracking-[2px]">
+            
+                              {globalFilter ===
+                                "today" &&
+                                "Today Sales"}
+            
+                              {globalFilter ===
+                                "thisMonth" &&
+                                "This Month Sales"}
+            
+                              {globalFilter ===
+                                "lastMonth" &&
+                                "Last Month Sales"}
+            
+                            </p>
+            
+                            <h2 className="text-5xl font-black text-green-600 mt-3">
+            
+                              ₹{personSales.toLocaleString()}
+            
+                            </h2>
+            
+                          </div>
+            
+                          {/* BOTTOM */}
+                          <div className="mt-8 flex items-center justify-between">
+            
+                            {/* ORDERS */}
+                            <div>
+            
+                              <p className="text-xs text-gray-400 font-bold uppercase tracking-[2px]">
+            
+                                Confirmed Orders
+            
+                              </p>
+            
+                              <h3 className="text-3xl font-black mt-2">
+            
+                                {personOrders.length}
+            
+                              </h3>
+            
+                            </div>
+            
+                            {/* ICON */}
+                            <div className="w-16 h-16 rounded-3xl bg-green-500 text-black flex items-center justify-center text-3xl shadow-xl">
+            
+                              💰
+            
+                            </div>
+            
+                          </div>
+            
+                        </div>
+                      );
+                    })}
+            
+                </div>
+            
+              </div>
+            
             </div>
-          
-          </div>
           
         </div>
 
