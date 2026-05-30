@@ -1188,10 +1188,8 @@ export default function AdminDashboard() {
             </div>
           
           </div>
-          
-        </div>
 
-         {/* TODAY SALES TEAM */}
+          {/* TODAY SALES TEAM */}
           <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden mt-8">
           
             {/* HEADER */}
@@ -1370,6 +1368,8 @@ export default function AdminDashboard() {
             </div>
           
           </div>
+          
+        </div>
 
         )}
 
