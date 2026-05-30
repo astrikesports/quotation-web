@@ -522,18 +522,321 @@ export default function AdminDashboard() {
     };
   
     const filteredOrders =
-      orders.filter((o) =>
-        filterByDate(
-          o.created_date
-        )
-      );
+      useMemo(() => {
+    
+        return orders.filter(
+          (o) =>
+            filterByDate(
+              o.created_date
+            )
+        );
+    
+      }, [
+        orders,
+        globalFilter
+      ]);
     
     const filteredQuotations =
-      quotations.filter((q) =>
-        filterByDate(
-          q.created_at
-        )
-      );
+      useMemo(() => {
+    
+        return quotations.filter(
+          (q) =>
+            filterByDate(
+              q.created_at
+            )
+        );
+    
+      }, [
+        quotations,
+        globalFilter
+      ]);
+
+
+    const saveDashboardPDF =
+      async () => {
+    
+        const html2pdf =
+          (
+            await import(
+              "html2pdf.js"
+            )
+          ).default;
+    
+        // FILTER TITLE
+        const filterTitle =
+          globalFilter ===
+          "today"
+    
+            ? "Today"
+    
+            : globalFilter ===
+              "thisMonth"
+    
+            ? "This Month"
+    
+            : "Last Month";
+    
+        // TOTALS
+        const confirmedOrders =
+          filteredOrders.filter(
+            (o) =>
+              o.status ===
+              "confirmed"
+          );
+    
+        const shippedOrders =
+          filteredOrders.filter(
+            (o) =>
+              o.status ===
+              "shipped"
+          );
+    
+        const pendingOrders =
+          filteredOrders.filter(
+            (o) =>
+              o.status ===
+              "pending"
+          );
+    
+        const preparingOrders =
+          filteredOrders.filter(
+            (o) =>
+              o.status ===
+              "preparing"
+          );
+    
+        // SALES TEAM HTML
+        const salesTeamHTML =
+          salesPersons
+    
+            .map((person) => {
+    
+              const personOrders =
+                filteredQuotations.filter(
+                  (q) =>
+                    q.sales_person ===
+                      person.name &&
+                    q.status ===
+                      "confirmed"
+                );
+    
+              const personSales =
+                personOrders.reduce(
+                  (acc, q) =>
+                    acc +
+                    Number(
+                      q.amount || 0
+                    ),
+                  0
+                );
+    
+              if (personSales <= 0)
+                return "";
+    
+              return `
+              
+                <tr>
+                
+                  <td style="padding:12px;border:1px solid #ddd;font-weight:700;">
+                    ${person.name}
+                  </td>
+    
+                  <td style="padding:12px;border:1px solid #ddd;text-align:center;">
+                    ${
+                      personOrders.length
+                    }
+                  </td>
+    
+                  <td style="padding:12px;border:1px solid #ddd;font-weight:700;color:green;">
+                    ₹${personSales.toLocaleString()}
+                  </td>
+    
+                </tr>
+              `;
+            })
+    
+            .join("");
+    
+        // PDF HTML
+        const pdfContent = `
+        
+          <div style="padding:25px;font-family:Arial;">
+    
+            <h1 style="font-size:32px;margin-bottom:5px;">
+              Admin Dashboard Report
+            </h1>
+    
+            <p style="font-size:18px;color:#666;margin-bottom:30px;">
+              ${filterTitle} Analytics Report
+            </p>
+    
+            <!-- CARDS -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    
+              <div style="padding:20px;border-radius:20px;background:#22c55e;color:white;">
+                <h3>Confirmed Orders</h3>
+                <h1>
+                  ${confirmedOrders.length}
+                </h1>
+                <p>
+                  ₹${confirmedOrders
+                    .reduce(
+                      (acc, o) =>
+                        acc +
+                        Number(
+                          o.total_amount || 0
+                        ),
+                      0
+                    )
+                    .toLocaleString()}
+                </p>
+              </div>
+    
+              <div style="padding:20px;border-radius:20px;background:#3b82f6;color:white;">
+                <h3>Shipped Orders</h3>
+                <h1>
+                  ${shippedOrders.length}
+                </h1>
+                <p>
+                  ₹${shippedOrders
+                    .reduce(
+                      (acc, o) =>
+                        acc +
+                        Number(
+                          o.total_amount || 0
+                        ),
+                      0
+                    )
+                    .toLocaleString()}
+                </p>
+              </div>
+    
+              <div style="padding:20px;border-radius:20px;background:#f59e0b;color:white;">
+                <h3>Pending Orders</h3>
+                <h1>
+                  ${pendingOrders.length}
+                </h1>
+                <p>
+                  ₹${pendingOrders
+                    .reduce(
+                      (acc, o) =>
+                        acc +
+                        Number(
+                          o.total_amount || 0
+                        ),
+                      0
+                    )
+                    .toLocaleString()}
+                </p>
+              </div>
+    
+              <div style="padding:20px;border-radius:20px;background:#f97316;color:white;">
+                <h3>Preparing Orders</h3>
+                <h1>
+                  ${preparingOrders.length}
+                </h1>
+                <p>
+                  ₹${preparingOrders
+                    .reduce(
+                      (acc, o) =>
+                        acc +
+                        Number(
+                          o.total_amount || 0
+                        ),
+                      0
+                    )
+                    .toLocaleString()}
+                </p>
+              </div>
+    
+            </div>
+    
+            <!-- SALES TEAM -->
+            <div style="margin-top:40px;">
+    
+              <h2 style="margin-bottom:20px;">
+                Sales Team Report
+              </h2>
+    
+              <table
+                style="
+                  width:100%;
+                  border-collapse:collapse;
+                  font-size:14px;
+                "
+              >
+    
+                <thead>
+    
+                  <tr style="background:black;color:white;">
+    
+                    <th style="padding:14px;border:1px solid #ddd;text-align:left;">
+                      Sales Person
+                    </th>
+    
+                    <th style="padding:14px;border:1px solid #ddd;">
+                      Orders
+                    </th>
+    
+                    <th style="padding:14px;border:1px solid #ddd;text-align:left;">
+                      Sales
+                    </th>
+    
+                  </tr>
+    
+                </thead>
+    
+                <tbody>
+    
+                  ${salesTeamHTML}
+    
+                </tbody>
+    
+              </table>
+    
+            </div>
+    
+          </div>
+        `;
+    
+        // TEMP DIV
+        const element =
+          document.createElement(
+            "div"
+          );
+    
+        element.innerHTML =
+          pdfContent;
+    
+        html2pdf()
+    
+          .set({
+    
+            margin: 0.3,
+    
+            filename: `${filterTitle.toLowerCase()}-dashboard-report.pdf`,
+    
+            image: {
+              type: "jpeg",
+              quality: 1,
+            },
+    
+            html2canvas: {
+              scale: 2,
+            },
+    
+            jsPDF: {
+              unit: "in",
+              format: "a4",
+              orientation:
+                "portrait",
+            },
+          })
+    
+          .from(element)
+    
+          .save();
+      };
   
   // =========================
   // CSV UPLOAD START
@@ -804,6 +1107,13 @@ export default function AdminDashboard() {
               
                   </button>
                 ))}
+
+                <button
+                  onClick={saveDashboardPDF}
+                  className="h-11 px-5 rounded-2xl bg-white text-black font-black shadow-2xl hover:scale-[1.03] transition-all duration-200"
+                >
+                  📄 Save PDF
+                </button>
               
               </div>
 
