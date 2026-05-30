@@ -3,6 +3,7 @@ import { supabase } from "../supabase";
 import OrderStatusPage from "./OrderStatusPage";
 import ConfirmDialog from "../components/ConfirmDialog";
 import LoaderOverlay from "../components/LoaderOverlay";
+import html2pdf from "html2pdf.js";
 import toast from "react-hot-toast";
 
 export default function AdminDashboard() {
@@ -554,13 +555,6 @@ export default function AdminDashboard() {
 
     const saveDashboardPDF =
       async () => {
-    
-        const html2pdf =
-          (
-            await import(
-              "html2pdf.js"
-            )
-          ).default;
     
         // FILTER TITLE
         const filterTitle =
