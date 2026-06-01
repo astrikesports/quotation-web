@@ -112,42 +112,14 @@ export default function Dashboard({
   };
 
   // GET PERSON QUOTATIONS
-  // GET PERSON QUOTATIONS
   const getPersonQuotations = (name) => {
-  
+
     return quotations
   
-      .filter((q) => {
-  
-        // SALES PERSON MATCH
-        if (
-          q.sales_person !==
-          name
-        ) {
-          return false;
-        }
-  
-        // DATE
-        const quoteDate =
-          new Date(
-            q.created_at
-          );
-  
-        const today =
-          new Date();
-  
-        // ONLY CURRENT MONTH
-        return (
-  
-          quoteDate.getMonth() ===
-            today.getMonth() &&
-  
-          quoteDate.getFullYear() ===
-            today.getFullYear()
-  
-        );
-  
-      })
+      .filter(
+        (q) =>
+          q.sales_person === name
+      )
   
       .sort(
         (a, b) =>
