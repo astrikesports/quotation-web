@@ -18,6 +18,9 @@ export default function Dashboard({
   const [salesPersons, setSalesPersons] = useState([]);
 
   const [quotations, setQuotations] = useState([]);
+  
+  const [monthFilter, setMonthFilter] =
+  useState("current");
 
   const [orderStatusData, setOrderStatusData] =
   useState([]);
@@ -113,13 +116,63 @@ export default function Dashboard({
 
   // GET PERSON QUOTATIONS
   const getPersonQuotations = (name) => {
-
+  
     return quotations
   
-      .filter(
-        (q) =>
-          q.sales_person === name
-      )
+      .filter((q) => {
+  
+        // SALES PERSON
+        if (
+          q.sales_person !==
+          name
+        ) {
+          return false;
+        }
+  
+        const quoteDate =
+          new Date(
+            q.created_at
+          );
+  
+        const today =
+          new Date();
+  
+        // CURRENT MONTH
+        if (
+          monthFilter ===
+          "current"
+        ) {
+  
+          return (
+  
+            quoteDate.getMonth() ===
+              today.getMonth() &&
+  
+            quoteDate.getFullYear() ===
+              today.getFullYear()
+  
+          );
+        }
+  
+        // LAST MONTH
+        const lastMonth =
+          new Date(
+            today.getFullYear(),
+            today.getMonth() - 1,
+            1
+          );
+  
+        return (
+  
+          quoteDate.getMonth() ===
+            lastMonth.getMonth() &&
+  
+          quoteDate.getFullYear() ===
+            lastMonth.getFullYear()
+  
+        );
+  
+      })
   
       .sort(
         (a, b) =>
@@ -365,6 +418,48 @@ export default function Dashboard({
 
           </div>
 
+        </div>
+
+        <div className="flex gap-3 mt-6">
+      
+          {/* CURRENT MONTH */}
+          <button
+            onClick={() =>
+              setMonthFilter(
+                "current"
+              )
+            }
+            className={`h-12 px-6 rounded-2xl font-black transition-all duration-200 ${
+              monthFilter ===
+              "current"
+        
+                ? "bg-green-500 text-black shadow-xl"
+        
+                : "bg-white/10 border border-white/10 text-white hover:bg-white/20"
+            }`}
+          >
+            This Month
+          </button>
+        
+          {/* LAST MONTH */}
+          <button
+            onClick={() =>
+              setMonthFilter(
+                "last"
+              )
+            }
+            className={`h-12 px-6 rounded-2xl font-black transition-all duration-200 ${
+              monthFilter ===
+              "last"
+        
+                ? "bg-green-500 text-black shadow-xl"
+        
+                : "bg-white/10 border border-white/10 text-white hover:bg-white/20"
+            }`}
+          >
+            Last Month
+          </button>
+        
         </div>
 
       </div>
