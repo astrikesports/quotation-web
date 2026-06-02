@@ -712,14 +712,14 @@ export default function AdminDashboard() {
         // PDF HTML
         const pdfContent = `
         
-          <div style="padding:20px;font-family:Arial;background:#f4f6f8;">
+          <div style="padding:16px;font-family:Arial;background:#f4f6f8;">
           
             <!-- HEADER -->
             <div
               style="
                 background:linear-gradient(135deg,#000,#111827);
-                border-radius:22px;
-                padding:24px;
+                border-radius:18px;
+                padding:18px;
                 color:white;
               "
             >
@@ -727,7 +727,7 @@ export default function AdminDashboard() {
               <p
                 style="
                   color:#22c55e;
-                  font-size:11px;
+                  font-size:10px;
                   letter-spacing:3px;
                   font-weight:bold;
                   text-transform:uppercase;
@@ -739,8 +739,8 @@ export default function AdminDashboard() {
           
               <h1
                 style="
-                  font-size:32px;
-                  margin:10px 0 6px;
+                  font-size:28px;
+                  margin:8px 0 4px;
                 "
               >
                 Admin Dashboard Report
@@ -748,7 +748,7 @@ export default function AdminDashboard() {
           
               <p
                 style="
-                  font-size:14px;
+                  font-size:13px;
                   color:#d1d5db;
                   margin:0;
                 "
@@ -758,9 +758,9 @@ export default function AdminDashboard() {
           
               <p
                 style="
-                  font-size:12px;
+                  font-size:11px;
                   color:#9ca3af;
-                  margin-top:10px;
+                  margin-top:8px;
                 "
               >
                 Generated On : ${todayDate}
@@ -773,8 +773,8 @@ export default function AdminDashboard() {
               style="
                 display:grid;
                 grid-template-columns:1fr 1fr;
-                gap:12px;
-                margin-top:18px;
+                gap:10px;
+                margin-top:14px;
               "
             >
           
@@ -782,18 +782,18 @@ export default function AdminDashboard() {
               <div
                 style="
                   background:linear-gradient(135deg,#16a34a,#22c55e);
-                  padding:18px;
-                  border-radius:18px;
+                  padding:14px;
+                  border-radius:16px;
                   color:white;
                 "
               >
           
                 <p
                   style="
-                    font-size:11px;
+                    font-size:10px;
                     letter-spacing:1px;
                     text-transform:uppercase;
-                    opacity:0.8;
+                    opacity:0.85;
                     margin:0;
                   "
                 >
@@ -802,8 +802,8 @@ export default function AdminDashboard() {
           
                 <h1
                   style="
-                    font-size:34px;
-                    margin:8px 0 4px;
+                    font-size:28px;
+                    margin:6px 0 2px;
                   "
                 >
                   ${confirmedOrders.length}
@@ -811,7 +811,7 @@ export default function AdminDashboard() {
           
                 <h2
                   style="
-                    font-size:18px;
+                    font-size:15px;
                     margin:0;
                   "
                 >
@@ -833,18 +833,18 @@ export default function AdminDashboard() {
               <div
                 style="
                   background:linear-gradient(135deg,#2563eb,#3b82f6);
-                  padding:18px;
-                  border-radius:18px;
+                  padding:14px;
+                  border-radius:16px;
                   color:white;
                 "
               >
           
                 <p
                   style="
-                    font-size:11px;
+                    font-size:10px;
                     letter-spacing:1px;
                     text-transform:uppercase;
-                    opacity:0.8;
+                    opacity:0.85;
                     margin:0;
                   "
                 >
@@ -853,8 +853,8 @@ export default function AdminDashboard() {
           
                 <h1
                   style="
-                    font-size:34px;
-                    margin:8px 0 4px;
+                    font-size:28px;
+                    margin:6px 0 2px;
                   "
                 >
                   ${shippedOrders.length}
@@ -862,7 +862,7 @@ export default function AdminDashboard() {
           
                 <h2
                   style="
-                    font-size:18px;
+                    font-size:15px;
                     margin:0;
                   "
                 >
@@ -884,18 +884,18 @@ export default function AdminDashboard() {
               <div
                 style="
                   background:linear-gradient(135deg,#d97706,#f59e0b);
-                  padding:18px;
-                  border-radius:18px;
+                  padding:14px;
+                  border-radius:16px;
                   color:white;
                 "
               >
           
                 <p
                   style="
-                    font-size:11px;
+                    font-size:10px;
                     letter-spacing:1px;
                     text-transform:uppercase;
-                    opacity:0.8;
+                    opacity:0.85;
                     margin:0;
                   "
                 >
@@ -904,8 +904,8 @@ export default function AdminDashboard() {
           
                 <h1
                   style="
-                    font-size:34px;
-                    margin:8px 0 4px;
+                    font-size:28px;
+                    margin:6px 0 2px;
                   "
                 >
                   ${allPendingOrders.length}
@@ -913,7 +913,7 @@ export default function AdminDashboard() {
           
                 <h2
                   style="
-                    font-size:18px;
+                    font-size:15px;
                     margin:0;
                   "
                 >
@@ -935,18 +935,18 @@ export default function AdminDashboard() {
               <div
                 style="
                   background:linear-gradient(135deg,#ea580c,#f97316);
-                  padding:18px;
-                  border-radius:18px;
+                  padding:14px;
+                  border-radius:16px;
                   color:white;
                 "
               >
           
                 <p
                   style="
-                    font-size:11px;
+                    font-size:10px;
                     letter-spacing:1px;
                     text-transform:uppercase;
-                    opacity:0.8;
+                    opacity:0.85;
                     margin:0;
                   "
                 >
@@ -955,8 +955,8 @@ export default function AdminDashboard() {
           
                 <h1
                   style="
-                    font-size:34px;
-                    margin:8px 0 4px;
+                    font-size:28px;
+                    margin:6px 0 2px;
                   "
                 >
                   ${preparingOrders.length}
@@ -964,7 +964,7 @@ export default function AdminDashboard() {
           
                 <h2
                   style="
-                    font-size:18px;
+                    font-size:15px;
                     margin:0;
                   "
                 >
@@ -987,9 +987,9 @@ export default function AdminDashboard() {
             <!-- SALES SUMMARY -->
             <div
               style="
-                margin-top:18px;
-                padding:22px;
-                border-radius:22px;
+                margin-top:14px;
+                padding:16px;
+                border-radius:18px;
                 background:linear-gradient(135deg,#000,#111827);
                 color:white;
               "
@@ -997,11 +997,11 @@ export default function AdminDashboard() {
           
               <p
                 style="
-                  font-size:11px;
+                  font-size:10px;
                   letter-spacing:2px;
                   text-transform:uppercase;
                   color:#9ca3af;
-                  margin:0 0 6px;
+                  margin:0 0 4px;
                 "
               >
                 Total Sales Summary
@@ -1009,7 +1009,7 @@ export default function AdminDashboard() {
           
               <h1
                 style="
-                  font-size:42px;
+                  font-size:34px;
                   margin:0;
                   color:#22c55e;
                 "
@@ -1019,8 +1019,8 @@ export default function AdminDashboard() {
           
               <p
                 style="
-                  margin-top:8px;
-                  font-size:13px;
+                  margin-top:6px;
+                  font-size:12px;
                   color:#d1d5db;
                 "
               >
@@ -1037,18 +1037,18 @@ export default function AdminDashboard() {
           
             <!-- SALES TEAM -->
             <div
-                style="
-                  background:white;
-                  border-radius:22px;
-                  padding:18px;
-                  min-height:100vh;
-                "
-              >
+              style="
+                background:white;
+                border-radius:18px;
+                padding:14px;
+                margin-top:14px;
+              "
+            >
           
               <h2
                 style="
-                  font-size:22px;
-                  margin-bottom:14px;
+                  font-size:20px;
+                  margin-bottom:10px;
                   color:#111827;
                 "
               >
@@ -1060,8 +1060,8 @@ export default function AdminDashboard() {
                   width:100%;
                   border-collapse:collapse;
                   overflow:hidden;
-                  border-radius:14px;
-                  font-size:12px;
+                  border-radius:12px;
+                  font-size:11px;
                 "
               >
           
@@ -1076,7 +1076,7 @@ export default function AdminDashboard() {
           
                     <th
                       style="
-                        padding:12px;
+                        padding:10px;
                         text-align:left;
                       "
                     >
@@ -1085,7 +1085,7 @@ export default function AdminDashboard() {
           
                     <th
                       style="
-                        padding:12px;
+                        padding:10px;
                         text-align:center;
                       "
                     >
@@ -1094,7 +1094,7 @@ export default function AdminDashboard() {
           
                     <th
                       style="
-                        padding:12px;
+                        padding:10px;
                         text-align:left;
                       "
                     >
@@ -1103,7 +1103,7 @@ export default function AdminDashboard() {
           
                     <th
                       style="
-                        padding:12px;
+                        padding:10px;
                         text-align:left;
                       "
                     >
@@ -1123,31 +1123,29 @@ export default function AdminDashboard() {
               </table>
           
             </div>
-
-
+          
             <!-- PAGE BREAK -->
-              <div
-                style="
-                  page-break-before:always;
-                  break-before:page;
-                  height:1px;
-                "
-              ></div>
-
+            <div
+              style="
+                page-break-before:always;
+                break-before:page;
+                height:1px;
+              "
+            ></div>
+          
             <!-- PENDING ORDERS -->
             <div
-                style="
-                  background:white;
-                  border-radius:22px;
-                  padding:18px;
-                  min-height:100vh;
-                "
-              >
+              style="
+                background:white;
+                border-radius:18px;
+                padding:14px;
+              "
+            >
           
               <h2
                 style="
-                  font-size:22px;
-                  margin-bottom:14px;
+                  font-size:20px;
+                  margin-bottom:10px;
                   color:#111827;
                 "
               >
@@ -1159,8 +1157,8 @@ export default function AdminDashboard() {
                   width:100%;
                   border-collapse:collapse;
                   overflow:hidden;
-                  border-radius:14px;
-                  font-size:12px;
+                  border-radius:12px;
+                  font-size:11px;
                 "
               >
           
@@ -1175,7 +1173,7 @@ export default function AdminDashboard() {
           
                     <th
                       style="
-                        padding:12px;
+                        padding:10px;
                         text-align:left;
                       "
                     >
@@ -1184,7 +1182,7 @@ export default function AdminDashboard() {
           
                     <th
                       style="
-                        padding:12px;
+                        padding:10px;
                         text-align:left;
                       "
                     >
@@ -1193,7 +1191,7 @@ export default function AdminDashboard() {
           
                     <th
                       style="
-                        padding:12px;
+                        padding:10px;
                         text-align:left;
                       "
                     >
@@ -1202,7 +1200,7 @@ export default function AdminDashboard() {
           
                     <th
                       style="
-                        padding:12px;
+                        padding:10px;
                         text-align:left;
                       "
                     >
@@ -1225,7 +1223,7 @@ export default function AdminDashboard() {
           
                         <td
                           style="
-                            padding:10px 12px;
+                            padding:8px 10px;
                             border-bottom:1px solid #f3f4f6;
                             font-weight:600;
                           "
@@ -1238,7 +1236,7 @@ export default function AdminDashboard() {
           
                         <td
                           style="
-                            padding:10px 12px;
+                            padding:8px 10px;
                             border-bottom:1px solid #f3f4f6;
                           "
                         >
@@ -1250,7 +1248,7 @@ export default function AdminDashboard() {
           
                         <td
                           style="
-                            padding:10px 12px;
+                            padding:8px 10px;
                             border-bottom:1px solid #f3f4f6;
                             color:#dc2626;
                             font-weight:bold;
@@ -1263,7 +1261,7 @@ export default function AdminDashboard() {
           
                         <td
                           style="
-                            padding:10px 12px;
+                            padding:8px 10px;
                             border-bottom:1px solid #f3f4f6;
                           "
                         >
@@ -1282,11 +1280,11 @@ export default function AdminDashboard() {
                         <td
                           colspan="4"
                           style="
-                            padding:8px 12px 10px;
+                            padding:6px 10px 8px;
                             background:#fffbeb;
                             border-bottom:1px solid #f3f4f6;
                             color:#92400e;
-                            font-size:11px;
+                            font-size:10px;
                           "
                         >
           
@@ -1320,6 +1318,7 @@ export default function AdminDashboard() {
           
           </div>
           `;
+
     
         // TEMP DIV
         const element =
