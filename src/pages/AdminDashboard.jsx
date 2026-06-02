@@ -1037,13 +1037,13 @@ export default function AdminDashboard() {
           
             <!-- SALES TEAM -->
             <div
-              style="
-                margin-top:18px;
-                background:white;
-                border-radius:22px;
-                padding:18px;
-              "
-            >
+                style="
+                  background:white;
+                  border-radius:22px;
+                  padding:18px;
+                  min-height:100vh;
+                "
+              >
           
               <h2
                 style="
@@ -1123,16 +1123,26 @@ export default function AdminDashboard() {
               </table>
           
             </div>
-          
+
+
+            <!-- PAGE BREAK -->
+              <div
+                style="
+                  page-break-before:always;
+                  break-before:page;
+                  height:1px;
+                "
+              ></div>
+
             <!-- PENDING ORDERS -->
             <div
-              style="
-                margin-top:18px;
-                background:white;
-                border-radius:22px;
-                padding:18px;
-              "
-            >
+                style="
+                  background:white;
+                  border-radius:22px;
+                  padding:18px;
+                  min-height:100vh;
+                "
+              >
           
               <h2
                 style="
