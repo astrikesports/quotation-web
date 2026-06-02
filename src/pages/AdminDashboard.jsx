@@ -807,6 +807,57 @@ export default function AdminDashboard() {
               </div>
     
             </div>
+
+            <!-- TOTAL SALES SUMMARY -->
+            <div
+              style="
+                margin-top:40px;
+                padding:25px;
+                border-radius:20px;
+                background:#000;
+                color:white;
+              "
+            >
+            
+              <p
+                style="
+                  font-size:14px;
+                  letter-spacing:2px;
+                  text-transform:uppercase;
+                  color:#aaa;
+                  margin-bottom:10px;
+                "
+              >
+                Total Sales Summary
+              </p>
+            
+              <h1
+                style="
+                  font-size:42px;
+                  margin:0;
+                  color:#22c55e;
+                "
+              >
+                ₹${getTotalSales().toLocaleString()}
+              </h1>
+            
+              <p
+                style="
+                  margin-top:10px;
+                  font-size:16px;
+                  color:#ddd;
+                "
+              >
+                ${
+                  globalFilter === "today"
+                    ? "Today's Confirmed Sales"
+                    : globalFilter === "thisMonth"
+                    ? "This Month Confirmed Sales"
+                    : "Last Month Confirmed Sales"
+                }
+              </p>
+            
+            </div>
     
             <!-- SALES TEAM -->
             <div style="margin-top:40px;">
