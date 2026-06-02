@@ -712,205 +712,423 @@ export default function AdminDashboard() {
         // PDF HTML
         const pdfContent = `
         
-          <div style="padding:25px;font-family:Arial;">
-    
-            <h1 style="font-size:32px;margin-bottom:5px;">
-              Admin Dashboard Report
-            </h1>
-    
-            <p style="font-size:18px;color:#666;margin-bottom:30px;">
-              ${filterTitle} Analytics Report
-            </p>
-
-            <p style="font-size:15px;color:#999;margin-bottom:30px;">
-              Generated On : ${todayDate}
-            </p>
-    
-            <!-- CARDS -->
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-    
-              <div style="padding:20px;border-radius:20px;background:#22c55e;color:white;">
-                <h3>Confirmed Orders</h3>
-                <h1>
-                  ${confirmedOrders.length}
-                </h1>
-                <p>
-                  ₹${confirmedOrders
-                    .reduce(
-                      (acc, o) =>
-                        acc +
-                        Number(
-                          o.total_amount || 0
-                        ),
-                      0
-                    )
-                    .toLocaleString()}
-                </p>
-              </div>
-    
-              <div style="padding:20px;border-radius:20px;background:#3b82f6;color:white;">
-                <h3>Shipped Orders</h3>
-                <h1>
-                  ${shippedOrders.length}
-                </h1>
-                <p>
-                  ₹${shippedOrders
-                    .reduce(
-                      (acc, o) =>
-                        acc +
-                        Number(
-                          o.total_amount || 0
-                        ),
-                      0
-                    )
-                    .toLocaleString()}
-                </p>
-              </div>
-    
-              <div style="padding:20px;border-radius:20px;background:#f59e0b;color:white;">
-                <h3>Pending Orders</h3>
-                <h1>
-                  ${allPendingOrders.length}
-                </h1>
-                
-                <p>
-                  ₹${allPendingOrders
-                    .reduce(
-                      (acc, o) =>
-                        acc +
-                        Number(
-                          o.total_amount || 0
-                        ),
-                      0
-                    )
-                    .toLocaleString()}
-                </p>
-              </div>
-    
-              <div style="padding:20px;border-radius:20px;background:#f97316;color:white;">
-                <h3>Preparing Orders</h3>
-                <h1>
-                  ${preparingOrders.length}
-                </h1>
-                <p>
-                  ₹${preparingOrders
-                    .reduce(
-                      (acc, o) =>
-                        acc +
-                        Number(
-                          o.total_amount || 0
-                        ),
-                      0
-                    )
-                    .toLocaleString()}
-                </p>
-              </div>
-    
-            </div>
-
-            <!-- TOTAL SALES SUMMARY -->
-            <div
-              style="
-                margin-top:40px;
-                padding:25px;
-                border-radius:20px;
-                background:#000;
-                color:white;
-              "
-            >
+            <div style="padding:30px;font-family:Arial;background:#f4f6f8;">
             
-              <p
+              <!-- HEADER -->
+              <div
                 style="
-                  font-size:14px;
-                  letter-spacing:2px;
-                  text-transform:uppercase;
-                  color:#aaa;
-                  margin-bottom:10px;
+                  background:linear-gradient(135deg,#000,#111827);
+                  border-radius:30px;
+                  padding:35px;
+                  color:white;
+                  box-shadow:0 15px 40px rgba(0,0,0,0.15);
                 "
               >
-                Total Sales Summary
-              </p>
             
-              <h1
+                <p
+                  style="
+                    color:#22c55e;
+                    font-size:13px;
+                    letter-spacing:4px;
+                    font-weight:bold;
+                    text-transform:uppercase;
+                    margin:0;
+                  "
+                >
+                  ASTRIKE SPORTSWEAR
+                </p>
+            
+                <h1
+                  style="
+                    font-size:42px;
+                    margin:15px 0 10px;
+                  "
+                >
+                  Admin Dashboard Report
+                </h1>
+            
+                <p
+                  style="
+                    font-size:18px;
+                    color:#d1d5db;
+                    margin:0;
+                  "
+                >
+                  ${filterTitle} Analytics Report
+                </p>
+            
+                <p
+                  style="
+                    font-size:14px;
+                    color:#9ca3af;
+                    margin-top:15px;
+                  "
+                >
+                  Generated On : ${todayDate}
+                </p>
+            
+              </div>
+            
+              <!-- TOP SUMMARY -->
+              <div
                 style="
-                  font-size:42px;
-                  margin:0;
-                  color:#22c55e;
+                  display:grid;
+                  grid-template-columns:1fr 1fr;
+                  gap:20px;
+                  margin-top:30px;
                 "
               >
-                ₹${getTotalSales().toLocaleString()}
-              </h1>
             
-              <p
+                <!-- CONFIRMED -->
+                <div
+                  style="
+                    background:linear-gradient(135deg,#16a34a,#22c55e);
+                    padding:25px;
+                    border-radius:24px;
+                    color:white;
+                    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+                  "
+                >
+            
+                  <p
+                    style="
+                      font-size:13px;
+                      letter-spacing:2px;
+                      text-transform:uppercase;
+                      opacity:0.8;
+                    "
+                  >
+                    Confirmed Orders
+                  </p>
+            
+                  <h1
+                    style="
+                      font-size:48px;
+                      margin:15px 0 10px;
+                    "
+                  >
+                    ${confirmedOrders.length}
+                  </h1>
+            
+                  <h2
+                    style="
+                      font-size:26px;
+                      margin:0;
+                    "
+                  >
+                    ₹${confirmedOrders
+                      .reduce(
+                        (acc, o) =>
+                          acc +
+                          Number(
+                            o.total_amount || 0
+                          ),
+                        0
+                      )
+                      .toLocaleString()}
+                  </h2>
+            
+                </div>
+            
+                <!-- SHIPPED -->
+                <div
+                  style="
+                    background:linear-gradient(135deg,#2563eb,#3b82f6);
+                    padding:25px;
+                    border-radius:24px;
+                    color:white;
+                    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+                  "
+                >
+            
+                  <p
+                    style="
+                      font-size:13px;
+                      letter-spacing:2px;
+                      text-transform:uppercase;
+                      opacity:0.8;
+                    "
+                  >
+                    Shipped Orders
+                  </p>
+            
+                  <h1
+                    style="
+                      font-size:48px;
+                      margin:15px 0 10px;
+                    "
+                  >
+                    ${shippedOrders.length}
+                  </h1>
+            
+                  <h2
+                    style="
+                      font-size:26px;
+                      margin:0;
+                    "
+                  >
+                    ₹${shippedOrders
+                      .reduce(
+                        (acc, o) =>
+                          acc +
+                          Number(
+                            o.total_amount || 0
+                          ),
+                        0
+                      )
+                      .toLocaleString()}
+                  </h2>
+            
+                </div>
+            
+                <!-- PENDING -->
+                <div
+                  style="
+                    background:linear-gradient(135deg,#d97706,#f59e0b);
+                    padding:25px;
+                    border-radius:24px;
+                    color:white;
+                    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+                  "
+                >
+            
+                  <p
+                    style="
+                      font-size:13px;
+                      letter-spacing:2px;
+                      text-transform:uppercase;
+                      opacity:0.8;
+                    "
+                  >
+                    Total Pending Orders
+                  </p>
+            
+                  <h1
+                    style="
+                      font-size:48px;
+                      margin:15px 0 10px;
+                    "
+                  >
+                    ${allPendingOrders.length}
+                  </h1>
+            
+                  <h2
+                    style="
+                      font-size:26px;
+                      margin:0;
+                    "
+                  >
+                    ₹${allPendingOrders
+                      .reduce(
+                        (acc, o) =>
+                          acc +
+                          Number(
+                            o.total_amount || 0
+                          ),
+                        0
+                      )
+                      .toLocaleString()}
+                  </h2>
+            
+                </div>
+            
+                <!-- PREPARING -->
+                <div
+                  style="
+                    background:linear-gradient(135deg,#ea580c,#f97316);
+                    padding:25px;
+                    border-radius:24px;
+                    color:white;
+                    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+                  "
+                >
+            
+                  <p
+                    style="
+                      font-size:13px;
+                      letter-spacing:2px;
+                      text-transform:uppercase;
+                      opacity:0.8;
+                    "
+                  >
+                    Preparing Orders
+                  </p>
+            
+                  <h1
+                    style="
+                      font-size:48px;
+                      margin:15px 0 10px;
+                    "
+                  >
+                    ${preparingOrders.length}
+                  </h1>
+            
+                  <h2
+                    style="
+                      font-size:26px;
+                      margin:0;
+                    "
+                  >
+                    ₹${preparingOrders
+                      .reduce(
+                        (acc, o) =>
+                          acc +
+                          Number(
+                            o.total_amount || 0
+                          ),
+                        0
+                      )
+                      .toLocaleString()}
+                  </h2>
+            
+                </div>
+            
+              </div>
+            
+              <!-- SALES SUMMARY -->
+              <div
                 style="
-                  margin-top:10px;
-                  font-size:16px;
-                  color:#ddd;
+                  margin-top:35px;
+                  padding:35px;
+                  border-radius:30px;
+                  background:linear-gradient(135deg,#000,#111827);
+                  color:white;
+                  box-shadow:0 15px 40px rgba(0,0,0,0.15);
                 "
               >
-                ${
-                  globalFilter === "today"
-                    ? "Today's Confirmed Sales"
-                    : globalFilter === "thisMonth"
-                    ? "This Month Confirmed Sales"
-                    : "Last Month Confirmed Sales"
-                }
-              </p>
             
-            </div>
-    
-            <!-- SALES TEAM -->
-            <div style="margin-top:40px;">
-    
-              <h2 style="margin-bottom:20px;">
-                Sales Team Report
-              </h2>
-    
-              <table
+                <p
+                  style="
+                    font-size:14px;
+                    letter-spacing:3px;
+                    text-transform:uppercase;
+                    color:#9ca3af;
+                    margin-bottom:10px;
+                  "
+                >
+                  Total Sales Summary
+                </p>
+            
+                <h1
+                  style="
+                    font-size:56px;
+                    margin:0;
+                    color:#22c55e;
+                  "
+                >
+                  ₹${getTotalSales().toLocaleString()}
+                </h1>
+            
+                <p
+                  style="
+                    margin-top:12px;
+                    font-size:18px;
+                    color:#d1d5db;
+                  "
+                >
+                  ${
+                    globalFilter === "today"
+                      ? "Today's Confirmed Sales"
+                      : globalFilter === "thisMonth"
+                      ? "This Month Confirmed Sales"
+                      : "Last Month Confirmed Sales"
+                  }
+                </p>
+            
+              </div>
+            
+              <!-- SALES TEAM -->
+              <div
                 style="
-                  width:100%;
-                  border-collapse:collapse;
-                  font-size:14px;
+                  margin-top:40px;
+                  background:white;
+                  border-radius:30px;
+                  padding:30px;
+                  box-shadow:0 10px 30px rgba(0,0,0,0.06);
                 "
               >
-    
-                <thead>
-
-                    <tr style="background:black;color:white;">
-                  
-                      <th style="padding:14px;border:1px solid #ddd;text-align:left;">
+            
+                <h2
+                  style="
+                    font-size:30px;
+                    margin-bottom:25px;
+                  "
+                >
+                  Sales Team Report
+                </h2>
+            
+                <table
+                  style="
+                    width:100%;
+                    border-collapse:separate;
+                    border-spacing:0;
+                    overflow:hidden;
+                    border-radius:20px;
+                    font-size:14px;
+                  "
+                >
+            
+                  <thead>
+            
+                    <tr
+                      style="
+                        background:#000;
+                        color:white;
+                      "
+                    >
+            
+                      <th
+                        style="
+                          padding:16px;
+                          text-align:left;
+                        "
+                      >
                         Sales Person
                       </th>
-                  
-                      <th style="padding:14px;border:1px solid #ddd;text-align:center;">
+            
+                      <th
+                        style="
+                          padding:16px;
+                          text-align:center;
+                        "
+                      >
                         Orders
                       </th>
-                  
-                      <th style="padding:14px;border:1px solid #ddd;text-align:left;">
+            
+                      <th
+                        style="
+                          padding:16px;
+                          text-align:left;
+                        "
+                      >
                         Today Sales
                       </th>
-                      
-                      <th style="padding:14px;border:1px solid #ddd;text-align:left;">
+            
+                      <th
+                        style="
+                          padding:16px;
+                          text-align:left;
+                        "
+                      >
                         Monthly Sales
                       </th>
-                  
-                  
+            
                     </tr>
-                  
+            
                   </thead>
-    
-                <tbody>
-    
-                  ${salesTeamHTML}
-    
-                </tbody>
-    
-              </table>
-    
+            
+                  <tbody>
+            
+                    ${salesTeamHTML}
+            
+                  </tbody>
+            
+                </table>
+            
+              </div>
+            
             </div>
-    
-          </div>
-        `;
+            `;
     
         // TEMP DIV
         const element =
