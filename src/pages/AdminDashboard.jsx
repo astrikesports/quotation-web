@@ -833,12 +833,13 @@ export default function AdminDashboard() {
                       </th>
                   
                       <th style="padding:14px;border:1px solid #ddd;text-align:left;">
+                        Today Sales
+                      </th>
+                      
+                      <th style="padding:14px;border:1px solid #ddd;text-align:left;">
                         Monthly Sales
                       </th>
                   
-                      <th style="padding:14px;border:1px solid #ddd;text-align:left;">
-                        Filter Sales
-                      </th>
                   
                     </tr>
                   
