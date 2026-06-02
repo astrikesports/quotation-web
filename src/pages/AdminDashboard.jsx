@@ -1124,6 +1124,144 @@ export default function AdminDashboard() {
                   </tbody>
             
                 </table>
+
+                <!-- PENDING ORDERS TABLE -->
+                  <div
+                    style="
+                      margin-top:40px;
+                      background:white;
+                      border-radius:30px;
+                      padding:30px;
+                      box-shadow:0 10px 30px rgba(0,0,0,0.06);
+                    "
+                  >
+                  
+                    <h2
+                      style="
+                        font-size:30px;
+                        margin-bottom:25px;
+                        color:#111827;
+                      "
+                    >
+                      Pending Orders Report
+                    </h2>
+                  
+                    <table
+                      style="
+                        width:100%;
+                        border-collapse:separate;
+                        border-spacing:0;
+                        overflow:hidden;
+                        border-radius:20px;
+                        font-size:13px;
+                      "
+                    >
+                  
+                      <thead>
+                  
+                        <tr
+                          style="
+                            background:#f59e0b;
+                            color:white;
+                          "
+                        >
+                  
+                          <th style="padding:14px;text-align:left;">
+                            Customer
+                          </th>
+                  
+                          <th style="padding:14px;text-align:left;">
+                            Phone
+                          </th>
+                  
+                          <th style="padding:14px;text-align:left;">
+                            Amount
+                          </th>
+                  
+                          <th style="padding:14px;text-align:left;">
+                            Date
+                          </th>
+                  
+                        </tr>
+                  
+                      </thead>
+                  
+                      <tbody>
+                  
+                        ${allPendingOrders
+                  
+                          .map(
+                            (order) => `
+                          
+                            <tr
+                              style="
+                                background:white;
+                              "
+                            >
+                  
+                              <td
+                                style="
+                                  padding:14px;
+                                  border-bottom:1px solid #eee;
+                                  font-weight:600;
+                                "
+                              >
+                                ${
+                                  order.customer_name ||
+                                  "N/A"
+                                }
+                              </td>
+                  
+                              <td
+                                style="
+                                  padding:14px;
+                                  border-bottom:1px solid #eee;
+                                "
+                              >
+                                ${
+                                  order.phone ||
+                                  "N/A"
+                                }
+                              </td>
+                  
+                              <td
+                                style="
+                                  padding:14px;
+                                  border-bottom:1px solid #eee;
+                                  color:#dc2626;
+                                  font-weight:bold;
+                                "
+                              >
+                                ₹${Number(
+                                  order.total_amount || 0
+                                ).toLocaleString()}
+                              </td>
+                  
+                              <td
+                                style="
+                                  padding:14px;
+                                  border-bottom:1px solid #eee;
+                                "
+                              >
+                                ${new Date(
+                                  order.created_date
+                                ).toLocaleDateString(
+                                  "en-IN"
+                                )}
+                              </td>
+                  
+                            </tr>
+                          
+                          `
+                          )
+                  
+                          .join("")}
+                  
+                      </tbody>
+                  
+                    </table>
+                  
+                  </div>
             
               </div>
             
