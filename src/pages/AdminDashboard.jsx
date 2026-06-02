@@ -588,8 +588,9 @@ export default function AdminDashboard() {
               "shipped"
           );
     
-        const pendingOrders =
-          filteredOrders.filter(
+        // ALL PENDING ORDERS
+        const allPendingOrders =
+          orders.filter(
             (o) =>
               o.status ===
               "pending"
@@ -693,13 +694,14 @@ export default function AdminDashboard() {
                     }
                   </td>
         
+                  <td style="padding:12px;border:1px solid #ddd;font-weight:700;color:green;">
+                    ₹${personSales.toLocaleString()}
+                  </td>
+                  
                   <td style="padding:12px;border:1px solid #ddd;font-weight:700;color:#2563eb;">
                     ₹${monthSales.toLocaleString()}
                   </td>
         
-                  <td style="padding:12px;border:1px solid #ddd;font-weight:700;color:green;">
-                    ₹${personSales.toLocaleString()}
-                  </td>
         
                 </tr>
               `;
@@ -768,10 +770,11 @@ export default function AdminDashboard() {
               <div style="padding:20px;border-radius:20px;background:#f59e0b;color:white;">
                 <h3>Pending Orders</h3>
                 <h1>
-                  ${pendingOrders.length}
+                  ${allPendingOrders.length}
                 </h1>
+                
                 <p>
-                  ₹${pendingOrders
+                  ₹${allPendingOrders
                     .reduce(
                       (acc, o) =>
                         acc +
