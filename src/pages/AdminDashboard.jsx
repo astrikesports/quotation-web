@@ -603,11 +603,23 @@ export default function AdminDashboard() {
           );
     
         // SALES TEAM HTML
+        // TODAY DATE
+        const todayDate = new Date().toLocaleDateString(
+          "en-IN",
+          {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          }
+        );
+        
+        // SALES TEAM HTML
         const salesTeamHTML =
           salesPersons
-    
+        
             .map((person) => {
-    
+        
+              // CURRENT FILTER SALES
               const personOrders =
                 filteredQuotations.filter(
                   (q) =>
@@ -616,7 +628,7 @@ export default function AdminDashboard() {
                     q.status ===
                       "confirmed"
                 );
-    
+        
               const personSales =
                 personOrders.reduce(
                   (acc, q) =>
@@ -626,10 +638,47 @@ export default function AdminDashboard() {
                     ),
                   0
                 );
-    
-              if (personSales <= 0)
+        
+              // TOTAL MONTH SALES
+              const monthSales =
+                quotations
+                  .filter((q) => {
+        
+                    const qDate =
+                      new Date(
+                        q.created_at
+                      );
+        
+                    const today =
+                      new Date();
+        
+                    return (
+                      q.sales_person ===
+                        person.name &&
+                      q.status ===
+                        "confirmed" &&
+                      qDate.getMonth() ===
+                        today.getMonth() &&
+                      qDate.getFullYear() ===
+                        today.getFullYear()
+                    );
+                  })
+        
+                  .reduce(
+                    (acc, q) =>
+                      acc +
+                      Number(
+                        q.amount || 0
+                      ),
+                    0
+                  );
+        
+              if (
+                personSales <= 0 &&
+                monthSales <= 0
+              )
                 return "";
-    
+        
               return `
               
                 <tr>
@@ -637,21 +686,25 @@ export default function AdminDashboard() {
                   <td style="padding:12px;border:1px solid #ddd;font-weight:700;">
                     ${person.name}
                   </td>
-    
+        
                   <td style="padding:12px;border:1px solid #ddd;text-align:center;">
                     ${
                       personOrders.length
                     }
                   </td>
-    
+        
+                  <td style="padding:12px;border:1px solid #ddd;font-weight:700;color:#2563eb;">
+                    ₹${monthSales.toLocaleString()}
+                  </td>
+        
                   <td style="padding:12px;border:1px solid #ddd;font-weight:700;color:green;">
                     ₹${personSales.toLocaleString()}
                   </td>
-    
+        
                 </tr>
               `;
             })
-    
+        
             .join("");
     
         // PDF HTML
@@ -665,6 +718,10 @@ export default function AdminDashboard() {
     
             <p style="font-size:18px;color:#666;margin-bottom:30px;">
               ${filterTitle} Analytics Report
+            </p>
+
+            <p style="font-size:15px;color:#999;margin-bottom:30px;">
+              Generated On : ${todayDate}
             </p>
     
             <!-- CARDS -->
@@ -764,24 +821,28 @@ export default function AdminDashboard() {
               >
     
                 <thead>
-    
-                  <tr style="background:black;color:white;">
-    
-                    <th style="padding:14px;border:1px solid #ddd;text-align:left;">
-                      Sales Person
-                    </th>
-    
-                    <th style="padding:14px;border:1px solid #ddd;">
-                      Orders
-                    </th>
-    
-                    <th style="padding:14px;border:1px solid #ddd;text-align:left;">
-                      Sales
-                    </th>
-    
-                  </tr>
-    
-                </thead>
+
+                    <tr style="background:black;color:white;">
+                  
+                      <th style="padding:14px;border:1px solid #ddd;text-align:left;">
+                        Sales Person
+                      </th>
+                  
+                      <th style="padding:14px;border:1px solid #ddd;text-align:center;">
+                        Orders
+                      </th>
+                  
+                      <th style="padding:14px;border:1px solid #ddd;text-align:left;">
+                        Monthly Sales
+                      </th>
+                  
+                      <th style="padding:14px;border:1px solid #ddd;text-align:left;">
+                        Filter Sales
+                      </th>
+                  
+                    </tr>
+                  
+                  </thead>
     
                 <tbody>
     
