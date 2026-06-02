@@ -1189,21 +1189,22 @@ export default function AdminDashboard() {
                       <tbody>
                   
                         ${allPendingOrders
-                  
+
                           .map(
                             (order) => `
                           
+                            <!-- MAIN ORDER -->
                             <tr
                               style="
                                 background:white;
                               "
                             >
-                  
+                        
                               <td
                                 style="
                                   padding:14px;
                                   border-bottom:1px solid #eee;
-                                  font-weight:600;
+                                  font-weight:700;
                                 "
                               >
                                 ${
@@ -1211,7 +1212,7 @@ export default function AdminDashboard() {
                                   "N/A"
                                 }
                               </td>
-                  
+                        
                               <td
                                 style="
                                   padding:14px;
@@ -1223,7 +1224,7 @@ export default function AdminDashboard() {
                                   "N/A"
                                 }
                               </td>
-                  
+                        
                               <td
                                 style="
                                   padding:14px;
@@ -1236,7 +1237,7 @@ export default function AdminDashboard() {
                                   order.total_amount || 0
                                 ).toLocaleString()}
                               </td>
-                  
+                        
                               <td
                                 style="
                                   padding:14px;
@@ -1249,12 +1250,45 @@ export default function AdminDashboard() {
                                   "en-IN"
                                 )}
                               </td>
-                  
+                        
+                            </tr>
+                        
+                            <!-- REMARK -->
+                            <tr>
+                        
+                              <td
+                                colspan="4"
+                                style="
+                                  padding:14px 18px;
+                                  background:#fff7ed;
+                                  border-bottom:1px solid #eee;
+                                  color:#7c2d12;
+                                  font-size:13px;
+                                  line-height:1.7;
+                                "
+                              >
+                        
+                                <span
+                                  style="
+                                    font-weight:bold;
+                                    color:#ea580c;
+                                  "
+                                >
+                                  Remark :
+                                </span>
+                        
+                                ${
+                                  order.remark ||
+                                  "No Remark Added"
+                                }
+                        
+                              </td>
+                        
                             </tr>
                           
                           `
                           )
-                  
+                        
                           .join("")}
                   
                       </tbody>
