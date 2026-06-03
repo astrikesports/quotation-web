@@ -709,110 +709,155 @@ export default function AdminDashboard() {
         
             .join("");
     
-        // PDF HTML
+        // PDF HTML  
         const pdfContent = `
+                
+        <div
+          style="
+            padding:14px;
+            font-family:Arial;
+            background:#f3f4f6;
+          "
+        >
         
-          <div style="padding:16px;font-family:Arial;background:#f4f6f8;">
-          
-            <!-- HEADER -->
-            <div
+          <!-- HEADER -->
+          <div
+            style="
+              background:linear-gradient(135deg,#000,#111827);
+              border-radius:16px;
+              padding:16px 18px;
+              color:white;
+            "
+          >
+        
+            <table
               style="
-                background:linear-gradient(135deg,#000,#111827);
-                border-radius:18px;
-                padding:18px;
-                color:white;
+                width:100%;
+                border-collapse:collapse;
               "
             >
-          
-              <p
+        
+              <tr>
+        
+                <td>
+        
+                  <p
+                    style="
+                      color:#22c55e;
+                      font-size:10px;
+                      letter-spacing:2px;
+                      font-weight:bold;
+                      margin:0;
+                    "
+                  >
+                    ASTRIKE SPORTSWEAR
+                  </p>
+        
+                  <h1
+                    style="
+                      font-size:30px;
+                      margin:6px 0 2px;
+                    "
+                  >
+                    Admin Dashboard Report
+                  </h1>
+        
+                  <p
+                    style="
+                      font-size:12px;
+                      color:#d1d5db;
+                      margin:0;
+                    "
+                  >
+                    ${filterTitle} Analytics Report
+                  </p>
+        
+                </td>
+        
+                <td
+                  style="
+                    text-align:right;
+                    vertical-align:top;
+                  "
+                >
+        
+                  <p
+                    style="
+                      font-size:11px;
+                      color:#9ca3af;
+                      margin:0;
+                    "
+                  >
+                    Generated On
+                  </p>
+        
+                  <h3
+                    style="
+                      margin-top:6px;
+                      color:white;
+                      font-size:14px;
+                    "
+                  >
+                    ${todayDate}
+                  </h3>
+        
+                </td>
+        
+              </tr>
+        
+            </table>
+        
+          </div>
+        
+          <!-- SUMMARY -->
+          <table
+            style="
+              width:100%;
+              margin-top:12px;
+              border-spacing:10px;
+            "
+          >
+        
+            <tr>
+        
+              <!-- CARD -->
+              <td
                 style="
-                  color:#22c55e;
-                  font-size:10px;
-                  letter-spacing:3px;
-                  font-weight:bold;
-                  text-transform:uppercase;
-                  margin:0;
+                  width:25%;
+                  background:white;
+                  border:1px solid #dcfce7;
+                  border-radius:14px;
+                  padding:12px;
                 "
               >
-                ASTRIKE SPORTSWEAR
-              </p>
-          
-              <h1
-                style="
-                  font-size:28px;
-                  margin:8px 0 4px;
-                "
-              >
-                Admin Dashboard Report
-              </h1>
-          
-              <p
-                style="
-                  font-size:13px;
-                  color:#d1d5db;
-                  margin:0;
-                "
-              >
-                ${filterTitle} Analytics Report
-              </p>
-          
-              <p
-                style="
-                  font-size:11px;
-                  color:#9ca3af;
-                  margin-top:8px;
-                "
-              >
-                Generated On : ${todayDate}
-              </p>
-          
-            </div>
-          
-            <!-- SUMMARY CARDS -->
-            <div
-              style="
-                display:grid;
-                grid-template-columns:1fr 1fr;
-                gap:10px;
-                margin-top:14px;
-              "
-            >
-          
-              <!-- CONFIRMED -->
-              <div
-                style="
-                  background:linear-gradient(135deg,#16a34a,#22c55e);
-                  padding:14px;
-                  border-radius:16px;
-                  color:white;
-                "
-              >
-          
+        
                 <p
                   style="
                     font-size:10px;
-                    letter-spacing:1px;
-                    text-transform:uppercase;
-                    opacity:0.85;
+                    color:#16a34a;
+                    font-weight:bold;
                     margin:0;
                   "
                 >
-                  Confirmed Orders
+                  CONFIRMED
                 </p>
-          
+        
                 <h1
                   style="
-                    font-size:28px;
+                    font-size:24px;
                     margin:6px 0 2px;
+                    color:#111827;
                   "
                 >
                   ${confirmedOrders.length}
                 </h1>
-          
-                <h2
+        
+                <p
                   style="
-                    font-size:15px;
                     margin:0;
+                    font-size:13px;
+                    color:#16a34a;
+                    font-weight:bold;
                   "
                 >
                   ₹${confirmedOrders
@@ -825,45 +870,48 @@ export default function AdminDashboard() {
                       0
                     )
                     .toLocaleString()}
-                </h2>
-          
-              </div>
-          
-              <!-- SHIPPED -->
-              <div
+                </p>
+        
+              </td>
+        
+              <!-- CARD -->
+              <td
                 style="
-                  background:linear-gradient(135deg,#2563eb,#3b82f6);
-                  padding:14px;
-                  border-radius:16px;
-                  color:white;
+                  width:25%;
+                  background:white;
+                  border:1px solid #dbeafe;
+                  border-radius:14px;
+                  padding:12px;
                 "
               >
-          
+        
                 <p
                   style="
                     font-size:10px;
-                    letter-spacing:1px;
-                    text-transform:uppercase;
-                    opacity:0.85;
+                    color:#2563eb;
+                    font-weight:bold;
                     margin:0;
                   "
                 >
-                  Shipped Orders
+                  SHIPPED
                 </p>
-          
+        
                 <h1
                   style="
-                    font-size:28px;
+                    font-size:24px;
                     margin:6px 0 2px;
+                    color:#111827;
                   "
                 >
                   ${shippedOrders.length}
                 </h1>
-          
-                <h2
+        
+                <p
                   style="
-                    font-size:15px;
                     margin:0;
+                    font-size:13px;
+                    color:#2563eb;
+                    font-weight:bold;
                   "
                 >
                   ₹${shippedOrders
@@ -876,45 +924,48 @@ export default function AdminDashboard() {
                       0
                     )
                     .toLocaleString()}
-                </h2>
-          
-              </div>
-          
-              <!-- PENDING -->
-              <div
+                </p>
+        
+              </td>
+        
+              <!-- CARD -->
+              <td
                 style="
-                  background:linear-gradient(135deg,#d97706,#f59e0b);
-                  padding:14px;
-                  border-radius:16px;
-                  color:white;
+                  width:25%;
+                  background:white;
+                  border:1px solid #fde68a;
+                  border-radius:14px;
+                  padding:12px;
                 "
               >
-          
+        
                 <p
                   style="
                     font-size:10px;
-                    letter-spacing:1px;
-                    text-transform:uppercase;
-                    opacity:0.85;
+                    color:#d97706;
+                    font-weight:bold;
                     margin:0;
                   "
                 >
-                  Pending Orders
+                  PENDING
                 </p>
-          
+        
                 <h1
                   style="
-                    font-size:28px;
+                    font-size:24px;
                     margin:6px 0 2px;
+                    color:#111827;
                   "
                 >
                   ${allPendingOrders.length}
                 </h1>
-          
-                <h2
+        
+                <p
                   style="
-                    font-size:15px;
                     margin:0;
+                    font-size:13px;
+                    color:#d97706;
+                    font-weight:bold;
                   "
                 >
                   ₹${allPendingOrders
@@ -927,45 +978,48 @@ export default function AdminDashboard() {
                       0
                     )
                     .toLocaleString()}
-                </h2>
-          
-              </div>
-          
-              <!-- PREPARING -->
-              <div
+                </p>
+        
+              </td>
+        
+              <!-- CARD -->
+              <td
                 style="
-                  background:linear-gradient(135deg,#ea580c,#f97316);
-                  padding:14px;
-                  border-radius:16px;
-                  color:white;
+                  width:25%;
+                  background:white;
+                  border:1px solid #fed7aa;
+                  border-radius:14px;
+                  padding:12px;
                 "
               >
-          
+        
                 <p
                   style="
                     font-size:10px;
-                    letter-spacing:1px;
-                    text-transform:uppercase;
-                    opacity:0.85;
+                    color:#ea580c;
+                    font-weight:bold;
                     margin:0;
                   "
                 >
-                  Preparing Orders
+                  PREPARING
                 </p>
-          
+        
                 <h1
                   style="
-                    font-size:28px;
+                    font-size:24px;
                     margin:6px 0 2px;
+                    color:#111827;
                   "
                 >
                   ${preparingOrders.length}
                 </h1>
-          
-                <h2
+        
+                <p
                   style="
-                    font-size:15px;
                     margin:0;
+                    font-size:13px;
+                    color:#ea580c;
+                    font-weight:bold;
                   "
                 >
                   ₹${preparingOrders
@@ -978,346 +1032,368 @@ export default function AdminDashboard() {
                       0
                     )
                     .toLocaleString()}
-                </h2>
-          
-              </div>
-          
-            </div>
-          
-            <!-- SALES SUMMARY -->
-            <div
+                </p>
+        
+              </td>
+        
+            </tr>
+        
+          </table>
+        
+          <!-- SALES SUMMARY -->
+          <div
+            style="
+              margin-top:10px;
+              background:linear-gradient(135deg,#000,#111827);
+              border-radius:16px;
+              padding:16px 18px;
+              color:white;
+            "
+          >
+        
+            <table
               style="
-                margin-top:14px;
-                padding:16px;
-                border-radius:18px;
-                background:linear-gradient(135deg,#000,#111827);
-                color:white;
+                width:100%;
               "
             >
-          
-              <p
-                style="
-                  font-size:10px;
-                  letter-spacing:2px;
-                  text-transform:uppercase;
-                  color:#9ca3af;
-                  margin:0 0 4px;
-                "
-              >
-                Total Sales Summary
-              </p>
-          
-              <h1
-                style="
-                  font-size:34px;
-                  margin:0;
-                  color:#22c55e;
-                "
-              >
-                ₹${getTotalSales().toLocaleString()}
-              </h1>
-          
-              <p
-                style="
-                  margin-top:6px;
-                  font-size:12px;
-                  color:#d1d5db;
-                "
-              >
-                ${
-                  globalFilter === "today"
-                    ? "Today's Confirmed Sales"
-                    : globalFilter === "thisMonth"
-                    ? "This Month Confirmed Sales"
-                    : "Last Month Confirmed Sales"
-                }
-              </p>
-          
-            </div>
-          
-            <!-- SALES TEAM -->
-            <div
-              style="
-                background:white;
-                border-radius:18px;
-                padding:14px;
-                margin-top:14px;
-              "
-            >
-          
-              <h2
-                style="
-                  font-size:20px;
-                  margin-bottom:10px;
-                  color:#111827;
-                "
-              >
-                Sales Team Report
-              </h2>
-          
-              <table
-                style="
-                  width:100%;
-                  border-collapse:collapse;
-                  overflow:hidden;
-                  border-radius:12px;
-                  font-size:11px;
-                "
-              >
-          
-                <thead>
-          
-                  <tr
+        
+              <tr>
+        
+                <td>
+        
+                  <p
                     style="
-                      background:#000;
-                      color:white;
+                      font-size:10px;
+                      color:#9ca3af;
+                      margin:0;
+                      letter-spacing:2px;
                     "
                   >
-          
-                    <th
-                      style="
-                        padding:10px;
-                        text-align:left;
-                      "
-                    >
-                      Sales Person
-                    </th>
-          
-                    <th
-                      style="
-                        padding:10px;
-                        text-align:center;
-                      "
-                    >
-                      Orders
-                    </th>
-          
-                    <th
-                      style="
-                        padding:10px;
-                        text-align:left;
-                      "
-                    >
-                      Today Sales
-                    </th>
-          
-                    <th
-                      style="
-                        padding:10px;
-                        text-align:left;
-                      "
-                    >
-                      Monthly Sales
-                    </th>
-          
-                  </tr>
-          
-                </thead>
-          
-                <tbody>
-          
-                  ${salesTeamHTML}
-          
-                </tbody>
-          
-              </table>
-          
-            </div>
-          
-            <!-- PAGE BREAK -->
-            <div
-              style="
-                page-break-before:always;
-                break-before:page;
-                height:1px;
-              "
-            ></div>
-          
-            <!-- PENDING ORDERS -->
-            <div
-              style="
-                background:white;
-                border-radius:18px;
-                padding:14px;
-              "
-            >
-          
-              <h2
-                style="
-                  font-size:20px;
-                  margin-bottom:10px;
-                  color:#111827;
-                "
-              >
-                Pending Orders
-              </h2>
-          
-              <table
-                style="
-                  width:100%;
-                  border-collapse:collapse;
-                  overflow:hidden;
-                  border-radius:12px;
-                  font-size:11px;
-                "
-              >
-          
-                <thead>
-          
-                  <tr
+                    TOTAL SALES SUMMARY
+                  </p>
+        
+                  <h1
                     style="
-                      background:#f59e0b;
-                      color:white;
+                      margin:6px 0 0;
+                      font-size:34px;
+                      color:#22c55e;
                     "
                   >
-          
-                    <th
-                      style="
-                        padding:10px;
-                        text-align:left;
-                      "
-                    >
-                      Customer
-                    </th>
-          
-                    <th
-                      style="
-                        padding:10px;
-                        text-align:left;
-                      "
-                    >
-                      Phone
-                    </th>
-          
-                    <th
-                      style="
-                        padding:10px;
-                        text-align:left;
-                      "
-                    >
-                      Amount
-                    </th>
-          
-                    <th
-                      style="
-                        padding:10px;
-                        text-align:left;
-                      "
-                    >
-                      Date
-                    </th>
-          
-                  </tr>
-          
-                </thead>
-          
-                <tbody>
-          
-                  ${allPendingOrders
-          
-                    .map(
-                      (order) => `
-                    
-                      <!-- ORDER -->
-                      <tr>
-          
-                        <td
+                    ₹${getTotalSales().toLocaleString()}
+                  </h1>
+        
+                </td>
+        
+                <td
+                  style="
+                    text-align:right;
+                    vertical-align:bottom;
+                  "
+                >
+        
+                  <p
+                    style="
+                      margin:0;
+                      font-size:12px;
+                      color:#d1d5db;
+                    "
+                  >
+                    ${
+                      globalFilter === "today"
+                        ? "Today's Confirmed Sales"
+                        : globalFilter === "thisMonth"
+                        ? "This Month Confirmed Sales"
+                        : "Last Month Confirmed Sales"
+                    }
+                  </p>
+        
+                </td>
+        
+              </tr>
+        
+            </table>
+        
+          </div>
+        
+          <!-- SALES TEAM -->
+          <div
+            style="
+              background:white;
+              border-radius:16px;
+              padding:14px;
+              margin-top:12px;
+            "
+          >
+        
+            <h2
+              style="
+                margin:0 0 10px;
+                font-size:22px;
+                color:#111827;
+              "
+            >
+              Sales Team Report
+            </h2>
+        
+            <table
+              style="
+                width:100%;
+                border-collapse:collapse;
+                font-size:11px;
+              "
+            >
+        
+              <thead>
+        
+                <tr
+                  style="
+                    background:#000;
+                    color:white;
+                  "
+                >
+        
+                  <th
+                    style="
+                      padding:10px;
+                      text-align:left;
+                      border-top-left-radius:10px;
+                    "
+                  >
+                    Sales Person
+                  </th>
+        
+                  <th
+                    style="
+                      padding:10px;
+                      text-align:center;
+                    "
+                  >
+                    Orders
+                  </th>
+        
+                  <th
+                    style="
+                      padding:10px;
+                      text-align:left;
+                    "
+                  >
+                    Today Sales
+                  </th>
+        
+                  <th
+                    style="
+                      padding:10px;
+                      text-align:left;
+                      border-top-right-radius:10px;
+                    "
+                  >
+                    Monthly Sales
+                  </th>
+        
+                </tr>
+        
+              </thead>
+        
+              <tbody>
+        
+                ${salesTeamHTML}
+        
+              </tbody>
+        
+            </table>
+        
+          </div>
+        
+          <!-- PAGE BREAK -->
+          <div
+            style="
+              page-break-before:always;
+              break-before:page;
+              height:1px;
+            "
+          ></div>
+        
+          <!-- PENDING -->
+          <div
+            style="
+              background:white;
+              border-radius:16px;
+              padding:14px;
+            "
+          >
+        
+            <h2
+              style="
+                margin:0 0 10px;
+                font-size:22px;
+                color:#111827;
+              "
+            >
+              Pending Orders Report
+            </h2>
+        
+            <table
+              style="
+                width:100%;
+                border-collapse:collapse;
+                font-size:11px;
+              "
+            >
+        
+              <thead>
+        
+                <tr
+                  style="
+                    background:#f59e0b;
+                    color:white;
+                  "
+                >
+        
+                  <th
+                    style="
+                      padding:10px;
+                      text-align:left;
+                    "
+                  >
+                    Customer
+                  </th>
+        
+                  <th
+                    style="
+                      padding:10px;
+                      text-align:left;
+                    "
+                  >
+                    Phone
+                  </th>
+        
+                  <th
+                    style="
+                      padding:10px;
+                      text-align:left;
+                    "
+                  >
+                    Amount
+                  </th>
+        
+                  <th
+                    style="
+                      padding:10px;
+                      text-align:left;
+                    "
+                  >
+                    Date
+                  </th>
+        
+                </tr>
+        
+              </thead>
+        
+              <tbody>
+        
+                ${allPendingOrders
+        
+                  .map(
+                    (order) => `
+                  
+                    <tr>
+        
+                      <td
+                        style="
+                          padding:8px 10px;
+                          border:1px solid #f3f4f6;
+                          font-weight:600;
+                        "
+                      >
+                        ${
+                          order.customer_name ||
+                          "N/A"
+                        }
+                      </td>
+        
+                      <td
+                        style="
+                          padding:8px 10px;
+                          border:1px solid #f3f4f6;
+                        "
+                      >
+                        ${
+                          order.phone ||
+                          "N/A"
+                        }
+                      </td>
+        
+                      <td
+                        style="
+                          padding:8px 10px;
+                          border:1px solid #f3f4f6;
+                          color:#dc2626;
+                          font-weight:bold;
+                        "
+                      >
+                        ₹${Number(
+                          order.total_amount || 0
+                        ).toLocaleString()}
+                      </td>
+        
+                      <td
+                        style="
+                          padding:8px 10px;
+                          border:1px solid #f3f4f6;
+                        "
+                      >
+                        ${new Date(
+                          order.created_date
+                        ).toLocaleDateString(
+                          "en-IN"
+                        )}
+                      </td>
+        
+                    </tr>
+        
+                    <tr>
+        
+                      <td
+                        colspan="4"
+                        style="
+                          padding:7px 10px;
+                          background:#fffbeb;
+                          border:1px solid #f3f4f6;
+                          color:#92400e;
+                          font-size:10px;
+                        "
+                      >
+        
+                        <span
                           style="
-                            padding:8px 10px;
-                            border-bottom:1px solid #f3f4f6;
-                            font-weight:600;
-                          "
-                        >
-                          ${
-                            order.customer_name ||
-                            "N/A"
-                          }
-                        </td>
-          
-                        <td
-                          style="
-                            padding:8px 10px;
-                            border-bottom:1px solid #f3f4f6;
-                          "
-                        >
-                          ${
-                            order.phone ||
-                            "N/A"
-                          }
-                        </td>
-          
-                        <td
-                          style="
-                            padding:8px 10px;
-                            border-bottom:1px solid #f3f4f6;
-                            color:#dc2626;
                             font-weight:bold;
                           "
                         >
-                          ₹${Number(
-                            order.total_amount || 0
-                          ).toLocaleString()}
-                        </td>
-          
-                        <td
-                          style="
-                            padding:8px 10px;
-                            border-bottom:1px solid #f3f4f6;
-                          "
-                        >
-                          ${new Date(
-                            order.created_date
-                          ).toLocaleDateString(
-                            "en-IN"
-                          )}
-                        </td>
-          
-                      </tr>
-          
-                      <!-- REMARK -->
-                      <tr>
-          
-                        <td
-                          colspan="4"
-                          style="
-                            padding:6px 10px 8px;
-                            background:#fffbeb;
-                            border-bottom:1px solid #f3f4f6;
-                            color:#92400e;
-                            font-size:10px;
-                          "
-                        >
-          
-                          <span
-                            style="
-                              font-weight:bold;
-                            "
-                          >
-                            Remark :
-                          </span>
-          
-                          ${
-                            order.remark ||
-                            "No Remark Added"
-                          }
-          
-                        </td>
-          
-                      </tr>
-                    
-                    `
-                    )
-          
-                    .join("")}
-          
-                </tbody>
-          
-              </table>
-          
-            </div>
-          
+                          Remark :
+                        </span>
+        
+                        ${
+                          order.remark ||
+                          "No Remark Added"
+                        }
+        
+                      </td>
+        
+                    </tr>
+                  
+                  `
+                  )
+        
+                  .join("")}
+        
+              </tbody>
+        
+            </table>
+        
           </div>
-          `;
+        
+        </div>
+        `;
 
     
         // TEMP DIV
