@@ -427,13 +427,18 @@ const showPackingSection =
             }
           ]]
         : [])
+        ]
+        },
+      layout: "noBorders"
+    }
+    
+        ]]
+      },
+      layout: "noBorders"
+    }
+    
     ]
-  },
-  layout: "noBorders"
-}
- 
-]
-};
+    };
 
   /* ================= PAYMENT IMAGE PAGE ================= */
   if (finalPaymentImages.length > 0) {
