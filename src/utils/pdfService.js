@@ -336,6 +336,55 @@ import { parseSizes } from "../utils/sizeHelper";
   // SUMMARY (always)
   [summaryBlock],
 
+  [
+  {
+    columns: [
+      {
+        width: "*",
+        stack: [
+          {
+            image: gymBagIcon,
+            width: 50,
+            alignment: "center"
+          },
+          {
+            text: "GYM BAG",
+            bold: true,
+            alignment: "center"
+          },
+          {
+            text: gymBagRemark || "-",
+            alignment: "center",
+            fontSize: 8
+          }
+        ]
+      },
+  
+      {
+        width: "*",
+        stack: [
+          {
+            image: carryBagIcon,
+            width: 50,
+            alignment: "center"
+          },
+          {
+            text: "CARRY BAG",
+            bold: true,
+            alignment: "center"
+          },
+          {
+            text: carryBagRemark || "-",
+            alignment: "center",
+            fontSize: 8
+          }
+        ]
+      }
+    ],
+    margin: [0, 10, 0, 0]
+  }
+  ],
+
   // 🔥 PACKING DETAILS (HEADER + BODY TOGETHER)
   ...(hasPaymentImages
   ? [[
@@ -364,72 +413,6 @@ import { parseSizes } from "../utils/sizeHelper";
   ["DIMENSION", ""],
   ["WEIGHT", ""],
   ["SIGN", ""]
-
-  [
-  {
-    margin: [0, 8, 0, 0],
-  
-    columns: [
-  
-      {
-        width: "*",
-  
-        stack: [
-  
-          {
-            image: gymBagIcon,
-            width: 60,
-            alignment: "center"
-          },
-  
-          {
-            text: "GYM BAG",
-            bold: true,
-            alignment: "center",
-            margin: [0, 5, 0, 2]
-          },
-  
-          {
-            text:
-              gymBagRemark || "-",
-            fontSize: 8,
-            alignment: "center"
-          }
-  
-        ]
-      },
-  
-      {
-        width: "*",
-  
-        stack: [
-  
-          {
-            image: carryBagIcon,
-            width: 60,
-            alignment: "center"
-          },
-  
-          {
-            text: "CARRY BAG",
-            bold: true,
-            alignment: "center",
-            margin: [0, 5, 0, 2]
-          },
-  
-          {
-            text:
-              carryBagRemark || "-",
-            fontSize: 8,
-            alignment: "center"
-          }
-  
-        ]
-      }
-  
-    ]
-  }
-  ]
   ]
   },
   layout: GRID,
