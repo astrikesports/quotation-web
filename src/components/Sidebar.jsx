@@ -329,6 +329,58 @@ import ItemForm from "./ItemForm";
   </div>
 
 
+  {/* PACKING OPTIONS */}
+  <div className="bg-white rounded-xl shadow-sm p-4">
+    <h3 className="text-sm font-semibold text-blue-700 mb-3">
+      Packing Options
+    </h3>
+  
+    {/* Gym Bag */}
+    <div className="mb-3">
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-2xl">🎒</span>
+        <span className="font-medium">
+          Gym Bag
+        </span>
+      </div>
+  
+      <input
+        className="w-full border rounded px-3 py-2 text-sm"
+        placeholder="Gym Bag Remark"
+        value={pdfData.gymBagRemark || ""}
+        onChange={(e) =>
+          setPdfData(prev => ({
+            ...prev,
+            gymBagRemark: e.target.value
+          }))
+        }
+      />
+    </div>
+  
+    {/* Carry Bag */}
+    <div>
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-2xl">👜</span>
+        <span className="font-medium">
+          Carry Bag
+        </span>
+      </div>
+  
+      <input
+        className="w-full border rounded px-3 py-2 text-sm"
+        placeholder="Carry Bag Remark"
+        value={pdfData.carryBagRemark || ""}
+        onChange={(e) =>
+          setPdfData(prev => ({
+            ...prev,
+            carryBagRemark: e.target.value
+          }))
+        }
+      />
+    </div>
+  </div>
+
+
   {/* ITEM CARD */}
   <ItemForm
   onAddItem={onAddItem}
