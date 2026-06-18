@@ -305,45 +305,18 @@ import { parseSizes } from "../utils/sizeHelper";
 
   {
   table: {
-  headerRows: 1,
-  widths: [
-  78,24,24,24,24,24,24,24,
-  36,46,46,32,36
-  ],
-  body: itemBody,
-  dontBreakRows: true,
-  keepWithHeaderRows: 1
-  },
-  layout: GRID
-  },
-
-  { text: "\n" },
-
-  {
-  table: {
   widths: [300, 20, 210],
   body: [[
-  // LEFT: CANCEL TABLE
+  
   hasPaymentImages ? cancelBlock : "",
-
+  
   "",
-
-  // RIGHT SIDE
+  
   {
   table: {
   widths: [210],
   body: [
-  // SUMMARY (always)
-  [summaryBlock],
-
-  // 🔥 PACKING DETAILS (HEADER + BODY TOGETHER)
-  ...(hasPaymentImages
-  ? [[
-  {
-  table: {
-  widths: [100, 105],
-  body: [
-
+  
   [summaryBlock],
   
   ...(showPackingSection
@@ -351,54 +324,69 @@ import { parseSizes } from "../utils/sizeHelper";
   {
   columns: [
   
-  ...(gymBagRemark?.trim()
+ ...(gymBagRemark?.trim()
   ? [{
-  width: "*",
-  stack: [
-  {
-  image: gymBagIcon,
-  width: 40,
-  alignment: "center"
-  },
-  {
-  text: "GYM BAG",
-  bold: true,
-  alignment: "center"
-  },
-  {
-  text: gymBagRemark,
-  alignment: "center",
-  fontSize: 8
-  }
-  ]
-  }]
+      width: "*",
+      stack: [
+        ...(gymBagIcon
+          ? [{
+              image: gymBagIcon,
+              width: 40,
+              alignment: "center",
+              margin: [0, 0, 0, 5]
+            }]
+          : []),
+
+        {
+          text: "GYM BAG",
+          bold: true,
+          alignment: "center",
+          fontSize: 9,
+          margin: [0, 0, 0, 3]
+        },
+
+        {
+          text: gymBagRemark,
+          alignment: "center",
+          fontSize: 8
+        }
+      ]
+    }]
   : []),
-  
-  ...(carryBagRemark?.trim()
+
+...(carryBagRemark?.trim()
   ? [{
-  width: "*",
-  stack: [
-  {
-  image: carryBagIcon,
-  width: 40,
-  alignment: "center"
-  },
-  {
-  text: "CARRY BAG",
-  bold: true,
-  alignment: "center"
-  },
-  {
-  text: carryBagRemark,
-  alignment: "center",
-  fontSize: 8
-  }
-  ]
-  }]
+      width: "*",
+      stack: [
+        ...(carryBagIcon
+          ? [{
+              image: carryBagIcon,
+              width: 40,
+              alignment: "center",
+              margin: [0, 0, 0, 5]
+            }]
+          : []),
+
+        {
+          text: "CARRY BAG",
+          bold: true,
+          alignment: "center",
+          fontSize: 9,
+          margin: [0, 0, 0, 3]
+        },
+
+        {
+          text: carryBagRemark,
+          alignment: "center",
+          fontSize: 8
+        }
+      ]
+    }]
   : [])
   
   ],
-  margin: [0, 8, 0, 8]
+  
+  margin: [0, 10, 0, 10]
   }
   ]]
   : []),
@@ -433,11 +421,16 @@ import { parseSizes } from "../utils/sizeHelper";
   }
   ]]
   : [])
+  
   ]
-
-
-  ]
-  };
+  },
+  layout: "noBorders"
+  }
+  
+  ]]
+  },
+  layout: "noBorders"
+  },
 
   /* ================= PAYMENT IMAGE PAGE ================= */
   if (finalPaymentImages.length > 0) {
