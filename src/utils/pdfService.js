@@ -14,6 +14,10 @@ import { parseSizes } from "../utils/sizeHelper";
   .toUpperCase();
   }
 
+  const showPackingSection =
+    gymBagRemark?.trim() ||
+    carryBagRemark?.trim();
+
 
   /* ================= IMAGE → BASE64 ================= */
   async function imageUrlToBase64(url) {
@@ -336,54 +340,62 @@ import { parseSizes } from "../utils/sizeHelper";
   // SUMMARY (always)
   [summaryBlock],
 
-  [
-  {
-    columns: [
+  ...(showPackingSection
+  ? [
       {
-        width: "*",
-        stack: [
-          {
-            image: gymBagIcon,
-            width: 50,
-            alignment: "center"
-          },
-          {
-            text: "GYM BAG",
-            bold: true,
-            alignment: "center"
-          },
-          {
-            text: gymBagRemark || "-",
-            alignment: "center",
-            fontSize: 8
-          }
-        ]
-      },
-  
-      {
-        width: "*",
-        stack: [
-          {
-            image: carryBagIcon,
-            width: 50,
-            alignment: "center"
-          },
-          {
-            text: "CARRY BAG",
-            bold: true,
-            alignment: "center"
-          },
-          {
-            text: carryBagRemark || "-",
-            alignment: "center",
-            fontSize: 8
-          }
+        margin: [0, 10, 0, 0],
+        columns: [
+
+          ...(gymBagRemark?.trim()
+            ? [{
+                width: "*",
+                stack: [
+                  {
+                    image: gymBagIcon,
+                    width: 50,
+                    alignment: "center"
+                  },
+                  {
+                    text: "GYM BAG",
+                    bold: true,
+                    alignment: "center"
+                  },
+                  {
+                    text: gymBagRemark,
+                    alignment: "center",
+                    fontSize: 8
+                  }
+                ]
+              }]
+            : []),
+
+          ...(carryBagRemark?.trim()
+            ? [{
+                width: "*",
+                stack: [
+                  {
+                    image: carryBagIcon,
+                    width: 50,
+                    alignment: "center"
+                  },
+                  {
+                    text: "CARRY BAG",
+                    bold: true,
+                    alignment: "center"
+                  },
+                  {
+                    text: carryBagRemark,
+                    alignment: "center",
+                    fontSize: 8
+                  }
+                ]
+              }]
+            : [])
+
         ]
       }
-    ],
-    margin: [0, 10, 0, 0]
-  }
-  ],
+    ]
+  : [])
 
   // 🔥 PACKING DETAILS (HEADER + BODY TOGETHER)
   ...(hasPaymentImages
