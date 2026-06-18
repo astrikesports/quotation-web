@@ -64,6 +64,10 @@ import { parseSizes } from "../utils/sizeHelper";
   paddingBottom: () => 4,
   };
 
+  console.log("gymBagRemark =", gymBagRemark);
+  console.log("carryBagRemark =", carryBagRemark);
+  console.log("showPackingSection =", showPackingSection);
+
   export async function generateQuotationPDF(data = {}) {
   const {
   party,
