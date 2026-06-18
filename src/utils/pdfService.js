@@ -432,6 +432,9 @@ import { parseSizes } from "../utils/sizeHelper";
   layout: "noBorders"
   },
 
+  ]
+  };
+
   /* ================= PAYMENT IMAGE PAGE ================= */
   if (finalPaymentImages.length > 0) {
   docDefinition.content.push({ text: "", pageBreak: "before" });
