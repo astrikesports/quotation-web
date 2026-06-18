@@ -323,104 +323,85 @@ const showPackingSection =
   layout: GRID
   },
 
-  { text: "\n" },
-
   {
   table: {
-  widths: [300, 20, 210],
-  body: [[
-  // LEFT: CANCEL TABLE
-  hasPaymentImages ? cancelBlock : "",
-
-  "",
-
-  // RIGHT SIDE
-    {
-    table: {
-      widths: [300, 20, 210],
-      body: [[
-        hasPaymentImages ? cancelBlock : "",
-        "",
+  widths: [210],
+  body: [
+  [summaryBlock],
   
-        {
-          table: {
-            widths: [210],
-            body: [
-              [summaryBlock],
+  ...(showPackingSection
+  ? [[
+  {
+  margin: [0, 10, 0, 0],
+  columns: [
+  ...(gymBagRemark?.trim()
+  ? [{
+  width: "*",
+  stack: [
+  { image: gymBagIcon, width: 50, alignment: "center" },
+  { text: "GYM BAG", bold: true, alignment: "center" },
+  { text: gymBagRemark, alignment: "center", fontSize: 8 }
+  ]
+  }]
+  : []),
   
-              ...(showPackingSection
-                ? [[
-                    {
-                      margin: [0, 10, 0, 0],
-                      columns: [
-                        ...(gymBagRemark?.trim()
-                          ? [{
-                              width: "*",
-                              stack: [
-                                { image: gymBagIcon, width: 50, alignment: "center" },
-                                { text: "GYM BAG", bold: true, alignment: "center" },
-                                { text: gymBagRemark, alignment: "center", fontSize: 8 }
-                              ]
-                            }]
-                          : []),
-  
-                        ...(carryBagRemark?.trim()
-                          ? [{
-                              width: "*",
-                              stack: [
-                                { image: carryBagIcon, width: 50, alignment: "center" },
-                                { text: "CARRY BAG", bold: true, alignment: "center" },
-                                { text: carryBagRemark, alignment: "center", fontSize: 8 }
-                              ]
-                            }]
-                          : [])
-                      ]
-                    }
-                  ]]
-                : []),
-  
-              ...(hasPaymentImages
-                ? [[
-                    {
-                      table: {
-                        widths: [100, 105],
-                        body: [
-                          [
-                            {
-                              text: "PACKING DETAILS",
-                              colSpan: 2,
-                              alignment: "center",
-                              bold: true,
-                              fillColor: "#000",
-                              color: "#fff",
-                              fontSize: 8
-                            },
-                            {}
-                          ],
-                          ["DATE", ""],
-                          ["UPDATED DATE", ""],
-                          ["DIMENSION", ""],
-                          ["WEIGHT", ""],
-                          ["SIGN", ""]
-                        ]
-                      },
-                      layout: GRID,
-                      fontSize: 8
-                    }
-                  ]]
-                : [])
-            ]
-          },
-          layout: "noBorders"
-        }
-  
-      ]]
-    },
-    layout: "noBorders"
+  ...(carryBagRemark?.trim()
+  ? [{
+  width: "*",
+  stack: [
+  { image: carryBagIcon, width: 50, alignment: "center" },
+  { text: "CARRY BAG", bold: true, alignment: "center" },
+  { text: carryBagRemark, alignment: "center", fontSize: 8 }
+  ]
+  }]
+  : [])
+  ]
   }
-    
-    ]
-    };
+  ]]
+  : []),
+  
+  ...(hasPaymentImages
+  ? [[
+  {
+  table: {
+  widths: [100, 105],
+  body: [
+  [
+  {
+  text: "PACKING DETAILS",
+  colSpan: 2,
+  alignment: "center",
+  bold: true,
+  fillColor: "#000",
+  color: "#fff",
+  fontSize: 8
+  },
+  {}
+  ],
+  ["DATE", ""],
+  ["UPDATED DATE", ""],
+  ["DIMENSION", ""],
+  ["WEIGHT", ""],
+  ["SIGN", ""]
+  ]
+  },
+  layout: GRID,
+  fontSize: 8
+  }
+  ]]
+  : [])
+  ]
+  },
+  layout: "noBorders"
+  }
+  
+  ]]
+  },
+  layout: "noBorders"
+  }
+  
+  ]
+  };
 
   /* ================= PAYMENT IMAGE PAGE ================= */
   if (finalPaymentImages.length > 0) {
