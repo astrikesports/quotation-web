@@ -14,6 +14,7 @@ import { parseSizes } from "../utils/sizeHelper";
   .toUpperCase();
   }
 
+
   /* ================= IMAGE → BASE64 ================= */
   async function imageUrlToBase64(url) {
   // extract path after bucket name
@@ -37,7 +38,20 @@ import { parseSizes } from "../utils/sizeHelper";
   reader.readAsDataURL(data);
   });
   }
-
+  
+  async function localImageToBase64(url) {
+    const response = await fetch(url);
+    const blob = await response.blob();
+  
+    return await new Promise((resolve) => {
+      const reader = new FileReader();
+  
+      reader.onloadend = () =>
+        resolve(reader.result);
+  
+      reader.readAsDataURL(blob);
+    });
+  }
 
   /* ================= COMMON GRID ================= */
   const GRID = {
@@ -58,6 +72,10 @@ import { parseSizes } from "../utils/sizeHelper";
   address,
   salesPerson,
   remark,
+
+  gymBagRemark = "",
+  carryBagRemark = "",
+  
   quotationNo,
   rateDiscount = 0,
   spDiscount = 0,
@@ -69,6 +87,16 @@ import { parseSizes } from "../utils/sizeHelper";
   createdAt,
   updatedAt
   } = data;
+
+  const gymBagIcon =
+    await localImageToBase64(
+      "/gym-bag.png"
+    );
+  
+  const carryBagIcon =
+    await localImageToBase64(
+      "/carry-bag.png"
+    );
 
 // ================= STEP 2: NORMALIZE PAYMENT IMAGES =================
   const finalPaymentImages = [];
@@ -329,9 +357,79 @@ import { parseSizes } from "../utils/sizeHelper";
   ],
   ["DATE", ""],
   ["UPDATED DATE", ""],
+
+  ["GYM BAG", gymBagRemark || "-"],
+  ["CARRY BAG", carryBagRemark || "-"],
+
   ["DIMENSION", ""],
   ["WEIGHT", ""],
   ["SIGN", ""]
+
+  [
+  {
+    margin: [0, 8, 0, 0],
+  
+    columns: [
+  
+      {
+        width: "*",
+  
+        stack: [
+  
+          {
+            image: gymBagIcon,
+            width: 60,
+            alignment: "center"
+          },
+  
+          {
+            text: "GYM BAG",
+            bold: true,
+            alignment: "center",
+            margin: [0, 5, 0, 2]
+          },
+  
+          {
+            text:
+              gymBagRemark || "-",
+            fontSize: 8,
+            alignment: "center"
+          }
+  
+        ]
+      },
+  
+      {
+        width: "*",
+  
+        stack: [
+  
+          {
+            image: carryBagIcon,
+            width: 60,
+            alignment: "center"
+          },
+  
+          {
+            text: "CARRY BAG",
+            bold: true,
+            alignment: "center",
+            margin: [0, 5, 0, 2]
+          },
+  
+          {
+            text:
+              carryBagRemark || "-",
+            fontSize: 8,
+            alignment: "center"
+          }
+  
+        ]
+      }
+  
+    ]
+  }
+  ]
   ]
   },
   layout: GRID,
