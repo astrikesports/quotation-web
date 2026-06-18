@@ -37,6 +37,9 @@
   shipping: 0,
   advance: 0,
   paymentImages: [], // 🔥 MUST
+
+  gymBagRemark: "",
+  carryBagRemark: "",
   });
   
   
