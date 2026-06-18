@@ -308,126 +308,123 @@ const showPackingSection =
   },
 
   { text: "\n" },
-  
-  {
+
+{
   table: {
-  widths: [300, 20, 210],
-  body: [[
-  
-  hasPaymentImages ? cancelBlock : "",
-  
-  "",
-  
-  {
-  table: {
-  widths: [210],
-  body: [
-  
-  [summaryBlock],
-  
-  ...(showPackingSection
-  ? [[
-  {
-  columns: [
-  
-  ...(gymBagRemark?.trim()
-  ? [{
-  width: "*",
-  stack: [
-  {
-  image: gymBagIcon,
-  width: 40,
-  alignment: "center"
-  },
-  {
-  text: "GYM BAG",
-  bold: true,
-  alignment: "center",
-  margin: [0, 4, 0, 2]
-  },
-  {
-  text: gymBagRemark,
-  alignment: "center",
-  fontSize: 8
-  }
-  ]
-  }]
-  : []),
-  
-  ...(carryBagRemark?.trim()
-  ? [{
-  width: "*",
-  stack: [
-  {
-  image: carryBagIcon,
-  width: 40,
-  alignment: "center"
-  },
-  {
-  text: "CARRY BAG",
-  bold: true,
-  alignment: "center",
-  margin: [0, 4, 0, 2]
-  },
-  {
-  text: carryBagRemark,
-  alignment: "center",
-  fontSize: 8
-  }
-  ]
-  }]
-  : [])
-  
-  ],
-  
-  margin: [0, 8, 0, 8]
-  }
-  ]]
-  : []),
-  
-  ...(hasPaymentImages
-  ? [[
-  {
-  table: {
-  widths: [100, 105],
-  body: [
-  [
-  {
-  text: "PACKING DETAILS",
-  colSpan: 2,
-  alignment: "center",
-  bold: true,
-  fillColor: "#000",
-  color: "#fff",
-  fontSize: 8
-  },
-  {}
-  ],
-  ["DATE", ""],
-  ["UPDATED DATE", ""],
-  ["DIMENSION", ""],
-  ["WEIGHT", ""],
-  ["SIGN", ""]
-  ]
-  },
-  layout: GRID,
-  fontSize: 8
-  }
-  ]]
-  : [])
-  
-  ]
+    widths: [300, 20, 210],
+    body: [[
+
+      hasPaymentImages ? cancelBlock : "",
+
+      "",
+
+      {
+        table: {
+          widths: [210],
+          body: [
+
+            [summaryBlock],
+
+            ...(showPackingSection
+              ? [[
+                  {
+                    columns: [
+
+                      ...(gymBagRemark?.trim()
+                        ? [{
+                            width: "*",
+                            stack: [
+                              {
+                                image: gymBagIcon,
+                                width: 40,
+                                alignment: "center"
+                              },
+                              {
+                                text: "GYM BAG",
+                                bold: true,
+                                alignment: "center"
+                              },
+                              {
+                                text: gymBagRemark,
+                                alignment: "center",
+                                fontSize: 8
+                              }
+                            ]
+                          }]
+                        : []),
+
+                      ...(carryBagRemark?.trim()
+                        ? [{
+                            width: "*",
+                            stack: [
+                              {
+                                image: carryBagIcon,
+                                width: 40,
+                                alignment: "center"
+                              },
+                              {
+                                text: "CARRY BAG",
+                                bold: true,
+                                alignment: "center"
+                              },
+                              {
+                                text: carryBagRemark,
+                                alignment: "center",
+                                fontSize: 8
+                              }
+                            ]
+                          }]
+                        : [])
+
+                    ],
+                    margin: [0, 8, 0, 8]
+                  }
+                ]]
+              : []),
+
+            ...(hasPaymentImages
+              ? [[
+                  {
+                    table: {
+                      widths: [100, 105],
+                      body: [
+                        [
+                          {
+                            text: "PACKING DETAILS",
+                            colSpan: 2,
+                            alignment: "center",
+                            bold: true,
+                            fillColor: "#000",
+                            color: "#fff",
+                            fontSize: 8
+                          },
+                          {}
+                        ],
+                        ["DATE", ""],
+                        ["UPDATED DATE", ""],
+                        ["DIMENSION", ""],
+                        ["WEIGHT", ""],
+                        ["SIGN", ""]
+                      ]
+                    },
+                    layout: GRID,
+                    fontSize: 8
+                  }
+                ]]
+              : [])
+
+          ]
+        },
+        layout: "noBorders"
+      }
+
+    ]]
   },
   layout: "noBorders"
-  }
-  
-  ]]
-  },
-  layout: "noBorders"
-  }
-  
-  ]
-  };
+}
+
+    ]
+};
 
   /* ================= PAYMENT IMAGE PAGE ================= */
   if (finalPaymentImages.length > 0) {
