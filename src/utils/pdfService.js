@@ -1,4 +1,4 @@
-import pdfMake from "pdfmake/build/pdfmake";
+import pdfMake from "pdfmake/build/pdfmake"; 
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { supabase } from "../supabase";
 import { parseSizes } from "../utils/sizeHelper";
@@ -37,20 +37,7 @@ import { parseSizes } from "../utils/sizeHelper";
   reader.readAsDataURL(data);
   });
   }
-  
-  async function localImageToBase64(url) {
-    const response = await fetch(url);
-    const blob = await response.blob();
-  
-    return await new Promise((resolve) => {
-      const reader = new FileReader();
-  
-      reader.onloadend = () =>
-        resolve(reader.result);
-  
-      reader.readAsDataURL(blob);
-    });
-  }
+
 
   /* ================= COMMON GRID ================= */
   const GRID = {
@@ -61,9 +48,8 @@ import { parseSizes } from "../utils/sizeHelper";
   paddingLeft: () => 4,
   paddingRight: () => 4,
   paddingTop: () => 4,
-  paddingBottom: () => 4, 
+  paddingBottom: () => 4,
   };
-
 
   export async function generateQuotationPDF(data = {}) {
   const {
@@ -72,10 +58,6 @@ import { parseSizes } from "../utils/sizeHelper";
   address,
   salesPerson,
   remark,
-
-  gymBagRemark = "",
-  carryBagRemark = "",
-  
   quotationNo,
   rateDiscount = 0,
   spDiscount = 0,
@@ -87,21 +69,6 @@ import { parseSizes } from "../utils/sizeHelper";
   createdAt,
   updatedAt
   } = data;
-
-  
-const showPackingSection =
-  Boolean(gymBagRemark?.trim()) ||
-  Boolean(carryBagRemark?.trim());
-
-  const gymBagIcon =
-    await localImageToBase64(
-      "/gym-bag.png"
-    );
-  
-  const carryBagIcon =
-    await localImageToBase64(
-      "/carry-bag.png"
-    );
 
 // ================= STEP 2: NORMALIZE PAYMENT IMAGES =================
   const finalPaymentImages = [];
@@ -143,7 +110,6 @@ const showPackingSection =
 
   const totalDiscount = Number(rateDiscount) + Number(spDiscount);
   const hasPaymentImages = paymentImages.length > 0;
-    
   /* ================= ITEM TABLE ================= */
   const itemBody = [[
   "DESC","S","M","L","XL","2XL","3XL","4XL",
@@ -309,122 +275,141 @@ const showPackingSection =
 
   { text: "\n" },
 
-{
+  {
   table: {
-    widths: [300, 20, 210],
-    body: [[
-
-      hasPaymentImages ? cancelBlock : "",
-
-      "",
-
-      {
-        table: {
-          widths: [210],
-          body: [
-
-            [summaryBlock],
-
-            ...(showPackingSection
-              ? [[
-                  {
-                    columns: [
-
-                      ...(gymBagRemark?.trim()
-                        ? [{
-                            width: "*",
-                            stack: [
-                              {
-                                image: gymBagIcon,
-                                width: 40,
-                                alignment: "center"
-                              },
-                              {
-                                text: "GYM BAG",
-                                bold: true,
-                                alignment: "center"
-                              },
-                              {
-                                text: gymBagRemark,
-                                alignment: "center",
-                                fontSize: 8
-                              }
-                            ]
-                          }]
-                        : []),
-
-                      ...(carryBagRemark?.trim()
-                        ? [{
-                            width: "*",
-                            stack: [
-                              {
-                                image: carryBagIcon,
-                                width: 40,
-                                alignment: "center"
-                              },
-                              {
-                                text: "CARRY BAG",
-                                bold: true,
-                                alignment: "center"
-                              },
-                              {
-                                text: carryBagRemark,
-                                alignment: "center",
-                                fontSize: 8
-                              }
-                            ]
-                          }]
-                        : [])
-
-                    ],
-                    margin: [0, 8, 0, 8]
-                  }
-                ]]
-              : []),
-
-            ...(hasPaymentImages
-              ? [[
-                  {
-                    table: {
-                      widths: [100, 105],
-                      body: [
-                        [
-                          {
-                            text: "PACKING DETAILS",
-                            colSpan: 2,
-                            alignment: "center",
-                            bold: true,
-                            fillColor: "#000",
-                            color: "#fff",
-                            fontSize: 8
-                          },
-                          {}
-                        ],
-                        ["DATE", ""],
-                        ["UPDATED DATE", ""],
-                        ["DIMENSION", ""],
-                        ["WEIGHT", ""],
-                        ["SIGN", ""]
-                      ]
-                    },
-                    layout: GRID,
-                    fontSize: 8
-                  }
-                ]]
-              : [])
-
-          ]
-        },
-        layout: "noBorders"
-      }
-
-    ]]
+  headerRows: 1,
+  widths: [
+  78,24,24,24,24,24,24,24,
+  36,46,46,32,36
+  ],
+  body: itemBody,
+  dontBreakRows: true,
+  keepWithHeaderRows: 1
   },
-  layout: "noBorders"
-}
+  layout: GRID
+  },
 
-    ]
-};
+  { text: "\n" },
+
+  {
+  table: {
+  widths: [300, 20, 210],
+  body: [[
+  // LEFT: CANCEL TABLE
+  hasPaymentImages ? cancelBlock : "",
+
+  "",
+
+  // RIGHT SIDE
+  {
+  table: {
+  widths: [210],
+  body: [
+  // SUMMARY (always)
+  [summaryBlock],
+
+  // 🔥 PACKING DETAILS (HEADER + BODY TOGETHER)
+  ...(hasPaymentImages
+  ? [[
+  {
+  table: {
+  widths: [100, 105],
+  body: [
+
+  [summaryBlock],
+  
+  ...(showPackingSection
+  ? [[
+  {
+  columns: [
+  
+  ...(gymBagRemark?.trim()
+  ? [{
+  width: "*",
+  stack: [
+  {
+  image: gymBagIcon,
+  width: 40,
+  alignment: "center"
+  },
+  {
+  text: "GYM BAG",
+  bold: true,
+  alignment: "center"
+  },
+  {
+  text: gymBagRemark,
+  alignment: "center",
+  fontSize: 8
+  }
+  ]
+  }]
+  : []),
+  
+  ...(carryBagRemark?.trim()
+  ? [{
+  width: "*",
+  stack: [
+  {
+  image: carryBagIcon,
+  width: 40,
+  alignment: "center"
+  },
+  {
+  text: "CARRY BAG",
+  bold: true,
+  alignment: "center"
+  },
+  {
+  text: carryBagRemark,
+  alignment: "center",
+  fontSize: 8
+  }
+  ]
+  }]
+  : [])
+  
+  ],
+  margin: [0, 8, 0, 8]
+  }
+  ]]
+  : []),
+  
+  ...(hasPaymentImages
+  ? [[
+  {
+  table: {
+  widths: [100, 105],
+  body: [
+  [
+  {
+  text: "PACKING DETAILS",
+  colSpan: 2,
+  alignment: "center",
+  bold: true,
+  fillColor: "#000",
+  color: "#fff",
+  fontSize: 8
+  },
+  {}
+  ],
+  ["DATE", ""],
+  ["UPDATED DATE", ""],
+  ["DIMENSION", ""],
+  ["WEIGHT", ""],
+  ["SIGN", ""]
+  ]
+  },
+  layout: GRID,
+  fontSize: 8
+  }
+  ]]
+  : [])
+  ]
+
+
+  ]
+  };
 
   /* ================= PAYMENT IMAGE PAGE ================= */
   if (finalPaymentImages.length > 0) {
