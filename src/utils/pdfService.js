@@ -431,6 +431,9 @@ const showPackingSection =
   },
   layout: "noBorders"
 }
+ 
+]
+};
 
   /* ================= PAYMENT IMAGE PAGE ================= */
   if (finalPaymentImages.length > 0) {
