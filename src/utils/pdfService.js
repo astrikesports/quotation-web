@@ -308,39 +308,48 @@ const showPackingSection =
   },
 
   { text: "\n" },
-
+  
   {
   table: {
-  headerRows: 1,
-  widths: [
-  78,24,24,24,24,24,24,24,
-  36,46,46,32,36
-  ],
-  body: itemBody,
-  dontBreakRows: true,
-  keepWithHeaderRows: 1
-  },
-  layout: GRID
-  },
-
+  widths: [300, 20, 210],
+  body: [[
+  
+  hasPaymentImages ? cancelBlock : "",
+  
+  "",
+  
   {
   table: {
   widths: [210],
   body: [
+  
   [summaryBlock],
   
   ...(showPackingSection
   ? [[
   {
-  margin: [0, 10, 0, 0],
   columns: [
+  
   ...(gymBagRemark?.trim()
   ? [{
   width: "*",
   stack: [
-  { image: gymBagIcon, width: 50, alignment: "center" },
-  { text: "GYM BAG", bold: true, alignment: "center" },
-  { text: gymBagRemark, alignment: "center", fontSize: 8 }
+  {
+  image: gymBagIcon,
+  width: 40,
+  alignment: "center"
+  },
+  {
+  text: "GYM BAG",
+  bold: true,
+  alignment: "center",
+  margin: [0, 4, 0, 2]
+  },
+  {
+  text: gymBagRemark,
+  alignment: "center",
+  fontSize: 8
+  }
   ]
   }]
   : []),
@@ -349,13 +358,29 @@ const showPackingSection =
   ? [{
   width: "*",
   stack: [
-  { image: carryBagIcon, width: 50, alignment: "center" },
-  { text: "CARRY BAG", bold: true, alignment: "center" },
-  { text: carryBagRemark, alignment: "center", fontSize: 8 }
+  {
+  image: carryBagIcon,
+  width: 40,
+  alignment: "center"
+  },
+  {
+  text: "CARRY BAG",
+  bold: true,
+  alignment: "center",
+  margin: [0, 4, 0, 2]
+  },
+  {
+  text: carryBagRemark,
+  alignment: "center",
+  fontSize: 8
+  }
   ]
   }]
   : [])
-  ]
+  
+  ],
+  
+  margin: [0, 8, 0, 8]
   }
   ]]
   : []),
@@ -390,6 +415,7 @@ const showPackingSection =
   }
   ]]
   : [])
+  
   ]
   },
   layout: "noBorders"
