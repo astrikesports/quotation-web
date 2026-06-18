@@ -14,11 +14,6 @@ import { parseSizes } from "../utils/sizeHelper";
   .toUpperCase();
   }
 
-  const showPackingSection =
-    gymBagRemark?.trim() ||
-    carryBagRemark?.trim();
-
-
   /* ================= IMAGE → BASE64 ================= */
   async function imageUrlToBase64(url) {
   // extract path after bucket name
@@ -91,6 +86,11 @@ import { parseSizes } from "../utils/sizeHelper";
   createdAt,
   updatedAt
   } = data;
+
+  
+const showPackingSection =
+  gymBagRemark?.trim() ||
+  carryBagRemark?.trim();
 
   const gymBagIcon =
     await localImageToBase64(
@@ -337,65 +337,65 @@ import { parseSizes } from "../utils/sizeHelper";
   table: {
   widths: [210],
   body: [
-  // SUMMARY (always)
-  [summaryBlock],
-
-  ...(showPackingSection
-  ? [
-      {
-        margin: [0, 10, 0, 0],
-        columns: [
-
-          ...(gymBagRemark?.trim()
-            ? [{
-                width: "*",
-                stack: [
-                  {
-                    image: gymBagIcon,
-                    width: 50,
-                    alignment: "center"
-                  },
-                  {
-                    text: "GYM BAG",
-                    bold: true,
-                    alignment: "center"
-                  },
-                  {
-                    text: gymBagRemark,
-                    alignment: "center",
-                    fontSize: 8
-                  }
-                ]
-              }]
-            : []),
-
-          ...(carryBagRemark?.trim()
-            ? [{
-                width: "*",
-                stack: [
-                  {
-                    image: carryBagIcon,
-                    width: 50,
-                    alignment: "center"
-                  },
-                  {
-                    text: "CARRY BAG",
-                    bold: true,
-                    alignment: "center"
-                  },
-                  {
-                    text: carryBagRemark,
-                    alignment: "center",
-                    fontSize: 8
-                  }
-                ]
-              }]
-            : [])
-
-        ]
-      }
-    ]
-  : [])
+    [summaryBlock],
+  
+    ...(showPackingSection
+      ? [[
+          {
+            margin: [0, 10, 0, 0],
+            columns: [
+  
+              ...(gymBagRemark?.trim()
+                ? [{
+                    width: "*",
+                    stack: [
+                      {
+                        image: gymBagIcon,
+                        width: 50,
+                        alignment: "center"
+                      },
+                      {
+                        text: "GYM BAG",
+                        bold: true,
+                        alignment: "center"
+                      },
+                      {
+                        text: gymBagRemark,
+                        alignment: "center",
+                        fontSize: 8
+                      }
+                    ]
+                  }]
+                : []),
+  
+              ...(carryBagRemark?.trim()
+                ? [{
+                    width: "*",
+                    stack: [
+                      {
+                        image: carryBagIcon,
+                        width: 50,
+                        alignment: "center"
+                      },
+                      {
+                        text: "CARRY BAG",
+                        bold: true,
+                        alignment: "center"
+                      },
+                      {
+                        text: carryBagRemark,
+                        alignment: "center",
+                        fontSize: 8
+                      }
+                    ]
+                  }]
+                : [])
+  
+            ]
+          }
+        ]]
+      : []),
+  ]
 
   // 🔥 PACKING DETAILS (HEADER + BODY TOGETHER)
   ...(hasPaymentImages
