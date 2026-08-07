@@ -38,9 +38,6 @@ export default function AdminDashboard() {
   const [globalFilter, setGlobalFilter] =
   useState("today");
 
-  const total63Value =
-  Number(localStorage.getItem("total63PercentValue")) || 0;
-
 
   // =========================
   // LIVE REALTIME SYNC
@@ -632,6 +629,10 @@ export default function AdminDashboard() {
                     q.status ===
                       "confirmed"
                 );
+
+              const person63Value = personOrders.reduce((acc, q) => {
+                  return acc + Number(q.total_63_value || 0);
+                }, 0);
         
               const personSales =
                 personOrders.reduce(
