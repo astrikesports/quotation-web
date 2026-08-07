@@ -18,6 +18,9 @@ function mapToDB(data) {
     amount: data.amount,
     net_amount: data.netAmount,
 
+        // ✅ ADD THIS
+    total_63_value: data.total63Value,
+
     items: data.items
   };
 }
@@ -42,6 +45,10 @@ function mapFromDB(row) {
     advance: Number(row.advance ?? 0),
     amount: Number(row.amount ?? 0),
     netAmount: Number(row.net_amount ?? 0),
+
+      // ✅ ADD THIS
+    total63Value: Number(row.total_63_value ?? 0),
+      
     quotationNo: row.quotation_no ?? "",
 
     createdAt: row.created_at,
