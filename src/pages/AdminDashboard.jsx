@@ -2387,7 +2387,7 @@ export default function AdminDashboard() {
 
                               {/* 63% Value */}
                               <p className="mt-3 text-lg font-bold text-blue-600">
-                                63% Value : ₹{total63Value.toLocaleString()}
+                                63% Value : ₹{person63Value.toLocaleString()}
                               </p>
             
                             </h2>
