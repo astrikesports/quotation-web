@@ -1,4 +1,5 @@
   import { useEffect, useState } from "react";
+  import { useMemo } from "react";
   import ConfirmDialog from "../components/ConfirmDialog";
   import Header from "../components/Header";
   import ItemsTable from "../components/ItemsTable";
@@ -422,6 +423,10 @@
   items: [],
   paymentImages: []
   });
+
+    // Clear saved total
+  localStorage.removeItem("total63PercentValue");
+
   cancelEdit();
   setLoading(false);
   }, 300);
@@ -437,6 +442,27 @@
   Number(billDiscount) +
   Number(shipping) -
   Number(advance);
+
+  
+  /* ================= TOTALS 63% ================= */
+  const total63PercentValue = useMemo(() => {
+    return items.reduce((total, item) => {
+      const mrp = Number(item.mrp || 0);
+  
+      // 63% Discount => 37% Remaining
+      const rate63 = Math.round((mrp * 37) / 100);
+  
+      return total + rate63 * Number(item.pcs || 0);
+    }, 0);
+  }, [items]);
+  
+  /* ================= SAVE IN LOCAL STORAGE ================= */
+  useEffect(() => {
+    localStorage.setItem(
+      "total63PercentValue",
+      JSON.stringify(total63PercentValue)
+    );
+  }, [total63PercentValue]);
   
   /* ================= UI ================= */
   return (
