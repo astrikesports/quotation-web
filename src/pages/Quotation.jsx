@@ -446,18 +446,35 @@
   
   /* ================= TOTALS 63% ================= */
   const total63PercentValue = useMemo(() => {
-    return items.reduce((total, item) => {
-      const mrp = Number(item.mrp || 0);
+    console.log("Items:", items);
   
-      // 63% Discount => 37% Remaining
+    const total = items.reduce((sum, item) => {
+      console.log("Item:", item);
+  
+      const mrp = Number(item.mrp || 0);
+      const pcs = Number(item.pcs || 0);
+  
       const rate63 = Math.round((mrp * 37) / 100);
   
-      return total + rate63 * Number(item.pcs || 0);
-    }, 0);
-  }, [items]);
+      console.log({
+        mrp,
+        pcs,
+        rate63,
+        amount: rate63 * pcs,
+      });
   
+      return sum + rate63 * pcs;
+    }, 0);
+  
+    console.log("63% Total =", total);
+  
+    return total;
+  }, [items]);  
+    
   /* ================= SAVE IN LOCAL STORAGE ================= */
   useEffect(() => {
+    console.log("Saving to localStorage:", total63PercentValue);
+  
     localStorage.setItem(
       "total63PercentValue",
       JSON.stringify(total63PercentValue)
