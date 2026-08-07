@@ -38,6 +38,9 @@ export default function AdminDashboard() {
   const [globalFilter, setGlobalFilter] =
   useState("today");
 
+  const total63Value =
+  Number(localStorage.getItem("total63PercentValue")) || 0;
+
 
   // =========================
   // LIVE REALTIME SYNC
@@ -2380,6 +2383,11 @@ export default function AdminDashboard() {
                             <h2 className="text-5xl font-black text-green-600 mt-3">
             
                               ₹{personSales.toLocaleString()}
+
+                              {/* 63% Value */}
+                              <p className="mt-3 text-lg font-bold text-blue-600">
+                                63% Value : ₹{total63Value.toLocaleString()}
+                              </p>
             
                             </h2>
             
