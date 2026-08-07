@@ -2317,7 +2317,12 @@ export default function AdminDashboard() {
                             ),
                           0
                         );
-            
+
+                      const person63Value = personOrders.reduce(
+                          (acc, q) => acc + Number(q.total_63_value || 0),
+                          0
+                        );
+                                    
                       return (
             
                         <div
