@@ -88,6 +88,16 @@ import {
   size: typeof it.size === "string" ? it.size : ""
   }));
 
+
+  const total63PercentValue = cleanItems.reduce((total, item) => {
+  const mrp = Number(item.mrp || 0);
+  const pcs = Number(item.pcs || 0);
+
+  const rate63 = Math.round((mrp * 37) / 100);
+
+  return total + rate63 * pcs;
+}, 0);
+
       
   // ✅ PAYLOAD
   const payload = {
@@ -95,6 +105,8 @@ import {
   ...pdfData,
   
   status: "pending",
+
+  total63Value: total63PercentValue,
   
   // ✅ GROSS AMOUNT
   amount:
