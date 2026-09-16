@@ -337,46 +337,68 @@ import ItemForm from "./ItemForm";
   
     {/* Gym Bag */}
     <div className="mb-3">
-      <div className="flex items-center gap-2 mb-1">
+      <label className="flex items-center gap-2 mb-1 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={!!pdfData.gymBagSelected}
+          onChange={(e) =>
+            setPdfData(prev => ({
+              ...prev,
+              gymBagSelected: e.target.checked
+            }))
+          }
+          className="h-4 w-4"
+        />
         <span className="text-2xl">🎒</span>
-        <span className="font-medium">
-          Gym Bag
-        </span>
-      </div>
-  
-      <input
-        className="w-full border rounded px-3 py-2 text-sm"
-        placeholder="Gym Bag Remark"
-        value={pdfData.gymBagRemark || ""}
-        onChange={(e) =>
-          setPdfData(prev => ({
-            ...prev,
-            gymBagRemark: e.target.value
-          }))
-        }
-      />
+        <span className="font-medium">Gym Bag</span>
+      </label>
+
+      {pdfData.gymBagSelected && (
+        <input
+          className="w-full border rounded px-3 py-2 text-sm"
+          placeholder="Gym Bag Remark"
+          value={pdfData.gymBagRemark || ""}
+          onChange={(e) =>
+            setPdfData(prev => ({
+              ...prev,
+              gymBagRemark: e.target.value
+            }))
+          }
+        />
+      )}
     </div>
   
     {/* Carry Bag */}
     <div>
-      <div className="flex items-center gap-2 mb-1">
+      <label className="flex items-center gap-2 mb-1 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={!!pdfData.carryBagSelected}
+          onChange={(e) =>
+            setPdfData(prev => ({
+              ...prev,
+              carryBagSelected: e.target.checked
+            }))
+          }
+          className="h-4 w-4"
+        />
         <span className="text-2xl">👜</span>
-        <span className="font-medium">
-          Carry Bag
-        </span>
-      </div>
-  
-      <input
-        className="w-full border rounded px-3 py-2 text-sm"
-        placeholder="Carry Bag Remark"
-        value={pdfData.carryBagRemark || ""}
-        onChange={(e) =>
-          setPdfData(prev => ({
-            ...prev,
-            carryBagRemark: e.target.value
-          }))
-        }
-      />
+        <span className="font-medium">Carry Bag</span>
+      </label>
+
+      {pdfData.carryBagSelected && (
+        <input
+          className="w-full border rounded px-3 py-2 text-sm"
+          placeholder="Carry Bag Remark"
+          value={pdfData.carryBagRemark || ""}
+          onChange={(e) =>
+            setPdfData(prev => ({
+              ...prev,
+              carryBagRemark: e.target.value
+            }))
+          }
+        />
+      )}
     </div>
   </div>
 

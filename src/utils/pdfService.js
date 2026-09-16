@@ -65,6 +65,10 @@ import { parseSizes } from "../utils/sizeHelper";
   shipping = 0,
   advance = 0,
   billDiscount = 0,
+  gymBagSelected = false,
+  gymBagRemark = "",
+  carryBagSelected = false,
+  carryBagRemark = "",
   paymentImages = [], // ✅ array (max 2)
   createdAt,
   updatedAt
@@ -201,6 +205,48 @@ import { parseSizes } from "../utils/sizeHelper";
   fontSize: 8
   };
 
+  /* ================= PACKING OPTIONS BLOCK ================= */
+  const packingRows = [];
+
+  if (gymBagSelected) {
+    packingRows.push([
+      { text: "GYM BAG", bold: true },
+      { text: gymBagRemark || "-" }
+    ]);
+  }
+
+  if (carryBagSelected) {
+    packingRows.push([
+      { text: "CARRY BAG", bold: true },
+      { text: carryBagRemark || "-" }
+    ]);
+  }
+
+  const packingOptionsBlock = packingRows.length > 0
+    ? {
+        table: {
+          widths: [110, 95],
+          body: [
+            [
+              {
+                text: "PACKING OPTIONS",
+                colSpan: 2,
+                alignment: "center",
+                bold: true,
+                fillColor: "#000",
+                color: "#fff"
+              },
+              {}
+            ],
+            ...packingRows
+          ]
+        },
+        layout: GRID,
+        fontSize: 8,
+        margin: [0, 6, 0, 0]
+      }
+    : null;
+
   /* ================= SUMMARY BLOCK ================= */
   const summaryBlock = {
   table: {
@@ -307,6 +353,9 @@ import { parseSizes } from "../utils/sizeHelper";
   body: [
   // SUMMARY (always)
   [summaryBlock],
+
+  // PACKING OPTIONS (only when selected in quotation)
+  ...(packingOptionsBlock ? [[packingOptionsBlock]] : []),
 
   // 🔥 PACKING DETAILS (HEADER + BODY TOGETHER)
   ...(hasPaymentImages

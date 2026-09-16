@@ -134,12 +134,25 @@ import {
   : await createQuotation(payload);
 
   // ✅ 3️⃣ SYNC STATE
-  setPdfData(saved);
+  // Keep the packing selections/remarks in the current quotation state.
+  // They are used by the PDF and are intentionally not part of the DB payload.
+  setPdfData({
+    ...saved,
+    gymBagSelected: !!pdfData.gymBagSelected,
+    gymBagRemark: pdfData.gymBagRemark || "",
+    carryBagSelected: !!pdfData.carryBagSelected,
+    carryBagRemark: pdfData.carryBagRemark || "",
+    paymentImages: pdfData.paymentImages || []
+  });
 
-  // ✅ 4️⃣ GENERATE PDF (with images)
+  // ✅ 4️⃣ GENERATE PDF (with packing details + images)
   await generateQuotationPDF({
-  ...saved,
-  paymentImages: pdfData.paymentImages
+    ...saved,
+    gymBagSelected: !!pdfData.gymBagSelected,
+    gymBagRemark: pdfData.gymBagRemark || "",
+    carryBagSelected: !!pdfData.carryBagSelected,
+    carryBagRemark: pdfData.carryBagRemark || "",
+    paymentImages: pdfData.paymentImages
   });
     
   // OPEN SALES PERSON PERFORMANCE

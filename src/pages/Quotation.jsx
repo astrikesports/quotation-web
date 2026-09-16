@@ -39,7 +39,9 @@
   advance: 0,
   paymentImages: [], // 🔥 MUST
 
+  gymBagSelected: false,
   gymBagRemark: "",
+  carryBagSelected: false,
   carryBagRemark: "",
   });
   
@@ -421,7 +423,11 @@
   shipping: 0,
   advance: 0,
   items: [],
-  paymentImages: []
+  paymentImages: [],
+  gymBagSelected: false,
+  gymBagRemark: "",
+  carryBagSelected: false,
+  carryBagRemark: ""
   });
 
     // Clear saved total
