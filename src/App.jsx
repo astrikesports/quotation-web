@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Quotation from "./pages/Quotation";
+import MobileQuotation from "./pages/MobileQuotation";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -40,6 +41,15 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/mobile-quotation"
+          element={
+            <ProtectedRoute>
+              <MobileQuotation />
             </ProtectedRoute>
           }
         />

@@ -428,6 +428,13 @@ import {
   </button>
 
   <button
+    onClick={() => navigate("/mobile-quotation")}
+    className="h-11 px-4 rounded-2xl bg-cyan-500/20 border border-cyan-400/20 text-white font-bold hover:bg-cyan-500/30 transition-all duration-300"
+  >
+    📱 Mobile Quotation
+  </button>
+
+  <button
   onClick={() => setShowDistrict(true)}
   className="h-11 px-5 rounded-2xl bg-purple-500/20 backdrop-blur-xl border border-purple-400/20 text-white font-bold hover:bg-purple-500/30 transition-all duration-300 shadow-lg hover:scale-[1.03]" >
     
