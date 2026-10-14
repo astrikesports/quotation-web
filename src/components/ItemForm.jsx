@@ -249,7 +249,7 @@ export default function ItemForm({
           {KIDS_SIZES.map(s => (
             <input
               key={s}
-              className="min-w-0 px-2 py-2 border rounded-lg text-center text-sm bg-white"
+              className="px-2 py-2 border rounded-lg text-center text-sm bg-white"
               aria-label={`Kids size ${s} boxes`}
               placeholder={s}
               type="number"
