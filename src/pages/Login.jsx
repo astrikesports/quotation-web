@@ -83,10 +83,12 @@ export default function Login() {
 
       <div className="bg-white w-[420px] rounded shadow p-8">
 
-        {/* TITLE */}
-        <h1 className="text-2xl font-bold text-center mb-6">
-          Login
-        </h1>
+        {/* ASTRIKE BRAND */}
+        <div className="text-center mb-7">
+          <div className="text-2xl font-black tracking-wide text-slate-950">ASTRIKE <span className="text-blue-600">SPORTSWEAR</span></div>
+          <div className="text-xs font-medium tracking-widest text-slate-500 mt-1">QUOTATION MANAGEMENT SYSTEM</div>
+          <h1 className="text-lg font-bold text-center mt-6">Sign in to continue</h1>
+        </div>
 
         {/* FORM */}
         <form onSubmit={handleLogin}>
@@ -142,8 +144,8 @@ export default function Login() {
         </form>
 
         {/* FOOTER */}
-        <p className="text-center text-sm text-gray-500 mt-6">
-          ASTRIKE SPORTSWEAR PVT LTD
+        <p className="text-center text-xs text-gray-500 mt-6">
+          ASTRIKE SPORTSWEAR PVT LTD · Secure Login
         </p>
 
       </div>

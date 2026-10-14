@@ -224,15 +224,14 @@ export default function ItemForm({
           onChange={e => setRate(e.target.value)}
         />
 
-        {/* ADULT / REGULAR SIZES */}
-        <label className="block text-xs font-semibold text-slate-600 mb-1">Regular Sizes</label>
+        {/* SIZE GRID: adult, big and kids sizes */}
+        <div className="mb-2 text-xs font-semibold text-slate-500">Adult / Big Sizes</div>
         <div className="grid grid-cols-4 gap-2 mb-3">
           {(isBigSizeItem ? BIG_SIZES : [...NORMAL_SIZES, ...BIG_SIZES]).map(s => (
             <input
               key={s}
-              className="min-w-0 px-2 py-2 border rounded text-center text-sm"
+              className="px-2 py-1 border rounded text-center text-sm"
               placeholder={s}
-              aria-label={`${s} boxes`}
               type="number"
               min={0}
               value={sizes[s] || ""}
@@ -245,15 +244,14 @@ export default function ItemForm({
           ))}
         </div>
 
-        {/* KIDS SIZES: available in both desktop and mobile ItemForm */}
-        <label className="block text-xs font-semibold text-slate-600 mb-1">Kids Sizes</label>
+        <div className="mb-2 text-xs font-semibold text-slate-500">Kids Sizes</div>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-3">
           {KIDS_SIZES.map(s => (
             <input
               key={s}
-              className="min-w-0 px-2 py-2 border rounded text-center text-sm bg-white"
-              placeholder={s}
+              className="min-w-0 px-2 py-2 border rounded-lg text-center text-sm bg-white"
               aria-label={`Kids size ${s} boxes`}
+              placeholder={s}
               type="number"
               min={0}
               value={sizes[s] || ""}

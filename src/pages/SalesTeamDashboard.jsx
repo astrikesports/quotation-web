@@ -726,6 +726,16 @@ export default function Dashboard({
                 + New Quotation
               </button>
 
+              <button
+                onClick={() => {
+                  localStorage.setItem("selectedSalesPerson", selectedPerson.name);
+                  navigate("/mobile-quotation");
+                }}
+                className="h-14 px-8 rounded-2xl bg-blue-600 text-white font-black text-lg hover:scale-[1.02] transition-all duration-200 shadow-xl md:hidden"
+              >
+                📱 Mobile Quotation
+              </button>
+
             </div>
 
           </div>

@@ -51,7 +51,7 @@ import { parseSizes } from "../utils/sizeHelper";
   paddingBottom: () => 4,
   };
 
-  export async function generateQuotationPDF(data = {}) {
+  export async function generateQuotationPDF(data = {}, action = "download") {
   const {
   party,
   phone,
@@ -116,7 +116,7 @@ import { parseSizes } from "../utils/sizeHelper";
   const hasPaymentImages = paymentImages.length > 0;
   /* ================= ITEM TABLE ================= */
   const itemBody = [[
-  "DESC","S","M","L","XL","2XL","3XL","4XL",
+  "DESC","26","28","30","32","34","36","S","M","L","XL","2XL","3XL","4XL",
   "PCS","RATE","AMOUNT","MRP","PACKING"
   ].map(h => ({
   text: h,
@@ -135,6 +135,12 @@ import { parseSizes } from "../utils/sizeHelper";
   // it.size = "S:10,M:5,L:8"
 
   const size = {
+  "26": sizeMap["26"],
+  "28": sizeMap["28"],
+  "30": sizeMap["30"],
+  "32": sizeMap["32"],
+  "34": sizeMap["34"],
+  "36": sizeMap["36"],
   S: sizeMap.S,
   M: sizeMap.M,
   L: sizeMap.L,
@@ -147,6 +153,12 @@ import { parseSizes } from "../utils/sizeHelper";
   itemBody.push([
   { text: it.desc, alignment: "left" },
 
+  size["26"] || "",
+  size["28"] || "",
+  size["30"] || "",
+  size["32"] || "",
+  size["34"] || "",
+  size["36"] || "",
   size.S || "",
   size.M || "",
   size.L || "",
@@ -431,6 +443,11 @@ import { parseSizes } from "../utils/sizeHelper";
   ? `${baseName}_UPDATED.pdf`
   : `${baseName}.pdf`;
 
-  pdfMake.createPdf(docDefinition).download(fileName);
+  const pdf = pdfMake.createPdf(docDefinition);
+  if (action === "open") {
+    pdf.open();
+  } else {
+    pdf.download(fileName);
+  }
 
   }
