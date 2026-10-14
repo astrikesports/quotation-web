@@ -51,7 +51,7 @@ import { parseSizes } from "../utils/sizeHelper";
   paddingBottom: () => 4,
   };
 
-  export async function generateQuotationPDF(data = {}, action = "download") {
+  export async function generateQuotationPDF(data = {}) {
   const {
   party,
   phone,
@@ -431,11 +431,6 @@ import { parseSizes } from "../utils/sizeHelper";
   ? `${baseName}_UPDATED.pdf`
   : `${baseName}.pdf`;
 
-  const pdf = pdfMake.createPdf(docDefinition);
-  if (action === "open") {
-    pdf.open();
-  } else {
-    pdf.download(fileName);
-  }
+  pdfMake.createPdf(docDefinition).download(fileName);
 
   }

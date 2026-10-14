@@ -3,6 +3,7 @@ import { loadSkuDB } from "../utils/skuService";
 
 const NORMAL_SIZES = ["S", "M", "L", "XL", "2XL"];
 const BIG_SIZES = ["3XL", "4XL"];
+const KIDS_SIZES = ["26", "28", "30", "32", "34", "36"];
 
 export default function ItemForm({
   onAddItem,
@@ -61,7 +62,7 @@ export default function ItemForm({
 
     setSizes(prev => {
       const clean = {};
-      BIG_SIZES.forEach(s => {
+      [...BIG_SIZES, ...KIDS_SIZES].forEach(s => {
         if (prev[s]) clean[s] = prev[s];
       });
       return clean;
@@ -223,13 +224,36 @@ export default function ItemForm({
           onChange={e => setRate(e.target.value)}
         />
 
-        {/* SIZE GRID */}
+        {/* ADULT / REGULAR SIZES */}
+        <label className="block text-xs font-semibold text-slate-600 mb-1">Regular Sizes</label>
         <div className="grid grid-cols-4 gap-2 mb-3">
           {(isBigSizeItem ? BIG_SIZES : [...NORMAL_SIZES, ...BIG_SIZES]).map(s => (
             <input
               key={s}
-              className="px-2 py-1 border rounded text-center text-sm"
+              className="min-w-0 px-2 py-2 border rounded text-center text-sm"
               placeholder={s}
+              aria-label={`${s} boxes`}
+              type="number"
+              min={0}
+              value={sizes[s] || ""}
+              onChange={e => {
+                const val = Number(e.target.value);
+                if (val < 0) return;
+                setSizes({ ...sizes, [s]: val });
+              }}
+            />
+          ))}
+        </div>
+
+        {/* KIDS SIZES: available in both desktop and mobile ItemForm */}
+        <label className="block text-xs font-semibold text-slate-600 mb-1">Kids Sizes</label>
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-3">
+          {KIDS_SIZES.map(s => (
+            <input
+              key={s}
+              className="min-w-0 px-2 py-2 border rounded text-center text-sm bg-white"
+              placeholder={s}
+              aria-label={`Kids size ${s} boxes`}
               type="number"
               min={0}
               value={sizes[s] || ""}
