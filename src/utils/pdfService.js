@@ -198,7 +198,7 @@ export async function generateQuotationPDF(
       headerRows: 1,
       widths: ["*", 48, "*"],
       body: cancelItemBody,
-      heights: () => 22,
+      heights: () => 18,
       dontBreakRows: true
     },
     layout: {
