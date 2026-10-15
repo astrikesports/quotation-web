@@ -134,7 +134,7 @@ export async function generateQuotationPDF(
 
     itemBody.push([
       { text: it.desc || "-", fontSize: 7 },
-      { text: enteredSizes, fontSize: 7 },
+      { text: enteredSizes, fontSize: 10 },
       {
         text: String(it.pcs ?? "-"),
         fontSize: 7,
