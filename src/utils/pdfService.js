@@ -223,12 +223,12 @@ export async function generateQuotationPDF(
       { text: `₹${totalAmount}`, fontSize: 7.5, alignment: "right" }
     ],
     [
-      { text: `Rate Discount (${rateDiscount}%)`, fontSize: 7.5 },
-      { text: "-", fontSize: 7.5, alignment: "right" }
+      { text: "Rate Discount", fontSize: 7.5 },
+      { text: `(${rateDiscount}%)`, fontSize: 7.5, alignment: "right" }
     ],
     [
-      { text: `SP Discount (${spDiscount}%)`, fontSize: 7.5 },
-      { text: "-", fontSize: 7.5, alignment: "right" }
+      { text: "SP Discount", fontSize: 7.5 },
+      { text: `(${spDiscount}%)`, fontSize: 7.5, alignment: "right" }
     ],
     [
       { text: "Bill Discount", fontSize: 7.5 },
