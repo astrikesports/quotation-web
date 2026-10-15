@@ -1,3 +1,4 @@
+
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { supabase } from "../supabase";
@@ -40,8 +41,8 @@ const GRID = {
   vLineColor: () => "#d5dfeb",
   paddingLeft: () => 4,
   paddingRight: () => 4,
-  paddingTop: () => 4,
-  paddingBottom: () => 4
+  paddingTop: () => 2,
+  paddingBottom: () => 2
 };
 
 const HEADER_STYLE = {
@@ -102,9 +103,9 @@ export async function generateQuotationPDF(
     "S", "M", "L", "XL", "2XL", "3XL", "4XL"
   ];
 
-  // --------------------------------------------------
+  // ------------------------------------
   // ITEMS TABLE
-  // --------------------------------------------------
+  // ------------------------------------
 
   let totalAmount = 0;
 
@@ -164,24 +165,24 @@ export async function generateQuotationPDF(
 
   const itemWidths = ["*", 150, 32, 50, 50, 65, 50];
 
-  // Existing billing formula retained
+  // Existing net calculation retained
   const net =
     totalAmount +
     Number(shipping || 0) -
     Number(billDiscount || 0) -
     Number(advance || 0);
 
-  // --------------------------------------------------
+  // ------------------------------------
   // CANCEL ITEM TABLE
-  // --------------------------------------------------
+  // Header + 5 blank rows
+  // ------------------------------------
 
   const cancelItemBody = [
     [
-      { text: "SKU", ...HEADER_STYLE, alignment: "center"},
-      { text: "SIZE", ...HEADER_STYLE, alignment: "center" },
-      { text: "REMARK", ...HEADER_STYLE, alignment: "center" }
+      { text: "SKU", ...HEADER_STYLE },
+      { text: "SIZE", ...HEADER_STYLE },
+      { text: "REMARK", ...HEADER_STYLE }
     ],
-    ["", "", ""],
     ["", "", ""],
     ["", "", ""],
     ["", "", ""],
@@ -189,29 +190,27 @@ export async function generateQuotationPDF(
     ["", "", ""]
   ];
 
-
   const cancelItemTable = {
     table: {
       headerRows: 1,
       widths: ["*", 48, "*"],
       body: cancelItemBody,
-      heights: (rowIndex) => rowIndex === 0 ? 20 : 17,
+      heights: (rowIndex) =>
+        rowIndex === 0 ? 20 : 17,
       dontBreakRows: true
     },
     layout: {
       ...GRID,
-      paddingLeft: () => 4,
-      paddingRight: () => 4,
       paddingTop: () => 2,
       paddingBottom: () => 2
     },
     fontSize: 7
   };
 
-
-  // --------------------------------------------------
-  // BILL SUMMARY TABLE
-  // --------------------------------------------------
+  // ------------------------------------
+  // BILL SUMMARY
+  // 8 rows total, including extra amount row
+  // ------------------------------------
 
   const summaryBody = [
     [
@@ -270,30 +269,42 @@ export async function generateQuotationPDF(
         fontSize: 7.5,
         alignment: "right"
       }
+    ],
+    [
+      {
+        text: `NET PAYABLE AMOUNT\n₹${net}`,
+        colSpan: 2,
+        alignment: "center",
+        bold: true,
+        fontSize: 10,
+        color: "#10213a",
+        fillColor: "#e8f5ee",
+        margin: [0, 3, 0, 3]
+      },
+      {}
     ]
   ];
-
 
   const summaryTable = {
     table: {
       widths: ["*", 62],
       body: summaryBody,
-      heights: (rowIndex) => rowIndex === 6 ? 22 : 19,
+      heights: (rowIndex) => {
+        if (rowIndex === 7) return 27;
+        return rowIndex === 6 ? 17 : 13;
+      },
       dontBreakRows: true
     },
     layout: {
       ...GRID,
-      paddingLeft: () => 4,
-      paddingRight: () => 4,
       paddingTop: () => 2,
       paddingBottom: () => 2
     }
   };
-  
 
-  // --------------------------------------------------
-  // SIDE-BY-SIDE BLOCK
-  // --------------------------------------------------
+  // ------------------------------------
+  // SIDE-BY-SIDE TABLES
+  // ------------------------------------
 
   const cancelAndSummaryBlock = {
     unbreakable: true,
@@ -329,9 +340,9 @@ export async function generateQuotationPDF(
     margin: [0, 2, 0, 10]
   };
 
-  // --------------------------------------------------
+  // ------------------------------------
   // PACKING OPTIONS
-  // --------------------------------------------------
+  // ------------------------------------
 
   const packingRows = [];
 
@@ -349,7 +360,7 @@ export async function generateQuotationPDF(
     ]);
   }
 
-  const packingOptionsBlock = packingRows.length > 0
+  const packingOptionsBlock = packingRows.length
     ? {
         table: {
           widths: [110, "*"],
@@ -374,9 +385,9 @@ export async function generateQuotationPDF(
       }
     : null;
 
-  // --------------------------------------------------
+  // ------------------------------------
   // DOCUMENT CONTENT
-  // --------------------------------------------------
+  // ------------------------------------
 
   const content = [
     {
@@ -515,13 +526,12 @@ export async function generateQuotationPDF(
       },
       layout: {
         ...GRID,
-        paddingTop: () => 5,
-        paddingBottom: () => 5
+        paddingTop: () => 4,
+        paddingBottom: () => 4
       },
       margin: [0, 0, 0, 8]
     },
 
-    // Cancel table and bill summary remain together
     cancelAndSummaryBlock,
 
     ...(packingOptionsBlock ? [packingOptionsBlock] : []),
