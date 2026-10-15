@@ -97,13 +97,13 @@ export async function generateQuotationPDF(data = {}, action = "download") {
 
   // Items table
   const itemBody = [[
-    { text: "SKU / DESCRIPTION", bold: true, fontSize: 6.5, fillColor: "#10213a", color: "#ffffff" },
-    { text: "SIZE ENTRIES", bold: true, fontSize: 6.5, fillColor: "#10213a", color: "#ffffff" },
-    { text: "PCS", bold: true, fontSize: 6.5, fillColor: "#10213a", color: "#ffffff", alignment: "center" },
-    { text: "MRP (₹)", bold: true, fontSize: 6.5, fillColor: "#10213a", color: "#ffffff", alignment: "center" },
-    { text: "RATE (₹)", bold: true, fontSize: 6.5, fillColor: "#10213a", color: "#ffffff", alignment: "center" },
-    { text: "AMOUNT (₹)", bold: true, fontSize: 6.5, fillColor: "#10213a", color: "#ffffff", alignment: "center" },
-    { text: "PCS / BOX", bold: true, fontSize: 6.5, fillColor: "#10213a", color: "#ffffff", alignment: "center" }
+    { text: "SKU / DESCRIPTION", bold: true, fontSize: 6.5, alignment: "center", fillColor: "#10213a", color: "#ffffff" },
+    { text: "SIZE ENTRIES", bold: true, fontSize: 6.5, alignment: "center", fillColor: "#10213a", color: "#ffffff" },
+    { text: "PCS", bold: true, fontSize: 6.5, alignment: "center", fillColor: "#10213a", color: "#ffffff" },
+    { text: "MRP (₹)", bold: true, fontSize: 6.5, alignment: "center", fillColor: "#10213a", color: "#ffffff" },
+    { text: "RATE (₹)", bold: true, fontSize: 6.5, alignment: "center", fillColor: "#10213a", color: "#ffffff" },
+    { text: "AMOUNT (₹)", bold: true, fontSize: 6.5, alignment: "center", fillColor: "#10213a", color: "#ffffff" },
+    { text: "PCS / BOX", bold: true, fontSize: 6.5, alignment: "center", fillColor: "#10213a", color: "#ffffff" }
   ]];
 
   items.forEach((it) => {
@@ -130,7 +130,6 @@ export async function generateQuotationPDF(data = {}, action = "download") {
     ]);
   });
 
-  // Star column fills remaining page width.
   const itemWidths = ["*", 150, 32, 50, 50, 65, 50];
 
   const net =
@@ -138,21 +137,6 @@ export async function generateQuotationPDF(data = {}, action = "download") {
     Number(shipping || 0) -
     Number(billDiscount || 0) -
     Number(advance || 0);
-
-  // Cancel Item From Bill table
-  // Five blank rows are provided for manual entries.
-  const cancelItemBody = [
-    [
-      { text: "SKU", bold: true, fontSize: 7, fillColor: "#10213a", color: "#ffffff" },
-      { text: "SIZE", bold: true, fontSize: 7, fillColor: "#10213a", color: "#ffffff" },
-      { text: "REMARK", bold: true, fontSize: 7, fillColor: "#10213a", color: "#ffffff" }
-    ],
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""]
-  ];
 
   // Packing options
   const packingRows = [];
@@ -195,36 +179,95 @@ export async function generateQuotationPDF(data = {}, action = "download") {
       }
     : null;
 
-  const summaryBody = [
-    [
-      { text: "Gross / Bill Amount", fontSize: 8 },
-      { text: `₹${totalAmount}`, fontSize: 8, alignment: "right" }
+  // Cancel item and summary side-by-side
+  const cancelAndSummaryBlock = {
+    columns: [
+      {
+        width: "58%",
+        stack: [
+          {
+            text: "CANCEL ITEM FROM BILL",
+            bold: true,
+            fontSize: 9,
+            color: "#10213a",
+            margin: [0, 0, 0, 5]
+          },
+          {
+            table: {
+              headerRows: 1,
+              widths: ["*", 48, "*"],
+              body: [
+                [
+                  { text: "SKU", bold: true, fontSize: 7, color: "#ffffff", fillColor: "#10213a" },
+                  { text: "SIZE", bold: true, fontSize: 7, color: "#ffffff", fillColor: "#10213a" },
+                  { text: "REMARK", bold: true, fontSize: 7, color: "#ffffff", fillColor: "#10213a" }
+                ],
+                ["", "", ""],
+                ["", "", ""],
+                ["", "", ""],
+                ["", "", ""],
+                ["", "", ""]
+              ],
+              dontBreakRows: true
+            },
+            layout: GRID,
+            fontSize: 8
+          }
+        ]
+      },
+      {
+        width: "42%",
+        stack: [
+          {
+            text: "BILL SUMMARY",
+            bold: true,
+            fontSize: 9,
+            color: "#10213a",
+            margin: [0, 0, 0, 5]
+          },
+          {
+            table: {
+              widths: ["*", 62],
+              body: [
+                [
+                  { text: "Gross / Bill Amount", fontSize: 7 },
+                  { text: `₹${totalAmount}`, fontSize: 7, alignment: "right" }
+                ],
+                [
+                  { text: `Rate Discount (${rateDiscount}%)`, fontSize: 7 },
+                  { text: "-", fontSize: 7, alignment: "right" }
+                ],
+                [
+                  { text: `SP Discount (${spDiscount}%)`, fontSize: 7 },
+                  { text: "-", fontSize: 7, alignment: "right" }
+                ],
+                [
+                  { text: "Bill Discount", fontSize: 7 },
+                  { text: `₹${Number(billDiscount || 0)}`, fontSize: 7, alignment: "right" }
+                ],
+                [
+                  { text: "Shipping", fontSize: 7 },
+                  { text: `₹${Number(shipping || 0)}`, fontSize: 7, alignment: "right" }
+                ],
+                [
+                  { text: "Advance Paid", fontSize: 7 },
+                  { text: `₹${Number(advance || 0)}`, fontSize: 7, alignment: "right" }
+                ],
+                [
+                  { text: "NET PAYABLE", bold: true, color: "#ffffff", fillColor: "#16a765", fontSize: 7 },
+                  { text: `₹${net}`, bold: true, color: "#ffffff", fillColor: "#16a765", fontSize: 7, alignment: "right" }
+                ]
+              ],
+              dontBreakRows: true
+            },
+            layout: GRID
+          }
+        ]
+      }
     ],
-    [
-      { text: `Rate Discount (${rateDiscount}%)`, fontSize: 8 },
-      { text: "-", fontSize: 8, alignment: "right" }
-    ],
-    [
-      { text: `SP Discount (${spDiscount}%)`, fontSize: 8 },
-      { text: "-", fontSize: 8, alignment: "right" }
-    ],
-    [
-      { text: "Bill Discount", fontSize: 8 },
-      { text: `₹${Number(billDiscount || 0)}`, fontSize: 8, alignment: "right" }
-    ],
-    [
-      { text: "Shipping", fontSize: 8 },
-      { text: `₹${Number(shipping || 0)}`, fontSize: 8, alignment: "right" }
-    ],
-    [
-      { text: "Advance Paid", fontSize: 8 },
-      { text: `₹${Number(advance || 0)}`, fontSize: 8, alignment: "right" }
-    ],
-    [
-      { text: "NET PAYABLE", bold: true, fontSize: 8, color: "#ffffff", fillColor: "#16a765" },
-      { text: `₹${net}`, bold: true, fontSize: 8, color: "#ffffff", fillColor: "#16a765", alignment: "right" }
-    ]
-  ];
+    columnGap: 10,
+    margin: [0, 0, 0, 8]
+  };
 
   const content = [
     {
@@ -352,7 +395,7 @@ export async function generateQuotationPDF(data = {}, action = "download") {
       margin: [0, 0, 0, 5]
     },
 
-    // Full-width item table
+    // Full-width items table
     {
       table: {
         headerRows: 1,
@@ -365,35 +408,7 @@ export async function generateQuotationPDF(data = {}, action = "download") {
       margin: [0, 0, 0, 10]
     },
 
-    // Full-width Cancel Item table
-    {
-      text: "CANCEL ITEM FROM BILL",
-      bold: true,
-      fontSize: 9,
-      color: "#10213a",
-      margin: [0, 0, 0, 5]
-    },
-    {
-      table: {
-        headerRows: 1,
-        widths: ["*", 100, "*"],
-        body: cancelItemBody,
-        dontBreakRows: true
-      },
-      layout: GRID,
-      margin: [0, 0, 0, 10]
-    },
-
-    // Full-width summary table
-    {
-      table: {
-        widths: ["*", 100],
-        body: summaryBody,
-        dontBreakRows: true
-      },
-      layout: GRID,
-      margin: [0, 0, 0, 8]
-    },
+    cancelAndSummaryBlock,
 
     ...(packingOptionsBlock ? [packingOptionsBlock] : []),
 
