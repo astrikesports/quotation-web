@@ -177,10 +177,11 @@ export async function generateQuotationPDF(
 
   const cancelItemBody = [
     [
-      { text: "SKU", ...HEADER_STYLE },
-      { text: "SIZE", ...HEADER_STYLE },
-      { text: "REMARK", ...HEADER_STYLE }
+      { text: "SKU", ...HEADER_STYLE, alignment: "center"},
+      { text: "SIZE", ...HEADER_STYLE, alignment: "center" },
+      { text: "REMARK", ...HEADER_STYLE, alignment: "center" }
     ],
+    ["", "", ""],
     ["", "", ""],
     ["", "", ""],
     ["", "", ""],
