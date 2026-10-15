@@ -177,6 +177,7 @@ export async function generateQuotationPDF(
   // Header + 5 blank rows
   // ------------------------------------
 
+  
   const cancelItemBody = [
     [
       { text: "SKU", ...HEADER_STYLE },
@@ -187,16 +188,16 @@ export async function generateQuotationPDF(
     ["", "", ""],
     ["", "", ""],
     ["", "", ""],
+    ["", "", ""],
     ["", "", ""]
   ];
-
+  
   const cancelItemTable = {
     table: {
       headerRows: 1,
       widths: ["*", 48, "*"],
       body: cancelItemBody,
-      heights: (rowIndex) =>
-        rowIndex === 0 ? 20 : 17,
+      heights: (rowIndex) => rowIndex === 0 ? 20 : 17,
       dontBreakRows: true
     },
     layout: {
@@ -207,19 +208,17 @@ export async function generateQuotationPDF(
     fontSize: 7
   };
 
+
   // ------------------------------------
   // BILL SUMMARY
   // 8 rows total, including extra amount row
   // ------------------------------------
 
+  
   const summaryBody = [
     [
       { text: "Gross / Bill Amount", fontSize: 7.5 },
-      {
-        text: `₹${totalAmount}`,
-        fontSize: 7.5,
-        alignment: "right"
-      }
+      { text: `₹${totalAmount}`, fontSize: 7.5, alignment: "right" }
     ],
     [
       { text: `Rate Discount (${rateDiscount}%)`, fontSize: 7.5 },
@@ -231,44 +230,15 @@ export async function generateQuotationPDF(
     ],
     [
       { text: "Bill Discount", fontSize: 7.5 },
-      {
-        text: `₹${Number(billDiscount || 0)}`,
-        fontSize: 7.5,
-        alignment: "right"
-      }
+      { text: `₹${Number(billDiscount || 0)}`, fontSize: 7.5, alignment: "right" }
     ],
     [
       { text: "Shipping", fontSize: 7.5 },
-      {
-        text: `₹${Number(shipping || 0)}`,
-        fontSize: 7.5,
-        alignment: "right"
-      }
+      { text: `₹${Number(shipping || 0)}`, fontSize: 7.5, alignment: "right" }
     ],
     [
       { text: "Advance Paid", fontSize: 7.5 },
-      {
-        text: `₹${Number(advance || 0)}`,
-        fontSize: 7.5,
-        alignment: "right"
-      }
-    ],
-    [
-      {
-        text: "NET PAYABLE",
-        bold: true,
-        color: "#ffffff",
-        fillColor: "#16a765",
-        fontSize: 7.5
-      },
-      {
-        text: `₹${net}`,
-        bold: true,
-        color: "#ffffff",
-        fillColor: "#16a765",
-        fontSize: 7.5,
-        alignment: "right"
-      }
+      { text: `₹${Number(advance || 0)}`, fontSize: 7.5, alignment: "right" }
     ],
     [
       {
@@ -279,20 +249,17 @@ export async function generateQuotationPDF(
         fontSize: 10,
         color: "#10213a",
         fillColor: "#e8f5ee",
-        margin: [0, 3, 0, 3]
+        margin: [0, 4, 0, 4]
       },
       {}
     ]
   ];
-
+  
   const summaryTable = {
     table: {
       widths: ["*", 62],
       body: summaryBody,
-      heights: (rowIndex) => {
-        if (rowIndex === 7) return 27;
-        return rowIndex === 6 ? 17 : 13;
-      },
+      heights: (rowIndex) => rowIndex === 6 ? 34 : 17,
       dontBreakRows: true
     },
     layout: {
