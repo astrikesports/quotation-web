@@ -188,21 +188,25 @@ export async function generateQuotationPDF(
     ["", "", ""]
   ];
 
+
   const cancelItemTable = {
     table: {
       headerRows: 1,
       widths: ["*", 48, "*"],
       body: cancelItemBody,
-      heights: (rowIndex) => rowIndex === 0 ? 22 : 24,
+      heights: (rowIndex) => rowIndex === 0 ? 20 : 17,
       dontBreakRows: true
     },
     layout: {
       ...GRID,
-      paddingTop: () => 4,
-      paddingBottom: () => 4
+      paddingLeft: () => 4,
+      paddingRight: () => 4,
+      paddingTop: () => 2,
+      paddingBottom: () => 2
     },
     fontSize: 7
   };
+
 
   // --------------------------------------------------
   // BILL SUMMARY TABLE
@@ -268,19 +272,23 @@ export async function generateQuotationPDF(
     ]
   ];
 
+
   const summaryTable = {
     table: {
       widths: ["*", 62],
       body: summaryBody,
-      heights: (rowIndex) => rowIndex === 6 ? 26 : 24,
+      heights: (rowIndex) => rowIndex === 6 ? 22 : 19,
       dontBreakRows: true
     },
     layout: {
       ...GRID,
-      paddingTop: () => 4,
-      paddingBottom: () => 4
+      paddingLeft: () => 4,
+      paddingRight: () => 4,
+      paddingTop: () => 2,
+      paddingBottom: () => 2
     }
   };
+  
 
   // --------------------------------------------------
   // SIDE-BY-SIDE BLOCK
