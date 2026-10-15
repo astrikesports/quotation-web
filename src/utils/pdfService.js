@@ -244,7 +244,7 @@ export async function generateQuotationPDF(
     [
       {
         text: `NET PAYABLE AMOUNT\n₹${net}`,
-        colSpan: 2.5,
+        colSpan: 3,
         alignment: "center",
         bold: true,
         fontSize: 14,
