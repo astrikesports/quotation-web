@@ -1,4 +1,3 @@
-
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { supabase } from "../supabase";
@@ -39,13 +38,23 @@ const GRID = {
   vLineWidth: () => 0.6,
   hLineColor: () => "#d5dfeb",
   vLineColor: () => "#d5dfeb",
-  paddingLeft: () => 5,
-  paddingRight: () => 5,
-  paddingTop: () => 7,
-  paddingBottom: () => 7
+  paddingLeft: () => 4,
+  paddingRight: () => 4,
+  paddingTop: () => 4,
+  paddingBottom: () => 4
 };
 
-export async function generateQuotationPDF(data = {}, action = "download") {
+const HEADER_STYLE = {
+  bold: true,
+  fontSize: 7,
+  color: "#ffffff",
+  fillColor: "#10213a"
+};
+
+export async function generateQuotationPDF(
+  data = {},
+  action = "download"
+) {
   const {
     party,
     phone,
@@ -68,7 +77,7 @@ export async function generateQuotationPDF(data = {}, action = "download") {
     updatedAt
   } = data;
 
-  // Normalize payment images
+  // Payment proof images
   const finalPaymentImages = [];
 
   for (const img of paymentImages) {
@@ -93,17 +102,20 @@ export async function generateQuotationPDF(data = {}, action = "download") {
     "S", "M", "L", "XL", "2XL", "3XL", "4XL"
   ];
 
+  // --------------------------------------------------
+  // ITEMS TABLE
+  // --------------------------------------------------
+
   let totalAmount = 0;
 
-  // Items table
   const itemBody = [[
-    { text: "SKU / DESCRIPTION", bold: true, fontSize: 6.5, alignment: "center", fillColor: "#10213a", color: "#ffffff" },
-    { text: "SIZE ENTRIES", bold: true, fontSize: 6.5, alignment: "center", fillColor: "#10213a", color: "#ffffff" },
-    { text: "PCS", bold: true, fontSize: 6.5, alignment: "center", fillColor: "#10213a", color: "#ffffff" },
-    { text: "MRP (₹)", bold: true, fontSize: 6.5, alignment: "center", fillColor: "#10213a", color: "#ffffff" },
-    { text: "RATE (₹)", bold: true, fontSize: 6.5, alignment: "center", fillColor: "#10213a", color: "#ffffff" },
-    { text: "AMOUNT (₹)", bold: true, fontSize: 6.5, alignment: "center", fillColor: "#10213a", color: "#ffffff" },
-    { text: "PCS / BOX", bold: true, fontSize: 6.5, alignment: "center", fillColor: "#10213a", color: "#ffffff" }
+    { text: "SKU / DESCRIPTION", ...HEADER_STYLE },
+    { text: "SIZE ENTRIES", ...HEADER_STYLE },
+    { text: "PCS", ...HEADER_STYLE, alignment: "center" },
+    { text: "MRP (₹)", ...HEADER_STYLE, alignment: "right" },
+    { text: "RATE (₹)", ...HEADER_STYLE, alignment: "right" },
+    { text: "AMOUNT (₹)", ...HEADER_STYLE, alignment: "right" },
+    { text: "PCS / BOX", ...HEADER_STYLE, alignment: "center" }
   ]];
 
   items.forEach((it) => {
@@ -120,25 +132,198 @@ export async function generateQuotationPDF(data = {}, action = "download") {
         : "-");
 
     itemBody.push([
-      { text: it.desc || "-", fontSize: 7, alignment: "left" },
-      { text: enteredSizes, fontSize: 7, alignment: "left" },
-      { text: String(it.pcs ?? "-"), fontSize: 7, alignment: "center" },
-      { text: String(it.MRP ?? it.mrp ?? "-"), fontSize: 7, alignment: "right" },
-      { text: `₹${it.rate ?? "-"}`, fontSize: 7, alignment: "right" },
-      { text: `₹${it.amount ?? "-"}`, fontSize: 7, alignment: "right" },
-      { text: String(it.pcsPerBox ?? "-"), fontSize: 7, alignment: "center" }
+      { text: it.desc || "-", fontSize: 7 },
+      { text: enteredSizes, fontSize: 7 },
+      {
+        text: String(it.pcs ?? "-"),
+        fontSize: 7,
+        alignment: "center"
+      },
+      {
+        text: String(it.MRP ?? it.mrp ?? "-"),
+        fontSize: 7,
+        alignment: "right"
+      },
+      {
+        text: `₹${it.rate ?? "-"}`,
+        fontSize: 7,
+        alignment: "right"
+      },
+      {
+        text: `₹${it.amount ?? "-"}`,
+        fontSize: 7,
+        alignment: "right"
+      },
+      {
+        text: String(it.pcsPerBox ?? "-"),
+        fontSize: 7,
+        alignment: "center"
+      }
     ]);
   });
 
   const itemWidths = ["*", 150, 32, 50, 50, 65, 50];
 
+  // Existing billing formula retained
   const net =
     totalAmount +
     Number(shipping || 0) -
     Number(billDiscount || 0) -
     Number(advance || 0);
 
-  // Packing options
+  // --------------------------------------------------
+  // CANCEL ITEM TABLE
+  // --------------------------------------------------
+
+  const cancelItemBody = [
+    [
+      { text: "SKU", ...HEADER_STYLE },
+      { text: "SIZE", ...HEADER_STYLE },
+      { text: "REMARK", ...HEADER_STYLE }
+    ],
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""]
+  ];
+
+  const cancelItemTable = {
+    table: {
+      headerRows: 1,
+      widths: ["*", 48, "*"],
+      body: cancelItemBody,
+      heights: (rowIndex) => rowIndex === 0 ? 22 : 24,
+      dontBreakRows: true
+    },
+    layout: {
+      ...GRID,
+      paddingTop: () => 4,
+      paddingBottom: () => 4
+    },
+    fontSize: 7
+  };
+
+  // --------------------------------------------------
+  // BILL SUMMARY TABLE
+  // --------------------------------------------------
+
+  const summaryBody = [
+    [
+      { text: "Gross / Bill Amount", fontSize: 7.5 },
+      {
+        text: `₹${totalAmount}`,
+        fontSize: 7.5,
+        alignment: "right"
+      }
+    ],
+    [
+      { text: `Rate Discount (${rateDiscount}%)`, fontSize: 7.5 },
+      { text: "-", fontSize: 7.5, alignment: "right" }
+    ],
+    [
+      { text: `SP Discount (${spDiscount}%)`, fontSize: 7.5 },
+      { text: "-", fontSize: 7.5, alignment: "right" }
+    ],
+    [
+      { text: "Bill Discount", fontSize: 7.5 },
+      {
+        text: `₹${Number(billDiscount || 0)}`,
+        fontSize: 7.5,
+        alignment: "right"
+      }
+    ],
+    [
+      { text: "Shipping", fontSize: 7.5 },
+      {
+        text: `₹${Number(shipping || 0)}`,
+        fontSize: 7.5,
+        alignment: "right"
+      }
+    ],
+    [
+      { text: "Advance Paid", fontSize: 7.5 },
+      {
+        text: `₹${Number(advance || 0)}`,
+        fontSize: 7.5,
+        alignment: "right"
+      }
+    ],
+    [
+      {
+        text: "NET PAYABLE",
+        bold: true,
+        color: "#ffffff",
+        fillColor: "#16a765",
+        fontSize: 7.5
+      },
+      {
+        text: `₹${net}`,
+        bold: true,
+        color: "#ffffff",
+        fillColor: "#16a765",
+        fontSize: 7.5,
+        alignment: "right"
+      }
+    ]
+  ];
+
+  const summaryTable = {
+    table: {
+      widths: ["*", 62],
+      body: summaryBody,
+      heights: (rowIndex) => rowIndex === 6 ? 26 : 24,
+      dontBreakRows: true
+    },
+    layout: {
+      ...GRID,
+      paddingTop: () => 4,
+      paddingBottom: () => 4
+    }
+  };
+
+  // --------------------------------------------------
+  // SIDE-BY-SIDE BLOCK
+  // --------------------------------------------------
+
+  const cancelAndSummaryBlock = {
+    unbreakable: true,
+    columns: [
+      {
+        width: "58%",
+        stack: [
+          {
+            text: "CANCEL ITEM FROM BILL",
+            bold: true,
+            fontSize: 9,
+            color: "#10213a",
+            margin: [0, 0, 0, 5]
+          },
+          cancelItemTable
+        ]
+      },
+      {
+        width: "42%",
+        stack: [
+          {
+            text: "BILL SUMMARY",
+            bold: true,
+            fontSize: 9,
+            color: "#10213a",
+            margin: [0, 0, 0, 5]
+          },
+          summaryTable
+        ]
+      }
+    ],
+    columnGap: 12,
+    margin: [0, 2, 0, 10]
+  };
+
+  // --------------------------------------------------
+  // PACKING OPTIONS
+  // --------------------------------------------------
+
   const packingRows = [];
 
   if (gymBagSelected) {
@@ -164,12 +349,10 @@ export async function generateQuotationPDF(data = {}, action = "download") {
               {
                 text: "PACKING OPTIONS",
                 colSpan: 2,
-                alignment: "left",
                 bold: true,
                 fontSize: 8,
                 fillColor: "#10213a",
-                color: "#ffffff",
-                margin: [2, 2, 2, 2]
+                color: "#ffffff"
               },
               {}
             ],
@@ -178,46 +361,17 @@ export async function generateQuotationPDF(data = {}, action = "download") {
         },
         layout: GRID,
         fontSize: 8,
-        margin: [0, 8, 0, 0]
+        margin: [0, 4, 0, 0]
       }
     : null;
 
-  // Summary rows
-  const summaryBody = [
-    [
-      { text: "Gross / Bill Amount", fontSize: 7.5 },
-      { text: `₹${totalAmount}`, fontSize: 7.5, alignment: "right" }
-    ],
-    [
-      { text: `Rate Discount (${rateDiscount}%)`, fontSize: 7.5 },
-      { text: "-", fontSize: 7.5, alignment: "right" }
-    ],
-    [
-      { text: `SP Discount (${spDiscount}%)`, fontSize: 7.5 },
-      { text: "-", fontSize: 7.5, alignment: "right" }
-    ],
-    [
-      { text: "Bill Discount", fontSize: 7.5 },
-      { text: `₹${Number(billDiscount || 0)}`, fontSize: 7.5, alignment: "right" }
-    ],
-    [
-      { text: "Shipping", fontSize: 7.5 },
-      { text: `₹${Number(shipping || 0)}`, fontSize: 7.5, alignment: "right" }
-    ],
-    [
-      { text: "Advance Paid", fontSize: 7.5 },
-      { text: `₹${Number(advance || 0)}`, fontSize: 7.5, alignment: "right" }
-    ],
-    [
-      { text: "NET PAYABLE", bold: true, color: "#ffffff", fillColor: "#16a765", fontSize: 7.5 },
-      { text: `₹${net}`, bold: true, color: "#ffffff", fillColor: "#16a765", fontSize: 7.5, alignment: "right" }
-    ]
-  ];
+  // --------------------------------------------------
+  // DOCUMENT CONTENT
+  // --------------------------------------------------
 
   const content = [
     {
       text: "ASTRIKE SPORTSWEAR PVT LTD",
-      alignment: "left",
       fontSize: 18,
       bold: true,
       color: "#10213a",
@@ -227,7 +381,6 @@ export async function generateQuotationPDF(data = {}, action = "download") {
       text:
         "Ground Floor B-124 Shop No. 2, Pratap Garden, Uttam Nagar, New Delhi\n" +
         "Phone: 7838000995 | GSTIN: 07ABCCA4620J1ZV",
-      alignment: "left",
       fontSize: 7,
       color: "#64748b",
       margin: [0, 0, 0, 8]
@@ -246,7 +399,6 @@ export async function generateQuotationPDF(data = {}, action = "download") {
     },
     {
       text: `QUOTATION ${quotationNo ? `- ${quotationNo}` : ""}`,
-      alignment: "left",
       fontSize: 12,
       bold: true,
       color: "#10213a",
@@ -343,7 +495,7 @@ export async function generateQuotationPDF(data = {}, action = "download") {
       margin: [0, 0, 0, 5]
     },
 
-    // Full-width item table with extra row height
+    // Full-width items table
     {
       table: {
         headerRows: 1,
@@ -354,82 +506,14 @@ export async function generateQuotationPDF(data = {}, action = "download") {
       },
       layout: {
         ...GRID,
-        paddingTop: () => 8,
-        paddingBottom: () => 8
+        paddingTop: () => 5,
+        paddingBottom: () => 5
       },
-      margin: [0, 0, 0, 10]
+      margin: [0, 0, 0, 8]
     },
 
-    // Cancel Item and Bill Summary side-by-side
-    {
-      columns: [
-        {
-          width: "58%",
-          stack: [
-            {
-              text: "CANCEL ITEM FROM BILL",
-              bold: true,
-              fontSize: 9,
-              color: "#10213a",
-              margin: [0, 0, 0, 5]
-            },
-            {
-              table: {
-                headerRows: 1,
-                widths: ["*", 48, "*"],
-                body: [
-                  [
-                    { text: "SKU", bold: true, fontSize: 7, color: "#ffffff", fillColor: "#10213a" },
-                    { text: "SIZE", bold: true, fontSize: 7, color: "#ffffff", fillColor: "#10213a" },
-                    { text: "REMARK", bold: true, fontSize: 7, color: "#ffffff", fillColor: "#10213a" }
-                  ],
-                  ["", "", ""],
-                  ["", "", ""],
-                  ["", "", ""],
-                  ["", "", ""],
-                  ["", "", ""]
-                ],
-                dontBreakRows: true,
-                heights: (rowIndex) => rowIndex === 0 ? 24 : 32
-              },
-              layout: {
-                ...GRID,
-                paddingTop: () => 7,
-                paddingBottom: () => 7
-              },
-              fontSize: 8
-            }
-          ]
-        },
-        {
-          width: "42%",
-          stack: [
-            {
-              text: "BILL SUMMARY",
-              bold: true,
-              fontSize: 9,
-              color: "#10213a",
-              margin: [0, 0, 0, 5]
-            },
-            {
-              table: {
-                widths: ["*", 62],
-                body: summaryBody,
-                dontBreakRows: true,
-                heights: (rowIndex) => rowIndex === 6 ? 28 : 26
-              },
-              layout: {
-                ...GRID,
-                paddingTop: () => 6,
-                paddingBottom: () => 6
-              }
-            }
-          ]
-        }
-      ],
-      columnGap: 12,
-      margin: [0, 2, 0, 12]
-    },
+    // Cancel table and bill summary remain together
+    cancelAndSummaryBlock,
 
     ...(packingOptionsBlock ? [packingOptionsBlock] : []),
 
@@ -449,7 +533,7 @@ export async function generateQuotationPDF(data = {}, action = "download") {
       text: "Please verify sizes, quantities, rates and totals before confirming.",
       fontSize: 7,
       color: "#64748b",
-      margin: [0, 12, 0, 0]
+      margin: [0, 10, 0, 0]
     }
   ];
 
