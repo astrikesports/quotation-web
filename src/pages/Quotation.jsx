@@ -7,6 +7,7 @@
   import Sidebar from "../components/Sidebar";
   import Summary from "../components/Summary";
   import { clearSkuCache, loadSkuDB } from "../utils/skuService";
+import { fetchQuotationById } from "../services/quotationService";
   
   
   
@@ -62,6 +63,61 @@
   
   
   
+  /* ================= LOAD SELECTED SAVED QUOTATION ================= */
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadSelectedQuotation() {
+      const selectedId = localStorage.getItem("selectedQuotationId");
+      if (!selectedId) return;
+
+      setLoading(true);
+      setLoadingText("Loading saved quotation...");
+
+      try {
+        const quote = await fetchQuotationById(selectedId);
+        if (cancelled) return;
+
+        if (!quote) {
+          console.error("Selected quotation was not found:", selectedId);
+          localStorage.removeItem("selectedQuotationId");
+          return;
+        }
+
+        setPdfData({
+          party: quote.party || "",
+          phone: quote.phone || "",
+          address: quote.address || "",
+          salesPerson: quote.salesPerson || "",
+          remark: quote.remark || "",
+          items: Array.isArray(quote.items) ? quote.items : [],
+          rateDiscount: Number(quote.rateDiscount ?? 57),
+          spDiscount: Number(quote.spDiscount ?? 0),
+          billDiscount: Number(quote.billDiscount ?? 0),
+          shipping: Number(quote.shipping ?? 0),
+          advance: Number(quote.advance ?? 0),
+          paymentImages: Array.isArray(quote.paymentImages) ? quote.paymentImages : [],
+          gymBagSelected: Boolean(quote.gymBagSelected),
+          gymBagRemark: quote.gymBagRemark || "",
+          carryBagSelected: Boolean(quote.carryBagSelected),
+          carryBagRemark: quote.carryBagRemark || "",
+          quotationId: quote.id,
+          quotationNo: quote.quotationNo || ""
+        });
+      } catch (error) {
+        console.error("Failed to load selected quotation:", error);
+        if (!cancelled) {
+          window.alert("Quotation load nahi ho paya. Please refresh karke dobara try karein.");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    loadSelectedQuotation();
+    return () => { cancelled = true; };
+  }, []);
+
   /* ================= CORE PYTHON RATE LOGIC ================= */
   function applyAutoRates(list) {
   return list.map(item => {

@@ -223,8 +223,7 @@ export default function Dashboard({
       id
     );
   
-    window.location.href =
-      "/quotation";
+    navigate("/quotation");
   
   };
   

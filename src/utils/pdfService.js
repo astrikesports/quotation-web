@@ -114,28 +114,77 @@ import { parseSizes } from "../utils/sizeHelper";
 
   const totalDiscount = Number(rateDiscount) + Number(spDiscount);
   const hasPaymentImages = paymentImages.length > 0;
-  /* ================= PORTRAIT COMPACT ITEM TABLE ================= */
-  const ALL_SIZES = ["26", "28", "30", "32", "34", "36", "S", "M", "L", "XL", "2XL", "3XL", "4XL"];
-  const parsedItemSizes = items.map(it => parseSizes(it.size));
-  const itemBody = [["SKU / DESCRIPTION", "SIZE ENTRIES", "PCS", "MRP (₹)", "RATE (₹)", "AMOUNT (₹)", "PCS / BOX"].map(h => ({ text: h, bold: true, fontSize: 6.5, alignment: "center", fillColor: "#10213a", color: "#ffffff" }))];
-  let totalAmount = 0;
-  items.forEach((it, index) => {
-    totalAmount += Number(it.amount || 0);
-    const sizeMap = parsedItemSizes[index] || {};
-    const enteredSizes = ALL_SIZES.filter(size => Number(sizeMap[size] || 0) > 0).map(size => `${size} × ${Number(sizeMap[size])}`).join(", ") || (typeof it.size === "string" && it.size.trim() ? it.size : "-");
-    itemBody.push([
-      { text: it.desc || "-", fontSize: 7, alignment: "left" },
-      { text: enteredSizes, fontSize: 7, alignment: "left" },
-      { text: String(it.pcs ?? "-"), fontSize: 7, alignment: "center" },
-      { text: String(it.MRP ?? it.mrp ?? "-"), fontSize: 7, alignment: "right" },
-      { text: `₹${it.rate ?? "-"}`, fontSize: 7, alignment: "right" },
-      { text: `₹${it.amount ?? "-"}`, fontSize: 7, alignment: "right" },
-      { text: String(it.pcsPerBox ?? "-"), fontSize: 7, alignment: "center" }
-    ]);
-  });
-  const itemWidths = [92, 100, 27, 48, 48, 55, 42];
+  /* ================= ITEM TABLE ================= */
+  const itemBody = [[
+  "DESC","26","28","30","32","34","36","S","M","L","XL","2XL","3XL","4XL",
+  "PCS","RATE","AMOUNT","MRP","PACKING"
+  ].map(h => ({
+  text: h,
+  bold: true,
+  fontSize: 7.5,
+  alignment: "center",
+  fillColor: "#f1f5f9"
+  }))];
 
-  const net = totalAmount + Number(shipping || 0) - Number(billDiscount || 0) - Number(advance || 0);
+  let totalAmount = 0;
+
+  items.forEach(it => {
+  totalAmount += Number(it.amount || 0);
+
+  const sizeMap = parseSizes(it.size);
+  // it.size = "S:10,M:5,L:8"
+
+  const size = {
+  "26": sizeMap["26"],
+  "28": sizeMap["28"],
+  "30": sizeMap["30"],
+  "32": sizeMap["32"],
+  "34": sizeMap["34"],
+  "36": sizeMap["36"],
+  S: sizeMap.S,
+  M: sizeMap.M,
+  L: sizeMap.L,
+  XL: sizeMap.XL,
+  "2XL": sizeMap["2XL"],
+  "3XL": sizeMap["3XL"],
+  "4XL": sizeMap["4XL"],
+  };
+
+  itemBody.push([
+  { text: it.desc, alignment: "left" },
+
+  size["26"] || "",
+  size["28"] || "",
+  size["30"] || "",
+  size["32"] || "",
+  size["34"] || "",
+  size["36"] || "",
+  size.S || "",
+  size.M || "",
+  size.L || "",
+  size.XL || "",
+  size["2XL"] || "",
+  size["3XL"] || "",
+  size["4XL"] || "",
+
+  it.pcs ?? "-",
+  `₹${it.rate ?? "-"}`,
+  `₹${it.amount ?? "-"}`,
+  it.MRP ?? it.mrp ?? "-",
+  it.pcsPerBox ?? "-"
+  ].map(v =>
+  typeof v === "object"
+  ? { ...v, fontSize: 7.5 }
+  : { text: String(v), fontSize: 7.5, alignment: "center" }
+  ));
+  });
+
+
+  const net =
+  totalAmount +
+  Number(shipping || 0) -
+  Number(billDiscount || 0) -
+  Number(advance || 0);
 
   /* ================= CANCEL ITEM BLOCK ================= */
   const cancelBlock = {
@@ -232,31 +281,141 @@ import { parseSizes } from "../utils/sizeHelper";
 
   /* ================= PDF ================= */
   const docDefinition = {
-  // Compact landscape layout; size columns are generated only when used.
+  // Landscape is required because the item table contains 19 columns.
   pageSize: "A4",
-  pageOrientation: "portrait",
-  pageMargins: [28, 24, 28, 24],
+  pageOrientation: "landscape",
+  pageMargins: [18, 20, 18, 15],
 
   content: [
-  { text: "ASTRIKE SPORTSWEAR PVT LTD", alignment: "left", fontSize: 18, bold: true, color: "#10213a", margin: [0, 0, 0, 2] },
-  { text: "Ground Floor B-124 Shop No. 2, Pratap Garden, Uttam Nagar, New Delhi\nPhone: 7838000995 | GSTIN: 07ABCCA4620J1ZV", alignment: "left", fontSize: 7, color: "#64748b", margin: [0, 0, 0, 8] },
-  { canvas: [{ type: "line", x1: 0, y1: 0, x2: 539, y2: 0, lineWidth: 1.5, lineColor: "#f05a28" }], margin: [0, 0, 0, 8] },
-  { text: `QUOTATION ${quotationNo ? `- ${quotationNo}` : ""}`, alignment: "left", fontSize: 12, bold: true, color: "#10213a", margin: [0, 0, 0, 8] },
-  { table: { widths: ["*", "*"], body: [
-    [{ text: [{ text: "Party Name\n", bold: true }, { text: party || "-" }], fillColor: "#f4f7fb" }, { text: [{ text: "Phone\n", bold: true }, { text: phone || "-" }], fillColor: "#f4f7fb" }],
-    [{ text: [{ text: "Address\n", bold: true }, { text: address || "-" }], fillColor: "#f4f7fb", colSpan: 2 }, {}],
-    [{ text: [{ text: "Sales Person\n", bold: true }, { text: salesPerson || "-" }], fillColor: "#f4f7fb" }, { text: [{ text: "Date / Updated\n", bold: true }, { text: `${createdDate} / ${updatedDate}` }], fillColor: "#f4f7fb" }],
-    [{ text: [{ text: "Rate Discount\n", bold: true }, { text: `${rateDiscount}%` }], fillColor: "#f4f7fb" }, { text: [{ text: "SP Discount\n", bold: true }, { text: `${spDiscount}%` }], fillColor: "#f4f7fb" }],
-    [{ text: [{ text: "Remarks\n", bold: true }, { text: remark || "-" }], fillColor: "#f4f7fb", colSpan: 2 }, {}]
-  ] }, layout: GRID, fontSize: 8, margin: [0, 0, 0, 10] },
-  { text: "ITEM DETAILS — ONLY ENTERED SIZES SHOWN", bold: true, fontSize: 9, color: "#10213a", margin: [0, 0, 0, 5] },
-  { table: { headerRows: 1, widths: itemWidths, body: itemBody, dontBreakRows: true, keepWithHeaderRows: 1 }, layout: { hLineWidth: () => 0.5, vLineWidth: () => 0.5, hLineColor: () => "#d8e1ec", vLineColor: () => "#d8e1ec", paddingLeft: () => 3, paddingRight: () => 3, paddingTop: () => 5, paddingBottom: () => 5 }, margin: [0, 0, 0, 10] },
-  { columns: [
-    { width: "*", stack: [ ...(packingOptionsBlock ? [packingOptionsBlock] : []), { text: "REMARKS / PAYMENT NOTES", bold: true, fontSize: 8, margin: [0, 8, 0, 3] }, { text: remark || "-", fontSize: 8, color: "#334155" } ] },
-    { width: 190, stack: [{ table: { widths: ["*", 65], body: [ ["Gross / Bill Amount", `₹${totalAmount}`], [`Rate Discount (${rateDiscount}%)`, "-"], [`SP Discount (${spDiscount}%)`, "-"], ["Bill Discount", billDiscount ? `₹${billDiscount}` : "₹0"], ["Shipping", shipping ? `₹${shipping}` : "₹0"], ["Advance Paid", advance ? `₹${advance}` : "₹0"], [{ text: "NET PAYABLE", bold: true, color: "#ffffff", fillColor: "#16a765" }, { text: `₹${net}`, bold: true, color: "#ffffff", fillColor: "#16a765" }] ] }, layout: GRID, fontSize: 7.5 }] }
-  ], columnGap: 8 },
-  { text: "Please verify sizes, quantities, rates and totals before confirming.", fontSize: 7, color: "#64748b", margin: [0, 12, 0, 0] }
-]
+  {
+  text: "ASTRIKE SPORTSWEAR PVT LTD",
+  alignment: "center",
+  fontSize: 15,
+  bold: true
+  },
+  {
+  text:
+  "Ground Floor B-124 Shop No. 2, Pratap Garden, Uttam Nagar, New Delhi\n" +
+  "Phone: 7838000995 | GSTIN: 07ABCCA4620J1ZV",
+  alignment: "center",
+  fontSize: 8,
+  margin: [0, 4, 0, 8]
+  },
+  {
+  text: `QUOTATION ${quotationNo ? `- ${quotationNo}` : ""}`,
+  alignment: "center",
+  fontSize: 13,
+  bold: true,
+  margin: [0, 6, 0, 8]
+  },
+
+  {
+  table: {
+  widths: ["*", "*", "*", "*"],
+  body: [
+  [
+  `Party Name : ${party || "-"}`,
+  `Phone : ${phone || "-"}`,
+  `Date : ${createdDate}`,
+  `Updated Date : ${updatedDate}`
+  ],
+  [
+  `Sales Person : ${salesPerson || "-"}`,
+  `Rate Discount : ${rateDiscount}%`,
+  `SP Discount : ${spDiscount}%`,
+  `Total Discount : ${totalDiscount}%`
+  ],
+  [{ text: `Address : ${address || "-"}`, colSpan: 4 }, {}, {}, {}],
+  [{ text: `Remark : ${remark || "-"}`, colSpan: 4, fontSize: 10, bold: true }, {}, {}, {}]
+  ]
+  },
+  layout: GRID,
+  fontSize: 8
+  },
+
+  { text: "\n" },
+
+  {
+  table: {
+  headerRows: 1,
+  // Keep exactly 19 widths for the 19 columns in itemBody:
+  // DESC + 6 kids sizes + 7 adult sizes + PCS/RATE/AMOUNT/MRP/PACKING.
+  widths: [
+  95, 22,22,22,22,22,22,
+  24,24,24,26,28,28,28,
+  30,42,48,35,38
+  ],
+  body: itemBody,
+  dontBreakRows: true,
+  keepWithHeaderRows: 1
+  },
+  layout: GRID
+  },
+
+  { text: "\n" },
+
+  {
+  table: {
+  widths: [300, 20, 210],
+  body: [[
+  // LEFT: CANCEL TABLE
+  hasPaymentImages ? cancelBlock : "",
+
+  "",
+
+  // RIGHT SIDE
+  {
+  table: {
+  widths: [210],
+  body: [
+  // SUMMARY (always)
+  [summaryBlock],
+
+  // PACKING OPTIONS (only when selected in quotation)
+  ...(packingOptionsBlock ? [[packingOptionsBlock]] : []),
+
+  // 🔥 PACKING DETAILS (HEADER + BODY TOGETHER)
+  ...(hasPaymentImages
+  ? [[
+  {
+  table: {
+  widths: [100, 105],
+  body: [
+  [
+  {
+  text: "PACKING DETAILS",
+  colSpan: 2,
+  alignment: "center",
+  bold: true,
+  fillColor: "#000",
+  color: "#fff",
+  fontSize: 8
+  },
+  {}
+  ],
+  ["DATE", ""],
+  ["UPDATED DATE", ""],
+  ["DIMENSION", ""],
+  ["WEIGHT", ""],
+  ["SIGN", ""]
+  ]
+  },
+  layout: GRID,
+  fontSize: 8
+  }
+  ]]
+  : []),
+  ]
+  },
+  layout: "noBorders"
+  }
+  ]]
+  },
+  layout: "noBorders"
+  }
+
+
+  ]
   };
 
   /* ================= PAYMENT IMAGE PAGE ================= */
