@@ -478,7 +478,7 @@ export async function generateQuotationPDF(
     },
 
     {
-      text: "ITEM DETAILS — ONLY ENTERED SIZES SHOWN",
+      text: "ITEM DETAILS",
       bold: true,
       fontSize: 9,
       color: "#10213a",
