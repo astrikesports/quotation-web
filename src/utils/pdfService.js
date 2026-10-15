@@ -7,7 +7,11 @@ import { parseSizes } from "../utils/sizeHelper";
 pdfMake.vfs = pdfFonts.vfs;
 
 function safeFileName(str = "") {
-  return str.trim().replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "").toUpperCase();
+  return str
+    .trim()
+    .replace(/\s+/g, "_")
+    .replace(/[^a-zA-Z0-9_]/g, "")
+    .toUpperCase();
 }
 
 async function imageUrlToBase64(url) {
@@ -65,6 +69,7 @@ export async function generateQuotationPDF(data = {}, action = "download") {
     updatedAt
   } = data;
 
+  // Normalize payment images
   const finalPaymentImages = [];
 
   for (const img of paymentImages) {
@@ -84,6 +89,7 @@ export async function generateQuotationPDF(data = {}, action = "download") {
     ? new Date(updatedAt).toLocaleDateString()
     : createdDate;
 
+  // Supported sizes
   const ALL_SIZES = [
     "26", "28", "30", "32", "34", "36",
     "S", "M", "L", "XL", "2XL", "3XL", "4XL"
@@ -92,35 +98,104 @@ export async function generateQuotationPDF(data = {}, action = "download") {
   let totalAmount = 0;
 
   const itemBody = [[
-    { text: "SKU / DESCRIPTION", bold: true, color: "#ffffff", fillColor: "#10213a", fontSize: 7 },
-    { text: "SIZE ENTRIES", bold: true, color: "#ffffff", fillColor: "#10213a", fontSize: 7 },
-    { text: "PCS", bold: true, color: "#ffffff", fillColor: "#10213a", fontSize: 7 },
-    { text: "MRP (₹)", bold: true, color: "#ffffff", fillColor: "#10213a", fontSize: 7 },
-    { text: "RATE (₹)", bold: true, color: "#ffffff", fillColor: "#10213a", fontSize: 7 },
-    { text: "AMOUNT (₹)", bold: true, color: "#ffffff", fillColor: "#10213a", fontSize: 7 },
-    { text: "PCS / BOX", bold: true, color: "#ffffff", fillColor: "#10213a", fontSize: 7 }
+    {
+      text: "SKU / DESCRIPTION",
+      bold: true,
+      color: "#ffffff",
+      fillColor: "#10213a",
+      fontSize: 7
+    },
+    {
+      text: "SIZE ENTRIES",
+      bold: true,
+      color: "#ffffff",
+      fillColor: "#10213a",
+      fontSize: 7
+    },
+    {
+      text: "PCS",
+      bold: true,
+      color: "#ffffff",
+      fillColor: "#10213a",
+      fontSize: 7
+    },
+    {
+      text: "MRP (₹)",
+      bold: true,
+      color: "#ffffff",
+      fillColor: "#10213a",
+      fontSize: 7
+    },
+    {
+      text: "RATE (₹)",
+      bold: true,
+      color: "#ffffff",
+      fillColor: "#10213a",
+      fontSize: 7
+    },
+    {
+      text: "AMOUNT (₹)",
+      bold: true,
+      color: "#ffffff",
+      fillColor: "#10213a",
+      fontSize: 7
+    },
+    {
+      text: "PCS / BOX",
+      bold: true,
+      color: "#ffffff",
+      fillColor: "#10213a",
+      fontSize: 7
+    }
   ]];
 
   items.forEach((it) => {
     totalAmount += Number(it.amount || 0);
 
     const sizeMap = parseSizes(it.size) || {};
+
     const enteredSizes = ALL_SIZES
       .filter(size => Number(sizeMap[size] || 0) > 0)
       .map(size => `${size} × ${Number(sizeMap[size])}`)
       .join(", ") ||
-      (typeof it.size === "string" && it.size.trim() ? it.size : "-");
+      (typeof it.size === "string" && it.size.trim()
+        ? it.size
+        : "-");
 
     itemBody.push([
       { text: it.desc || "-", fontSize: 7 },
       { text: enteredSizes, fontSize: 7 },
-      { text: String(it.pcs ?? "-"), fontSize: 7, alignment: "center" },
-      { text: String(it.MRP ?? it.mrp ?? "-"), fontSize: 7, alignment: "right" },
-      { text: `₹${it.rate ?? "-"}`, fontSize: 7, alignment: "right" },
-      { text: `₹${it.amount ?? "-"}`, fontSize: 7, alignment: "right" },
-      { text: String(it.pcsPerBox ?? "-"), fontSize: 7, alignment: "center" }
+      {
+        text: String(it.pcs ?? "-"),
+        fontSize: 7,
+        alignment: "center"
+      },
+      {
+        text: String(it.MRP ?? it.mrp ?? "-"),
+        fontSize: 7,
+        alignment: "right"
+      },
+      {
+        text: `₹${it.rate ?? "-"}`,
+        fontSize: 7,
+        alignment: "right"
+      },
+      {
+        text: `₹${it.amount ?? "-"}`,
+        fontSize: 7,
+        alignment: "right"
+      },
+      {
+        text: String(it.pcsPerBox ?? "-"),
+        fontSize: 7,
+        alignment: "center"
+      }
     ]);
   });
+
+  // Portrait A4 printable width: approximately 539 points.
+  // The star column fills the remaining width automatically.
+  const itemWidths = ["*", 150, 30, 48, 48, 65, 45];
 
   const net =
     totalAmount +
@@ -128,6 +203,7 @@ export async function generateQuotationPDF(data = {}, action = "download") {
     Number(billDiscount || 0) -
     Number(advance || 0);
 
+  // Packing options
   const packingRows = [];
 
   if (gymBagSelected) {
@@ -144,6 +220,91 @@ export async function generateQuotationPDF(data = {}, action = "download") {
     ]);
   }
 
+  const packingBlock = packingRows.length
+    ? {
+        table: {
+          widths: [100, "*"],
+          body: [
+            [
+              {
+                text: "PACKING OPTIONS",
+                colSpan: 2,
+                bold: true,
+                color: "#ffffff",
+                fillColor: "#10213a"
+              },
+              {}
+            ],
+            ...packingRows
+          ]
+        },
+        layout: GRID,
+        fontSize: 8,
+        margin: [0, 8, 0, 0]
+      }
+    : null;
+
+  // Summary table uses the same full available page width
+  const summaryBody = [
+    [
+      { text: "Gross / Bill Amount", fontSize: 8 },
+      {
+        text: `₹${totalAmount}`,
+        fontSize: 8,
+        alignment: "right"
+      }
+    ],
+    [
+      { text: `Rate Discount (${rateDiscount}%)`, fontSize: 8 },
+      { text: "-", fontSize: 8, alignment: "right" }
+    ],
+    [
+      { text: `SP Discount (${spDiscount}%)`, fontSize: 8 },
+      { text: "-", fontSize: 8, alignment: "right" }
+    ],
+    [
+      { text: "Bill Discount", fontSize: 8 },
+      {
+        text: `₹${Number(billDiscount || 0)}`,
+        fontSize: 8,
+        alignment: "right"
+      }
+    ],
+    [
+      { text: "Shipping", fontSize: 8 },
+      {
+        text: `₹${Number(shipping || 0)}`,
+        fontSize: 8,
+        alignment: "right"
+      }
+    ],
+    [
+      { text: "Advance Paid", fontSize: 8 },
+      {
+        text: `₹${Number(advance || 0)}`,
+        fontSize: 8,
+        alignment: "right"
+      }
+    ],
+    [
+      {
+        text: "NET PAYABLE",
+        bold: true,
+        color: "#ffffff",
+        fillColor: "#16a765",
+        fontSize: 8
+      },
+      {
+        text: `₹${net}`,
+        bold: true,
+        color: "#ffffff",
+        fillColor: "#16a765",
+        fontSize: 8,
+        alignment: "right"
+      }
+    ]
+  ];
+
   const content = [
     {
       text: "ASTRIKE SPORTSWEAR PVT LTD",
@@ -153,7 +314,9 @@ export async function generateQuotationPDF(data = {}, action = "download") {
       margin: [0, 0, 0, 3]
     },
     {
-      text: "Ground Floor B-124 Shop No. 2, Pratap Garden, Uttam Nagar, New Delhi\nPhone: 7838000995 | GSTIN: 07ABCCA4620J1ZV",
+      text:
+        "Ground Floor B-124 Shop No. 2, Pratap Garden, Uttam Nagar, New Delhi\n" +
+        "Phone: 7838000995 | GSTIN: 07ABCCA4620J1ZV",
       fontSize: 7,
       color: "#64748b",
       margin: [0, 0, 0, 8]
@@ -161,7 +324,10 @@ export async function generateQuotationPDF(data = {}, action = "download") {
     {
       canvas: [{
         type: "line",
-        x1: 0, y1: 0, x2: 539, y2: 0,
+        x1: 0,
+        y1: 0,
+        x2: 539,
+        y2: 0,
         lineWidth: 1.5,
         lineColor: "#f05a28"
       }],
@@ -174,28 +340,80 @@ export async function generateQuotationPDF(data = {}, action = "download") {
       color: "#10213a",
       margin: [0, 0, 0, 8]
     },
+
+    // Customer details
     {
       table: {
         widths: ["*", "*"],
         body: [
           [
-            { text: [{ text: "Party Name\n", bold: true }, { text: party || "-" }], fillColor: "#f4f7fb" },
-            { text: [{ text: "Phone\n", bold: true }, { text: phone || "-" }], fillColor: "#f4f7fb" }
+            {
+              text: [
+                { text: "Party Name\n", bold: true },
+                { text: party || "-" }
+              ],
+              fillColor: "#f4f7fb"
+            },
+            {
+              text: [
+                { text: "Phone\n", bold: true },
+                { text: phone || "-" }
+              ],
+              fillColor: "#f4f7fb"
+            }
           ],
           [
-            { text: [{ text: "Address\n", bold: true }, { text: address || "-" }], fillColor: "#f4f7fb", colSpan: 2 },
+            {
+              text: [
+                { text: "Address\n", bold: true },
+                { text: address || "-" }
+              ],
+              fillColor: "#f4f7fb",
+              colSpan: 2
+            },
             {}
           ],
           [
-            { text: [{ text: "Sales Person\n", bold: true }, { text: salesPerson || "-" }], fillColor: "#f4f7fb" },
-            { text: [{ text: "Date / Updated\n", bold: true }, { text: `${createdDate} / ${updatedDate}` }], fillColor: "#f4f7fb" }
+            {
+              text: [
+                { text: "Sales Person\n", bold: true },
+                { text: salesPerson || "-" }
+              ],
+              fillColor: "#f4f7fb"
+            },
+            {
+              text: [
+                { text: "Date / Updated\n", bold: true },
+                { text: `${createdDate} / ${updatedDate}` }
+              ],
+              fillColor: "#f4f7fb"
+            }
           ],
           [
-            { text: [{ text: "Rate Discount\n", bold: true }, { text: `${rateDiscount}%` }], fillColor: "#f4f7fb" },
-            { text: [{ text: "SP Discount\n", bold: true }, { text: `${spDiscount}%` }], fillColor: "#f4f7fb" }
+            {
+              text: [
+                { text: "Rate Discount\n", bold: true },
+                { text: `${rateDiscount}%` }
+              ],
+              fillColor: "#f4f7fb"
+            },
+            {
+              text: [
+                { text: "SP Discount\n", bold: true },
+                { text: `${spDiscount}%` }
+              ],
+              fillColor: "#f4f7fb"
+            }
           ],
           [
-            { text: [{ text: "Remarks\n", bold: true }, { text: remark || "-" }], fillColor: "#f4f7fb", colSpan: 2 },
+            {
+              text: [
+                { text: "Remarks\n", bold: true },
+                { text: remark || "-" }
+              ],
+              fillColor: "#f4f7fb",
+              colSpan: 2
+            },
             {}
           ]
         ]
@@ -204,6 +422,7 @@ export async function generateQuotationPDF(data = {}, action = "download") {
       fontSize: 8,
       margin: [0, 0, 0, 10]
     },
+
     {
       text: "ITEM DETAILS — ONLY ENTERED SIZES SHOWN",
       bold: true,
@@ -211,10 +430,12 @@ export async function generateQuotationPDF(data = {}, action = "download") {
       color: "#10213a",
       margin: [0, 0, 0, 5]
     },
+
+    // Full-width items table
     {
       table: {
         headerRows: 1,
-        widths: [92, 100, 27, 48, 48, 55, 42],
+        widths: itemWidths,
         body: itemBody,
         dontBreakRows: true,
         keepWithHeaderRows: 1
@@ -224,42 +445,18 @@ export async function generateQuotationPDF(data = {}, action = "download") {
     }
   ];
 
-  if (packingRows.length) {
-    content.push({
-      table: {
-        widths: [110, 95],
-        body: [
-          [
-            { text: "PACKING OPTIONS", colSpan: 2, bold: true, color: "#ffffff", fillColor: "#10213a", alignment: "center" },
-            {}
-          ],
-          ...packingRows
-        ]
-      },
-      layout: GRID,
-      fontSize: 8,
-      margin: [0, 0, 0, 8]
-    });
+  if (packingBlock) {
+    content.push(packingBlock);
   }
 
+  // Full-width summary table — aligned with items table
   content.push({
     table: {
-      widths: ["*", 75],
-      body: [
-        ["Gross / Bill Amount", `₹${totalAmount}`],
-        [`Rate Discount (${rateDiscount}%)`, "-"],
-        [`SP Discount (${spDiscount}%)`, "-"],
-        ["Bill Discount", billDiscount ? `₹${billDiscount}` : "₹0"],
-        ["Shipping", shipping ? `₹${shipping}` : "₹0"],
-        ["Advance Paid", advance ? `₹${advance}` : "₹0"],
-        [
-          { text: "NET PAYABLE", bold: true, color: "#ffffff", fillColor: "#16a765" },
-          { text: `₹${net}`, bold: true, color: "#ffffff", fillColor: "#16a765" }
-        ]
-      ]
+      widths: ["*", 100],
+      body: summaryBody,
+      dontBreakRows: true
     },
     layout: GRID,
-    fontSize: 8,
     margin: [0, 5, 0, 0]
   });
 
@@ -277,6 +474,7 @@ export async function generateQuotationPDF(data = {}, action = "download") {
     content
   };
 
+  // Payment proof page
   if (finalPaymentImages.length > 0) {
     docDefinition.content.push({
       text: "Payment Proof",
@@ -296,7 +494,9 @@ export async function generateQuotationPDF(data = {}, action = "download") {
   }
 
   const baseName = safeFileName(data.party || "QUOTATION");
+
   const isUpdated = data.updatedAt || data.updated_at;
+
   const fileName = isUpdated
     ? `${baseName}_UPDATED.pdf`
     : `${baseName}.pdf`;
