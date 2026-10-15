@@ -244,10 +244,10 @@ export async function generateQuotationPDF(
     [
       {
         text: `NET PAYABLE AMOUNT\n₹${net}`,
-        colSpan: 2,
+        colSpan: 2.5,
         alignment: "center",
         bold: true,
-        fontSize: 10,
+        fontSize: 14,
         color: "#10213a",
         fillColor: "#e8f5ee",
         margin: [0, 4, 0, 4]
