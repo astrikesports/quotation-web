@@ -281,7 +281,9 @@ import { parseSizes } from "../utils/sizeHelper";
 
   /* ================= PDF ================= */
   const docDefinition = {
+  // Landscape is required because the item table contains 19 columns.
   pageSize: "A4",
+  pageOrientation: "landscape",
   pageMargins: [18, 20, 18, 15],
 
   content: [
@@ -336,9 +338,12 @@ import { parseSizes } from "../utils/sizeHelper";
   {
   table: {
   headerRows: 1,
+  // Keep exactly 19 widths for the 19 columns in itemBody:
+  // DESC + 6 kids sizes + 7 adult sizes + PCS/RATE/AMOUNT/MRP/PACKING.
   widths: [
-  78,24,24,24,24,24,24,24,
-  36,46,46,32,36
+  95, 22,22,22,22,22,22,
+  24,24,24,26,28,28,28,
+  30,42,48,35,38
   ],
   body: itemBody,
   dontBreakRows: true,
