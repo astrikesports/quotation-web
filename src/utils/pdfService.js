@@ -177,13 +177,14 @@ export async function generateQuotationPDF(
   // Header + 5 blank rows
   // ------------------------------------
 
-  
+
   const cancelItemBody = [
     [
       { text: "SKU", ...HEADER_STYLE },
       { text: "SIZE", ...HEADER_STYLE },
       { text: "REMARK", ...HEADER_STYLE }
     ],
+    ["", "", ""],
     ["", "", ""],
     ["", "", ""],
     ["", "", ""],
@@ -197,13 +198,13 @@ export async function generateQuotationPDF(
       headerRows: 1,
       widths: ["*", 48, "*"],
       body: cancelItemBody,
-      heights: (rowIndex) => rowIndex === 0 ? 20 : 17,
+      heights: () => 22,
       dontBreakRows: true
     },
     layout: {
       ...GRID,
-      paddingTop: () => 2,
-      paddingBottom: () => 2
+      paddingTop: () => 3,
+      paddingBottom: () => 3
     },
     fontSize: 7
   };
@@ -214,7 +215,7 @@ export async function generateQuotationPDF(
   // 8 rows total, including extra amount row
   // ------------------------------------
 
-  
+    
   const summaryBody = [
     [
       { text: "Gross / Bill Amount", fontSize: 7.5 },
@@ -241,6 +242,10 @@ export async function generateQuotationPDF(
       { text: `₹${Number(advance || 0)}`, fontSize: 7.5, alignment: "right" }
     ],
     [
+      { text: "", fontSize: 7.5 },
+      { text: "", fontSize: 7.5 }
+    ],
+    [
       {
         text: `NET PAYABLE AMOUNT\n₹${net}`,
         colSpan: 2,
@@ -259,13 +264,13 @@ export async function generateQuotationPDF(
     table: {
       widths: ["*", 62],
       body: summaryBody,
-      heights: (rowIndex) => rowIndex === 6 ? 34 : 17,
+      heights: () => 22,
       dontBreakRows: true
     },
     layout: {
       ...GRID,
-      paddingTop: () => 2,
-      paddingBottom: () => 2
+      paddingTop: () => 3,
+      paddingBottom: () => 3
     }
   };
 
