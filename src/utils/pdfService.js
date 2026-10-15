@@ -7,20 +7,14 @@ import { parseSizes } from "../utils/sizeHelper";
 pdfMake.vfs = pdfFonts.vfs;
 
 function safeFileName(str = "") {
-  return str
-    .trim()
-    .replace(/\s+/g, "_")
-    .replace(/[^a-zA-Z0-9_]/g, "")
-    .toUpperCase();
+  return str.trim().replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "").toUpperCase();
 }
 
-/* ================= IMAGE → BASE64 ================= */
 async function imageUrlToBase64(url) {
   const path = url.split("/payment-images/")[1];
   if (!path) return null;
 
-  const { data, error } = await supabase
-    .storage
+  const { data, error } = await supabase.storage
     .from("payment-images")
     .download(path);
 
@@ -37,22 +31,18 @@ async function imageUrlToBase64(url) {
   });
 }
 
-/* ================= COMMON GRID ================= */
 const GRID = {
-  hLineWidth: () => 1,
-  vLineWidth: () => 1,
-  hLineColor: () => "#000",
-  vLineColor: () => "#000",
+  hLineWidth: () => 0.5,
+  vLineWidth: () => 0.5,
+  hLineColor: () => "#d8e1ec",
+  vLineColor: () => "#d8e1ec",
   paddingLeft: () => 4,
   paddingRight: () => 4,
   paddingTop: () => 4,
-  paddingBottom: () => 4,
+  paddingBottom: () => 4
 };
 
-export async function generateQuotationPDF(
-  data = {},
-  action = "download"
-) {
+export async function generateQuotationPDF(data = {}, action = "download") {
   const {
     party,
     phone,
@@ -72,116 +62,64 @@ export async function generateQuotationPDF(
     carryBagRemark = "",
     paymentImages = [],
     createdAt,
-    updatedAt,
+    updatedAt
   } = data;
 
-  /* ================= PAYMENT IMAGES ================= */
   const finalPaymentImages = [];
 
-  for (let i = 0; i < paymentImages.length; i++) {
-    const img = paymentImages[i];
-
-    if (
-      typeof img === "string" &&
-      img.startsWith("data:image")
-    ) {
+  for (const img of paymentImages) {
+    if (typeof img === "string" && img.startsWith("data:image")) {
       finalPaymentImages.push(img);
-      continue;
-    }
-
-    if (img?.url) {
+    } else if (img?.url) {
       const base64 = await imageUrlToBase64(img.url);
       if (base64) finalPaymentImages.push(base64);
     }
   }
 
-  const finalData = {
-    ...data,
-    items,
-    paymentImages: finalPaymentImages,
-  };
-
-  /* ================= DATES ================= */
   const createdDate = createdAt
     ? new Date(createdAt).toLocaleDateString()
     : "-";
 
   const updatedDate = updatedAt
     ? new Date(updatedAt).toLocaleDateString()
-    : createdDate
-    ? new Date().toLocaleDateString()
-    : "-";
+    : createdDate;
 
-  const totalDiscount =
-    Number(rateDiscount) + Number(spDiscount);
-
-  const hasPaymentImages = paymentImages.length > 0;
-
-  /* ================= ITEM TABLE ================= */
-  const itemBody = [[
-    "DESC", "26", "28", "30", "32", "34", "36",
-    "S", "M", "L", "XL", "2XL", "3XL", "4XL",
-    "PCS", "RATE", "AMOUNT", "MRP", "PACKING",
-  ].map((h) => ({
-    text: h,
-    bold: true,
-    fontSize: 7.5,
-    alignment: "center",
-    fillColor: "#f1f5f9",
-  }))];
+  const ALL_SIZES = [
+    "26", "28", "30", "32", "34", "36",
+    "S", "M", "L", "XL", "2XL", "3XL", "4XL"
+  ];
 
   let totalAmount = 0;
+
+  const itemBody = [[
+    { text: "SKU / DESCRIPTION", bold: true, color: "#ffffff", fillColor: "#10213a", fontSize: 7 },
+    { text: "SIZE ENTRIES", bold: true, color: "#ffffff", fillColor: "#10213a", fontSize: 7 },
+    { text: "PCS", bold: true, color: "#ffffff", fillColor: "#10213a", fontSize: 7 },
+    { text: "MRP (₹)", bold: true, color: "#ffffff", fillColor: "#10213a", fontSize: 7 },
+    { text: "RATE (₹)", bold: true, color: "#ffffff", fillColor: "#10213a", fontSize: 7 },
+    { text: "AMOUNT (₹)", bold: true, color: "#ffffff", fillColor: "#10213a", fontSize: 7 },
+    { text: "PCS / BOX", bold: true, color: "#ffffff", fillColor: "#10213a", fontSize: 7 }
+  ]];
 
   items.forEach((it) => {
     totalAmount += Number(it.amount || 0);
 
-    const sizeMap = parseSizes(it.size);
-
-    const size = {
-      "26": sizeMap["26"],
-      "28": sizeMap["28"],
-      "30": sizeMap["30"],
-      "32": sizeMap["32"],
-      "34": sizeMap["34"],
-      "36": sizeMap["36"],
-      S: sizeMap.S,
-      M: sizeMap.M,
-      L: sizeMap.L,
-      XL: sizeMap.XL,
-      "2XL": sizeMap["2XL"],
-      "3XL": sizeMap["3XL"],
-      "4XL": sizeMap["4XL"],
-    };
+    const sizeMap = parseSizes(it.size) || {};
+    const enteredSizes = ALL_SIZES
+      .filter(size => Number(sizeMap[size] || 0) > 0)
+      .map(size => `${size} × ${Number(sizeMap[size])}`)
+      .join(", ") ||
+      (typeof it.size === "string" && it.size.trim() ? it.size : "-");
 
     itemBody.push([
-      { text: it.desc, alignment: "left" },
-      size["26"] || "",
-      size["28"] || "",
-      size["30"] || "",
-      size["32"] || "",
-      size["34"] || "",
-      size["36"] || "",
-      size.S || "",
-      size.M || "",
-      size.L || "",
-      size.XL || "",
-      size["2XL"] || "",
-      size["3XL"] || "",
-      size["4XL"] || "",
-      it.pcs ?? "-",
-      `₹${it.rate ?? "-"}`,
-      `₹${it.amount ?? "-"}`,
-      it.MRP ?? it.mrp ?? "-",
-      it.pcsPerBox ?? "-",
-    ].map((v) =>
-      typeof v === "object"
-        ? { ...v, fontSize: 7.5 }
-        : {
-            text: String(v),
-            fontSize: 7.5,
-            alignment: "center",
-          }
-    ));
+      { text: it.desc || "-", fontSize: 7 },
+      { text: enteredSizes, fontSize: 7 },
+      { text: String(it.pcs ?? "-"), fontSize: 7, alignment: "center" },
+      { text: String(it.MRP ?? it.mrp ?? "-"), fontSize: 7, alignment: "right" },
+      { text: `₹${it.rate ?? "-"}`, fontSize: 7, alignment: "right" },
+      { text: `₹${it.amount ?? "-"}`, fontSize: 7, alignment: "right" },
+      { text: String(it.pcsPerBox ?? "-"), fontSize: 7, alignment: "center" }
+    ]);
   });
 
   const net =
@@ -190,249 +128,175 @@ export async function generateQuotationPDF(
     Number(billDiscount || 0) -
     Number(advance || 0);
 
-  /* ================= CANCEL ITEM BLOCK ================= */
-  const cancelBlock = {
-    table: {
-      widths: [90, 90, 120],
-      body: [
-        [{
-          text: "CANCEL ITEM FROM BILL",
-          colSpan: 3,
-          alignment: "center",
-          bold: true,
-          fillColor: "#000",
-          color: "#fff",
-        }, {}, {}],
-        ["SKU", "SIZE", "REMARK"],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-        ["", "", ""],
-      ],
-    },
-    layout: GRID,
-    fontSize: 8,
-  };
-
-  /* ================= PACKING OPTIONS ================= */
   const packingRows = [];
 
   if (gymBagSelected) {
     packingRows.push([
       { text: "GYM BAG", bold: true },
-      { text: gymBagRemark || "-" },
+      gymBagRemark || "-"
     ]);
   }
 
   if (carryBagSelected) {
     packingRows.push([
       { text: "CARRY BAG", bold: true },
-      { text: carryBagRemark || "-" },
+      carryBagRemark || "-"
     ]);
   }
 
-  const packingOptionsBlock =
-    packingRows.length > 0
-      ? {
-          table: {
-            widths: [110, 95],
-            body: [
-              [{
-                text: "PACKING OPTIONS",
-                colSpan: 2,
-                alignment: "center",
-                bold: true,
-                fillColor: "#000",
-                color: "#fff",
-              }, {}],
-              ...packingRows,
-            ],
-          },
-          layout: GRID,
-          fontSize: 8,
-          margin: [0, 6, 0, 0],
-        }
-      : null;
+  const content = [
+    {
+      text: "ASTRIKE SPORTSWEAR PVT LTD",
+      fontSize: 18,
+      bold: true,
+      color: "#10213a",
+      margin: [0, 0, 0, 3]
+    },
+    {
+      text: "Ground Floor B-124 Shop No. 2, Pratap Garden, Uttam Nagar, New Delhi\nPhone: 7838000995 | GSTIN: 07ABCCA4620J1ZV",
+      fontSize: 7,
+      color: "#64748b",
+      margin: [0, 0, 0, 8]
+    },
+    {
+      canvas: [{
+        type: "line",
+        x1: 0, y1: 0, x2: 539, y2: 0,
+        lineWidth: 1.5,
+        lineColor: "#f05a28"
+      }],
+      margin: [0, 0, 0, 8]
+    },
+    {
+      text: `QUOTATION ${quotationNo ? `- ${quotationNo}` : ""}`,
+      fontSize: 12,
+      bold: true,
+      color: "#10213a",
+      margin: [0, 0, 0, 8]
+    },
+    {
+      table: {
+        widths: ["*", "*"],
+        body: [
+          [
+            { text: [{ text: "Party Name\n", bold: true }, { text: party || "-" }], fillColor: "#f4f7fb" },
+            { text: [{ text: "Phone\n", bold: true }, { text: phone || "-" }], fillColor: "#f4f7fb" }
+          ],
+          [
+            { text: [{ text: "Address\n", bold: true }, { text: address || "-" }], fillColor: "#f4f7fb", colSpan: 2 },
+            {}
+          ],
+          [
+            { text: [{ text: "Sales Person\n", bold: true }, { text: salesPerson || "-" }], fillColor: "#f4f7fb" },
+            { text: [{ text: "Date / Updated\n", bold: true }, { text: `${createdDate} / ${updatedDate}` }], fillColor: "#f4f7fb" }
+          ],
+          [
+            { text: [{ text: "Rate Discount\n", bold: true }, { text: `${rateDiscount}%` }], fillColor: "#f4f7fb" },
+            { text: [{ text: "SP Discount\n", bold: true }, { text: `${spDiscount}%` }], fillColor: "#f4f7fb" }
+          ],
+          [
+            { text: [{ text: "Remarks\n", bold: true }, { text: remark || "-" }], fillColor: "#f4f7fb", colSpan: 2 },
+            {}
+          ]
+        ]
+      },
+      layout: GRID,
+      fontSize: 8,
+      margin: [0, 0, 0, 10]
+    },
+    {
+      text: "ITEM DETAILS — ONLY ENTERED SIZES SHOWN",
+      bold: true,
+      fontSize: 9,
+      color: "#10213a",
+      margin: [0, 0, 0, 5]
+    },
+    {
+      table: {
+        headerRows: 1,
+        widths: [92, 100, 27, 48, 48, 55, 42],
+        body: itemBody,
+        dontBreakRows: true,
+        keepWithHeaderRows: 1
+      },
+      layout: GRID,
+      margin: [0, 0, 0, 10]
+    }
+  ];
 
-  /* ================= SUMMARY BLOCK ================= */
-  const summaryBlock = {
+  if (packingRows.length) {
+    content.push({
+      table: {
+        widths: [110, 95],
+        body: [
+          [
+            { text: "PACKING OPTIONS", colSpan: 2, bold: true, color: "#ffffff", fillColor: "#10213a", alignment: "center" },
+            {}
+          ],
+          ...packingRows
+        ]
+      },
+      layout: GRID,
+      fontSize: 8,
+      margin: [0, 0, 0, 8]
+    });
+  }
+
+  content.push({
     table: {
-      widths: [110, 95],
+      widths: ["*", 75],
       body: [
-        ["AMOUNT", `₹${totalAmount}`],
-        ["SHIPPING", shipping ? `₹${shipping}` : "-"],
-        ["BILL DISCOUNT", billDiscount ? `₹${billDiscount}` : "-"],
-        ["ADVANCE", advance ? `₹${advance}` : "-"],
+        ["Gross / Bill Amount", `₹${totalAmount}`],
+        [`Rate Discount (${rateDiscount}%)`, "-"],
+        [`SP Discount (${spDiscount}%)`, "-"],
+        ["Bill Discount", billDiscount ? `₹${billDiscount}` : "₹0"],
+        ["Shipping", shipping ? `₹${shipping}` : "₹0"],
+        ["Advance Paid", advance ? `₹${advance}` : "₹0"],
         [
-          { text: "NET PAYABLE", bold: true },
-          { text: `₹${net}`, bold: true },
-        ],
-      ],
+          { text: "NET PAYABLE", bold: true, color: "#ffffff", fillColor: "#16a765" },
+          { text: `₹${net}`, bold: true, color: "#ffffff", fillColor: "#16a765" }
+        ]
+      ]
     },
     layout: GRID,
-    alignment: "right",
     fontSize: 8,
-  };
+    margin: [0, 5, 0, 0]
+  });
 
-  /* ================= PDF ================= */
+  content.push({
+    text: "Please verify sizes, quantities, rates and totals before confirming.",
+    fontSize: 7,
+    color: "#64748b",
+    margin: [0, 12, 0, 0]
+  });
+
   const docDefinition = {
     pageSize: "A4",
-    pageOrientation: "landscape",
-    pageMargins: [18, 20, 18, 15],
-
-    content: [
-      {
-        text: "ASTRIKE SPORTSWEAR PVT LTD",
-        alignment: "center",
-        fontSize: 15,
-        bold: true,
-      },
-      {
-        text:
-          "Ground Floor B-124 Shop No. 2, Pratap Garden, Uttam Nagar, New Delhi\n" +
-          "Phone: 7838000995 | GSTIN: 07ABCCA4620J1ZV",
-        alignment: "center",
-        fontSize: 8,
-        margin: [0, 4, 0, 8],
-      },
-      {
-        text: `QUOTATION ${quotationNo ? `- ${quotationNo}` : ""}`,
-        alignment: "center",
-        fontSize: 13,
-        bold: true,
-        margin: [0, 6, 0, 8],
-      },
-      {
-        table: {
-          widths: ["*", "*", "*", "*"],
-          body: [
-            [
-              `Party Name : ${party || "-"}`,
-              `Phone : ${phone || "-"}`,
-              `Date : ${createdDate}`,
-              `Updated Date : ${updatedDate}`,
-            ],
-            [
-              `Sales Person : ${salesPerson || "-"}`,
-              `Rate Discount : ${rateDiscount}%`,
-              `SP Discount : ${spDiscount}%`,
-              `Total Discount : ${totalDiscount}%`,
-            ],
-            [
-              { text: `Address : ${address || "-"}`, colSpan: 4 },
-              {}, {}, {},
-            ],
-            [
-              {
-                text: `Remark : ${remark || "-"}`,
-                colSpan: 4,
-                fontSize: 10,
-                bold: true,
-              },
-              {}, {}, {},
-            ],
-          ],
-        },
-        layout: GRID,
-        fontSize: 8,
-      },
-      { text: "\n" },
-      {
-        table: {
-          headerRows: 1,
-          widths: [
-            95, 22, 22, 22, 22, 22, 22,
-            24, 24, 24, 26, 28, 28, 28,
-            30, 42, 48, 35, 38,
-          ],
-          body: itemBody,
-          dontBreakRows: true,
-          keepWithHeaderRows: 1,
-        },
-        layout: GRID,
-      },
-      { text: "\n" },
-      {
-        table: {
-          widths: [300, 20, 210],
-          body: [[
-            hasPaymentImages ? cancelBlock : "",
-            "",
-            {
-              table: {
-                widths: [210],
-                body: [
-                  [summaryBlock],
-                  ...(packingOptionsBlock
-                    ? [[packingOptionsBlock]]
-                    : []),
-                  ...(hasPaymentImages
-                    ? [[{
-                        table: {
-                          widths: [100, 105],
-                          body: [
-                            [{
-                              text: "PACKING DETAILS",
-                              colSpan: 2,
-                              alignment: "center",
-                              bold: true,
-                              fillColor: "#000",
-                              color: "#fff",
-                              fontSize: 8,
-                            }, {}],
-                            ["DATE", ""],
-                            ["UPDATED DATE", ""],
-                            ["DIMENSION", ""],
-                            ["WEIGHT", ""],
-                            ["SIGN", ""],
-                          ],
-                        },
-                        layout: GRID,
-                        fontSize: 8,
-                      }]]
-                    : []),
-                ],
-              },
-              layout: "noBorders",
-            },
-          ]],
-        },
-        layout: "noBorders",
-      },
-    ],
+    pageOrientation: "portrait",
+    pageMargins: [28, 24, 28, 24],
+    content
   };
 
-  /* ================= PAYMENT IMAGE PAGE ================= */
   if (finalPaymentImages.length > 0) {
-    docDefinition.content.push({
-      text: "",
-      pageBreak: "before",
-    });
-
     docDefinition.content.push({
       text: "Payment Proof",
       bold: true,
-      margin: [0, 0, 0, 10],
+      fontSize: 12,
+      pageBreak: "before",
+      margin: [0, 0, 0, 10]
     });
 
     docDefinition.content.push({
       columnGap: 20,
-      columns: finalPaymentImages.map((img) => ({
+      columns: finalPaymentImages.map(img => ({
         image: img,
-        width: 240,
-      })),
+        width: 240
+      }))
     });
   }
 
   const baseName = safeFileName(data.party || "QUOTATION");
-
   const isUpdated = data.updatedAt || data.updated_at;
-
   const fileName = isUpdated
     ? `${baseName}_UPDATED.pdf`
     : `${baseName}.pdf`;
