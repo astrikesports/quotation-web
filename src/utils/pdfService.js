@@ -216,6 +216,7 @@ export async function generateQuotationPDF(
   // ------------------------------------
 
     
+   
   const summaryBody = [
     [
       { text: "Gross / Bill Amount", fontSize: 7.5 },
@@ -244,7 +245,7 @@ export async function generateQuotationPDF(
     [
       {
         text: `NET PAYABLE AMOUNT\n₹${net}`,
-        colSpan: 3,
+        colSpan: 2,
         alignment: "center",
         bold: true,
         fontSize: 14,
@@ -260,7 +261,7 @@ export async function generateQuotationPDF(
     table: {
       widths: ["*", 62],
       body: summaryBody,
-      heights: () => 18,
+      heights: (rowIndex) => rowIndex === 6 ? 36 : 18,
       dontBreakRows: true
     },
     layout: {
@@ -269,6 +270,7 @@ export async function generateQuotationPDF(
       paddingBottom: () => 3
     }
   };
+
 
   // ------------------------------------
   // SIDE-BY-SIDE TABLES
