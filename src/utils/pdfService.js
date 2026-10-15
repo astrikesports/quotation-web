@@ -242,10 +242,6 @@ export async function generateQuotationPDF(
       { text: `₹${Number(advance || 0)}`, fontSize: 7.5, alignment: "right" }
     ],
     [
-      { text: "", fontSize: 7.5 },
-      { text: "", fontSize: 7.5 }
-    ],
-    [
       {
         text: `NET PAYABLE AMOUNT\n₹${net}`,
         colSpan: 2,
