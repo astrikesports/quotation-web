@@ -264,7 +264,7 @@ export async function generateQuotationPDF(
     table: {
       widths: ["*", 62],
       body: summaryBody,
-      heights: () => 22,
+      heights: () => 18,
       dontBreakRows: true
     },
     layout: {
