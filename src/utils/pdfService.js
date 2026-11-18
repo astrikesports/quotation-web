@@ -627,7 +627,7 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
 
   const headerCell = (text, alignment = "center") => ({
     text, bold: true, color: "#FFFFFF", fillColor: navy,
-    fontSize: 8, alignment, margin: [3, 6, 3, 6],
+    fontSize: 8, alignment, margin: [3, 4, 3, 4],
     noWrap: text === "S.NO." || text === "PCS/BOX"
   });
 
@@ -645,7 +645,7 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
     const rowFill = index % 2 === 0 ? "#F1F5F9" : "#FFFFFF";
     const cell = (text, alignment = "center", bold = false) => ({
       text: String(text), fontSize: 8, color: "#172033", alignment,
-      bold, fillColor: rowFill, margin: [4, 6, 4, 6]
+      bold, fillColor: rowFill, margin: [3, 4, 3, 4]
     });
 
     return [
@@ -670,10 +670,10 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
   ], ...bodyRows];
 
   tableBody.push([
-    { text: "", colSpan: 4, fillColor: "#E2E8F0", margin: [4, 6, 4, 6] }, {}, {}, {},
-    { text: String(totalPcs), bold: true, alignment: "center", fontSize: 9, fillColor: "#E2E8F0", margin: [4, 6, 4, 6] },
-    { text: "TOTAL", bold: true, alignment: "center", fontSize: 8, fillColor: "#E2E8F0", margin: [4, 6, 4, 6] },
-    { text: String(totalBoxes), bold: true, alignment: "center", fontSize: 9, fillColor: "#E2E8F0", margin: [4, 6, 4, 6] }
+    { text: "", colSpan: 4, fillColor: "#E2E8F0", margin: [3, 4, 3, 4] }, {}, {}, {},
+    { text: String(totalPcs), bold: true, alignment: "center", fontSize: 9, fillColor: "#E2E8F0", margin: [3, 4, 3, 4] },
+    { text: "TOTAL", bold: true, alignment: "center", fontSize: 8, fillColor: "#E2E8F0", margin: [3, 4, 3, 4] },
+    { text: String(totalBoxes), bold: true, alignment: "center", fontSize: 9, fillColor: "#E2E8F0", margin: [3, 4, 3, 4] }
   ]);
 
   return [
@@ -685,17 +685,17 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
         stack: [
           { text: "ASTRIKE SPORTSWEAR PVT LTD", fontSize: 15, bold: true, color: "#FFFFFF", alignment: "center", noWrap: true },
           { text: "PACKING DETAILS", fontSize: 10, bold: true, color: "#DCE8F7", alignment: "center", margin: [0, 4, 0, 0] }
-        ], fillColor: navy, margin: [8, 10, 8, 10], border: [false, false, false, false]
+        ], fillColor: navy, margin: [8, 8, 8, 8], border: [false, false, false, false]
       }]] }, layout: "noBorders", margin: [0, 0, 0, 10], ...(pageBreakBefore ? { pageBreak: "before" } : {})
     },
     {
       columns: [
         { width: "50%", text: [{ text: "Quotation No.: ", bold: true }, data.quotationNo || data.quotation_no || data.id || "-"], fontSize: 9 },
         { width: "50%", text: [{ text: "Party Name: ", bold: true }, data.party || "-"], fontSize: 9, alignment: "right" }
-      ], margin: [0, 0, 0, 12]
+      ], margin: [0, 0, 0, 8]
     },
     {
-      table: { headerRows: 1, widths: [28, 48, "*", 38, 32, 43, 38], body: tableBody, dontBreakRows: true, keepWithHeaderRows: 1 },
+      table: { headerRows: 1, widths: [27, 45, "*", 36, 29, 40, 35], body: tableBody, dontBreakRows: true, keepWithHeaderRows: 1 },
       layout: {
         hLineWidth: () => 0.65, vLineWidth: () => 0.65,
         hLineColor: () => border, vLineColor: () => border,
@@ -708,7 +708,21 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
       columns: [
         { text: `TOTAL PCS: ${totalPcs}`, bold: true, fontSize: 11, color: navy },
         { text: `TOTAL BOXES: ${totalBoxes}`, bold: true, fontSize: 11, color: navy, alignment: "right" }
-      ], margin: [0, 14, 0, 0]
+      ], margin: [0, 9, 0, 0]
+    },
+    {
+      table: {
+        widths: ["*"],
+        body: [[{
+          stack: [
+            { text: "REMARK / SPECIAL INSTRUCTIONS", bold: true, fontSize: 8, color: "#10213A", margin: [0, 0, 0, 4] },
+            { text: String(data.remark || data.remarks || data.order_remark || "-").trim() || "-", fontSize: 8, color: "#334155", lineHeight: 1.15 }
+          ],
+          fillColor: "#F1F5F9", margin: [6, 5, 6, 5]
+        }]]
+      },
+      layout: { hLineColor: () => border, vLineColor: () => border, hLineWidth: () => 0.6, vLineWidth: () => 0.6 },
+      margin: [0, 9, 0, 0]
     }
   ];
 }
@@ -730,7 +744,7 @@ export function generatePackingSlipPDF(data = {}) {
   const docDefinition = {
     pageSize: "A5",
     pageOrientation: "portrait",
-    pageMargins: [20, 20, 20, 20],
+    pageMargins: [22, 22, 22, 22],
     content: buildPackingSlipContent(normalized, { pageBreakBefore: false })
   };
 

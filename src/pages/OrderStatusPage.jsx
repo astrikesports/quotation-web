@@ -147,6 +147,7 @@ export default function OrderStatusPage() {
       generatePackingSlipPDF({
         ...quotation,
         party: quotation.party || order.customer_name || "-",
+        remark: quotation.remark || quotation.remarks || order.remark || "",
         quotationNo: quotation.quotation_no || quotationNo,
         items: quotation.items
       });
