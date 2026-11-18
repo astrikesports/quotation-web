@@ -567,3 +567,136 @@ export async function generateQuotationPDF(
     pdf.download(fileName);
   }
 }
+
+// ------------------------------------------------------------
+// A5 PACKING SLIP — generated from the same server-loaded quote
+// ------------------------------------------------------------
+function getPackingSizeEntries(sizeValue) {
+  if (!sizeValue) return [];
+
+  // Some records may already store a size map instead of a string.
+  if (typeof sizeValue === "object" && !Array.isArray(sizeValue)) {
+    return Object.entries(sizeValue)
+      .map(([size, qty]) => ({ size: String(size).trim(), qty: Number(qty) || 0 }))
+      .filter(entry => entry.size && entry.qty > 0);
+  }
+
+  const raw = String(sizeValue).trim();
+  if (!raw || raw === "-") return [];
+
+  return raw.split(/[,|]/).map(part => {
+    const token = part.trim();
+    // Existing quotation data stores entries as SIZE-QTY (e.g. M-2).
+    // Also accept SIZE x QTY / SIZE × QTY from imported records.
+    const match = token.match(/^(.+?)\s*(?:-|×|x|:)\s*(\d+(?:\.\d+)?)$/i);
+    return match ? { size: match[1].trim(), qty: Number(match[2]) || 0 } : null;
+  }).filter(entry => entry && entry.size && entry.qty > 0);
+}
+
+export function generatePackingSlipPDF(data = {}) {
+  const items = Array.isArray(data.items) ? data.items : [];
+  const navy = "#10213A";
+  const border = "#CBD5E1";
+  const sizesBody = [];
+  let totalPcs = 0;
+  let totalBoxes = 0;
+
+  const headerCell = (text, alignment = "center") => ({
+    text, bold: true, color: "#FFFFFF", fillColor: navy,
+    fontSize: 7.5, alignment, margin: [2, 5, 2, 5],
+    noWrap: text === "S.NO." || text === "PCS/BOX"
+  });
+
+  const bodyRows = items.map((item, index) => {
+    const pcs = Number(item.pcs ?? item.totalPcs ?? 0) || 0;
+    const pcsPerBox = Number(item.pcsPerBox ?? item.pcs_per_box ?? item.pcsPerCarton ?? 0) || 0;
+    const boxes = pcsPerBox > 0 ? Math.ceil(pcs / pcsPerBox) : 0;
+    totalPcs += pcs;
+    totalBoxes += boxes;
+
+    const sizeEntries = getPackingSizeEntries(item.size ?? item.sizeBreakup ?? item.size_breakup);
+    const sizeText = sizeEntries.length
+      ? sizeEntries.map(({ size, qty }) => `${size} × ${qty}`).join(" | ")
+      : (typeof item.size === "string" && item.size.trim() ? item.size.trim() : "-");
+
+    const rowFill = index % 2 === 0 ? "#F1F5F9" : "#FFFFFF";
+    const cell = (text, alignment = "center", bold = false) => ({
+      text: String(text), fontSize: 7.5, color: "#172033", alignment,
+      bold, fillColor: rowFill, margin: [3, 5, 3, 5]
+    });
+
+    return [
+      cell(index + 1),
+      cell(item.sku ?? item.code ?? item.desc ?? "-", "left", true),
+      cell(sizeText, "left"),
+      cell(item.MRP ?? item.mrp ?? "-"),
+      cell(pcs),
+      cell(pcsPerBox || "-"),
+      cell(boxes || (pcs > 0 ? "—" : "0"))
+    ];
+  });
+
+  const tableBody = [[
+    headerCell("S.NO."),
+    headerCell("SKU", "left"),
+    headerCell("SIZE BREAKUP (SIZE × QTY)", "left"),
+    headerCell("MRP (₹)"),
+    headerCell("PCS"),
+    headerCell("PCS/BOX"),
+    headerCell("BOXES")
+  ], ...bodyRows];
+
+  tableBody.push([
+    { text: "", colSpan: 4, fillColor: "#E2E8F0", margin: [3, 5, 3, 5] }, {}, {}, {},
+    { text: String(totalPcs), bold: true, alignment: "center", fontSize: 8, fillColor: "#E2E8F0", margin: [3, 5, 3, 5] },
+    { text: "TOTAL", bold: true, alignment: "center", fontSize: 7.5, fillColor: "#E2E8F0", margin: [3, 5, 3, 5] },
+    { text: String(totalBoxes), bold: true, alignment: "center", fontSize: 8, fillColor: "#E2E8F0", margin: [3, 5, 3, 5] }
+  ]);
+
+  const docDefinition = {
+    pageSize: "A5",
+    pageOrientation: "portrait",
+    pageMargins: [22, 22, 22, 22],
+    defaultStyle: { font: "Roboto", fontSize: 8, color: "#172033" },
+    content: [
+      {
+        table: { widths: ["*"], body: [[{
+          stack: [
+            { text: "ASTRIKE SPORTSWEAR PVT LTD", fontSize: 15, bold: true, color: "#FFFFFF", alignment: "center" },
+            { text: "PACKING DETAILS", fontSize: 10, bold: true, color: "#DCE8F7", alignment: "center", margin: [0, 3, 0, 0] }
+          ], fillColor: navy, margin: [8, 10, 8, 10], border: [false, false, false, false]
+        }]] }, layout: "noBorders", margin: [0, 0, 0, 10]
+      },
+      {
+        columns: [
+          { width: "50%", text: [{ text: "Quotation No.: ", bold: true }, data.quotationNo || data.quotation_no || data.id || "-"], fontSize: 8 },
+          { width: "50%", text: [{ text: "Party Name: ", bold: true }, data.party || "-"], fontSize: 8, alignment: "right" }
+        ], margin: [0, 0, 0, 9]
+      },
+      {
+        table: { headerRows: 1, widths: [25, 55, "*", 38, 31, 39, 34], body: tableBody, dontBreakRows: true, keepWithHeaderRows: 1 },
+        layout: {
+          hLineWidth: () => 0.55, vLineWidth: () => 0.55,
+          hLineColor: () => border, vLineColor: () => border,
+          paddingLeft: () => 2, paddingRight: () => 2,
+          paddingTop: () => 1, paddingBottom: () => 1
+        }
+      },
+      {
+        columns: [
+          { text: `TOTAL PCS: ${totalPcs}`, bold: true, fontSize: 10, color: navy },
+          { text: `TOTAL BOXES: ${totalBoxes}`, bold: true, fontSize: 10, color: navy, alignment: "right" }
+        ], margin: [0, 10, 0, 0]
+      }
+    ],
+    footer: (currentPage, pageCount) => ({
+      text: `ASTRIKE SPORTSWEAR  •  Page ${currentPage} of ${pageCount}`,
+      alignment: "center", fontSize: 6.5, color: "#64748B", margin: [0, 8, 0, 0]
+    })
+  };
+
+  const name = safeFileName(data.party || "PACKING_SLIP");
+  const quoteNo = safeFileName(data.quotationNo || data.quotation_no || "");
+  pdfMake.createPdf(docDefinition).download(`${name}${quoteNo ? `_${quoteNo}` : ""}_PACKING_SLIP.pdf`);
+  return { totalPcs, totalBoxes };
+}
