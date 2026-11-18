@@ -678,12 +678,15 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
 
   return [
     {
-      table: { widths: [34, 66, "*", 48, 42, 52, 48], body: [[{
+      // A single full-width header cell. The previous version mistakenly
+      // assigned seven column widths to a one-cell row, collapsing the header
+      // into a very narrow vertical strip in the generated PDF.
+      table: { widths: ["*"], body: [[{
         stack: [
-          { text: "ASTRIKE SPORTSWEAR PVT LTD", fontSize: 16, bold: true, color: "#FFFFFF", alignment: "center" },
-          { text: "PACKING DETAILS", fontSize: 11, bold: true, color: "#DCE8F7", alignment: "center", margin: [0, 4, 0, 0] }
-         ], fillColor: navy, margin: [8, 12, 8, 12], border: [false, false, false, false]
-      }]] }, layout: "noBorders", margin: [0, 0, 0, 12], ...(pageBreakBefore ? { pageBreak: "before" } : {})
+          { text: "ASTRIKE SPORTSWEAR PVT LTD", fontSize: 15, bold: true, color: "#FFFFFF", alignment: "center", noWrap: true },
+          { text: "PACKING DETAILS", fontSize: 10, bold: true, color: "#DCE8F7", alignment: "center", margin: [0, 4, 0, 0] }
+        ], fillColor: navy, margin: [8, 10, 8, 10], border: [false, false, false, false]
+      }]] }, layout: "noBorders", margin: [0, 0, 0, 10], ...(pageBreakBefore ? { pageBreak: "before" } : {})
     },
     {
       columns: [
@@ -692,7 +695,7 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
       ], margin: [0, 0, 0, 12]
     },
     {
-      table: { headerRows: 1, widths: [34, 66, "*", 48, 42, 52, 48], body: tableBody, dontBreakRows: true, keepWithHeaderRows: 1 },
+      table: { headerRows: 1, widths: [28, 48, "*", 38, 32, 43, 38], body: tableBody, dontBreakRows: true, keepWithHeaderRows: 1 },
       layout: {
         hLineWidth: () => 0.65, vLineWidth: () => 0.65,
         hLineColor: () => border, vLineColor: () => border,
@@ -727,7 +730,7 @@ export function generatePackingSlipPDF(data = {}) {
   const docDefinition = {
     pageSize: "A5",
     pageOrientation: "portrait",
-    pageMargins: [22, 22, 22, 22],
+    pageMargins: [20, 20, 20, 20],
     content: buildPackingSlipContent(normalized, { pageBreakBefore: false })
   };
 
