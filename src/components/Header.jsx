@@ -5,7 +5,7 @@ import {
   deleteQuotation,
   fetchQuotationById
 } from "../services/quotationService";
-import { generateQuotationPDF, generatePackingSlipPDF } from "../utils/pdfService";
+import { generateQuotationPDF } from "../utils/pdfService";
 import { useNavigate } from "react-router-dom";
 import LoadQuotationModal from "./LoadQuotationModal";
 import StockCheckModal from "./StockCheckModal";
@@ -35,33 +35,6 @@ import {
   const [quotationItems, setQuotationItems] = useState([]);
   const [allQuotations, setAllQuotations] = useState([]);
     
-  const handlePackingSlip = async () => {
-    try {
-      const source = pdfData?.id
-        ? await fetchQuotationById(pdfData.id)
-        : pdfData;
-      const quotation = { ...pdfData, ...(source || {}) };
-      if (!Array.isArray(quotation.items) || quotation.items.length === 0) {
-        setConfirm({
-          open: true,
-          title: "No Packing Data",
-          message: "Please load or save a quotation with items before generating the packing slip.",
-          onConfirm: () => setConfirm({ open: false })
-        });
-        return;
-      }
-      generatePackingSlipPDF(quotation);
-    } catch (error) {
-      console.error("Packing slip generation failed:", error);
-      setConfirm({
-        open: true,
-        title: "Packing Slip Failed",
-        message: "Quotation data server se load nahi ho paya. Please try again.",
-        onConfirm: () => setConfirm({ open: false })
-      });
-    }
-  };
-
   const handleSave = async () => {
   try {
   /* ================= VALIDATION (DIALOG BASED) ================= */
@@ -157,35 +130,37 @@ import {
 
   // ✅ 2️⃣ SAVE
   const saved = pdfData.id
-  ? await updateQuotation(pdfData.id, payload)
-  : await createQuotation(payload);
+    ? await updateQuotation(pdfData.id, payload)
+    : await createQuotation(payload);
 
-  // ✅ 3️⃣ SYNC STATE
-  // Keep the packing selections/remarks in the current quotation state.
-  // They are used by the PDF and are intentionally not part of the DB payload.
-  setPdfData({
-    ...saved,
+  // Always build the PDF from the complete in-memory quotation as well as
+  // the server response. updateQuotation can return null on a failed PATCH;
+  // spreading only `saved` in that case silently dropped all line items.
+  const quotationForPdf = {
+    ...payload,
+    ...(saved || {}),
+    items: Array.isArray(saved?.items) && saved.items.length > 0
+      ? saved.items
+      : cleanItems,
+    quotationNo: saved?.quotationNo || payload.quotationNo || pdfData.quotationNo || "",
+    party: saved?.party || payload.party,
     gymBagSelected: !!pdfData.gymBagSelected,
     gymBagRemark: pdfData.gymBagRemark || "",
     carryBagSelected: !!pdfData.carryBagSelected,
     carryBagRemark: pdfData.carryBagRemark || "",
     paymentImages: pdfData.paymentImages || []
-  });
+  };
 
-  // ✅ 4️⃣ GENERATE PDF (with packing details + images)
-  await generateQuotationPDF({
-    ...saved,
-    gymBagSelected: !!pdfData.gymBagSelected,
-    gymBagRemark: pdfData.gymBagRemark || "",
-    carryBagSelected: !!pdfData.carryBagSelected,
-    carryBagRemark: pdfData.carryBagRemark || "",
-    paymentImages: pdfData.paymentImages
-  });
+  // ✅ 3️⃣ SYNC STATE
+  setPdfData(quotationForPdf);
+
+  // ✅ 4️⃣ Generate one combined PDF: quotation first, packing slip on next page.
+  await generateQuotationPDF(quotationForPdf);
     
   // OPEN SALES PERSON PERFORMANCE
   localStorage.setItem(
     "selectedSalesPerson",
-    saved.salesPerson || ""
+    saved?.salesPerson || pdfData.salesPerson || ""
   );
 
   // GO TO DASHBOARD
@@ -499,14 +474,6 @@ import {
   Load Old Quotation
   </button>
 
-
-  <button
-  onClick={handlePackingSlip}
-  disabled={!Array.isArray(pdfData.items) || pdfData.items.length === 0}
-  className="h-11 px-4 rounded-2xl bg-amber-500/20 border border-amber-400/20 text-white font-bold hover:bg-amber-500/30 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
-  >
-  📦 Packing Slip PDF
-  </button>
 
   <button
   onClick={handleSave}

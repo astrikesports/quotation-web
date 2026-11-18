@@ -5,6 +5,7 @@ import React, {
 } from "react";
 
 import { supabase } from "../supabase";
+import { generatePackingSlipPDF } from "../utils/pdfService";
 
 export default function OrderStatusPage() {
 
@@ -116,6 +117,46 @@ export default function OrderStatusPage() {
     fetchOrders();
 
   }, []);
+
+  // Download packing slip for the quotation linked to this order.
+  const downloadPackingSlip = async (order) => {
+    try {
+      setLoading(true);
+      const quotationNo = String(order.quotation_no || "").trim();
+      if (!quotationNo) {
+        alert("Quotation number is missing for this order.");
+        return;
+      }
+
+      const { data: quotation, error } = await supabase
+        .from("quotations")
+        .select("*")
+        .eq("quotation_no", quotationNo)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!quotation) {
+        alert(`Quotation ${quotationNo} was not found on the server.`);
+        return;
+      }
+      if (!Array.isArray(quotation.items) || quotation.items.length === 0) {
+        alert("No item/size data found in this quotation.");
+        return;
+      }
+
+      generatePackingSlipPDF({
+        ...quotation,
+        party: quotation.party || order.customer_name || "-",
+        quotationNo: quotation.quotation_no || quotationNo,
+        items: quotation.items
+      });
+    } catch (error) {
+      console.error("Packing slip download failed:", error);
+      alert(error?.message || "Unable to download packing slip.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // =========================
   // STATUS COLORS
@@ -1341,6 +1382,7 @@ export default function OrderStatusPage() {
 
                     <td className="px-4 py-5">
 
+                      <div className="flex flex-col gap-2 min-w-[150px]">
                       <button
                         onClick={async () => {
                       
@@ -1410,6 +1452,15 @@ export default function OrderStatusPage() {
                       >
                         Save
                       </button>
+                      <button
+                        type="button"
+                        onClick={() => downloadPackingSlip(order)}
+                        disabled={loading}
+                        className="w-full min-w-[150px] h-11 rounded-2xl bg-blue-600 text-white font-black hover:bg-blue-700 disabled:opacity-50 transition-all duration-200 whitespace-nowrap"
+                      >
+                        ⬇ Download Packing Slip
+                      </button>
+                      </div>
 
                     </td>
 
