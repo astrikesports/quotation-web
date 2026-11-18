@@ -64,6 +64,8 @@ export async function generateQuotationPDF(
     remark,
     quotationNo,
     rateDiscount = 0,
+    aDiscount = 55,
+    pDiscount = 57,
     spDiscount = 0,
     items = [],
     shipping = 0,
@@ -223,8 +225,8 @@ export async function generateQuotationPDF(
       { text: `₹${totalAmount}`, fontSize: 7.5, alignment: "right" }
     ],
     [
-      { text: "Rate Discount", fontSize: 7.5 },
-      { text: `(${rateDiscount}%)`, fontSize: 7.5, alignment: "right" }
+      { text: "A / P Discount", fontSize: 7.5 },
+      { text: `A: ${aDiscount}%  |  P: ${pDiscount}%`, fontSize: 7.5, alignment: "right" }
     ],
     [
       { text: "SP Discount", fontSize: 7.5 },
@@ -446,8 +448,8 @@ export async function generateQuotationPDF(
           [
             {
               text: [
-                { text: "Rate Discount\n", bold: true },
-                { text: `${rateDiscount}%` }
+                { text: "A / P Discount\n", bold: true },
+                { text: `A: ${aDiscount}%  |  P: ${pDiscount}%` }
               ],
               fillColor: "#f4f7fb"
             },

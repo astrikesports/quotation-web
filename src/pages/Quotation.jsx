@@ -34,6 +34,8 @@ import { fetchQuotationById } from "../services/quotationService";
   remark: "",
   items: [],
   rateDiscount: 57,
+  aDiscount: 55,
+  pDiscount: 57,
   spDiscount: 0,
   billDiscount: 0,
   shipping: 0,
@@ -50,6 +52,8 @@ import { fetchQuotationById } from "../services/quotationService";
   const {
   items,
   rateDiscount,
+  aDiscount,
+  pDiscount,
   spDiscount,
   billDiscount,
   shipping,
@@ -92,6 +96,8 @@ import { fetchQuotationById } from "../services/quotationService";
           remark: quote.remark || "",
           items: Array.isArray(quote.items) ? quote.items : [],
           rateDiscount: Number(quote.rateDiscount ?? 57),
+          aDiscount: Number(quote.aDiscount ?? quote.a_discount ?? quote.rateDiscount ?? 55),
+          pDiscount: Number(quote.pDiscount ?? quote.p_discount ?? quote.rateDiscount ?? 57),
           spDiscount: Number(quote.spDiscount ?? 0),
           billDiscount: Number(quote.billDiscount ?? 0),
           shipping: Number(quote.shipping ?? 0),
@@ -121,11 +127,14 @@ import { fetchQuotationById } from "../services/quotationService";
   /* ================= CORE PYTHON RATE LOGIC ================= */
   function applyAutoRates(list) {
   return list.map(item => {
-  if (item.isSample || item.isManual || !item.mrp) return item;
+  if (item.isSample || item.isManual || !item.mrp) {
+    return { ...item, aDiscountValue: Number(aDiscount), pDiscountValue: Number(pDiscount) };
+  }
   
   const mrp = Number(item.mrp);
   
-  let rate = (mrp * (100 - rateDiscount)) / 100;
+  const selectedPercentage = item.percentageType === "P" ? Number(pDiscount) : Number(aDiscount);
+  let rate = (mrp * (100 - selectedPercentage)) / 100;
   
   if (spDiscount > 0) {
   rate = (rate * (100 - Math.min(spDiscount, 14))) / 100;
@@ -135,6 +144,8 @@ import { fetchQuotationById } from "../services/quotationService";
   
   return {
   ...item,
+  aDiscountValue: Number(aDiscount),
+  pDiscountValue: Number(pDiscount),
   rate,
   amount: rate * item.pcs,
   };
@@ -148,11 +159,11 @@ import { fetchQuotationById } from "../services/quotationService";
   ...prev,
   items: applyAutoRates(prev.items)
   }));
-  }, [rateDiscount, spDiscount]);
+  }, [aDiscount, pDiscount, spDiscount]);
   
   /* ================= ITEM ACTIONS ================= */
   function addItem(item) {
-  
+  item = { ...item, percentageType: item.percentageType || "A" };
   setPdfData(prev => {
   
   // FIND SAME ITEM
@@ -161,8 +172,8 @@ import { fetchQuotationById } from "../services/quotationService";
   (p) =>
   
   p.desc === item.desc &&
-  
-  p.mrp === item.mrp
+  p.mrp === item.mrp &&
+  (p.percentageType || "A") === (item.percentageType || "A")
   );
   
   let updatedItems = [...prev.items];
@@ -278,7 +289,8 @@ import { fetchQuotationById } from "../services/quotationService";
   updatedItems.findIndex(
   (p) =>
   
-  p.desc === item.desc
+  p.desc === item.desc &&
+  (p.percentageType || "A") === (item.percentageType || "A")
   );
   
   // MERGE
@@ -376,6 +388,15 @@ import { fetchQuotationById } from "../services/quotationService";
   setEditItem(null);
   }
   
+  function changeItemPercentage(index, percentageType) {
+    setPdfData(prev => {
+      const updatedItems = prev.items.map((item, i) =>
+        i === index ? { ...item, percentageType } : item
+      );
+      return { ...prev, items: applyAutoRates(updatedItems) };
+    });
+  }
+
   function deleteItem(index) {
   setPdfData(prev => ({
   ...prev,
@@ -474,6 +495,8 @@ import { fetchQuotationById } from "../services/quotationService";
   salesPerson: "",
   remark: "",
   rateDiscount: 57,
+  aDiscount: 55,
+  pDiscount: 57,
   spDiscount: 0,
   billDiscount: 0,
   shipping: 0,
@@ -582,6 +605,7 @@ import { fetchQuotationById } from "../services/quotationService";
   items={items}
   onDelete={deleteItem}
   onEdit={startEdit}
+  onPercentageTypeChange={changeItemPercentage}
   />
   </div>
   

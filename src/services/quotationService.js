@@ -39,6 +39,8 @@ function mapFromDB(row) {
     remark: row.remark ?? "",
 
     rateDiscount: Number(row.rate_discount ?? 0),
+    aDiscount: Number(row.items?.[0]?.aDiscountValue ?? 55),
+    pDiscount: Number(row.items?.[0]?.pDiscountValue ?? row.rate_discount ?? 57),
     spDiscount: Number(row.sp_discount ?? 0),
     billDiscount: Number(row.bill_discount ?? 0),
     shipping: Number(row.shipping ?? 0),

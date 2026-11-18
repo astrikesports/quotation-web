@@ -135,6 +135,7 @@ export default function ItemForm({
       isManual: manual,
       isSample: false,
       pcsPerBox,
+      percentageType: editItem?.percentageType || "A",
     };
 
     if (editIndex !== null) {

@@ -29,6 +29,8 @@ import ItemForm from "./ItemForm";
   salesPerson = "",
   remark = "",
   rateDiscount = 0,
+  aDiscount = 55,
+  pDiscount = 57,
   spDiscount = 0,
   } = pdfData;
 
@@ -224,34 +226,31 @@ import ItemForm from "./ItemForm";
   Discounts
   </h3>
 
-  <div className="flex gap-4 text-sm mb-3">
-  <label className="flex items-center gap-1">
-  <input
-  type="radio"
-  checked={rateDiscount === 55}
-  onChange={() =>
-  setPdfData(prev => ({
-  ...prev,
-  rateDiscount: 55
-  }))
-  }
-  />
-  55%
-  </label>
-
-  <label className="flex items-center gap-1">
-  <input
-  type="radio"
-  checked={rateDiscount === 57}
-  onChange={() =>
-  setPdfData(prev => ({
-  ...prev,
-  rateDiscount: 57
-  }))
-  }
-  />
-  57%
-  </label>
+  <div className="grid grid-cols-2 gap-3 mb-4">
+    <label className="block text-xs font-semibold text-slate-600">
+      A Input (%)
+      <input
+        className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+        type="number" min="0" max="100" step="0.01" placeholder="A %"
+        value={aDiscount}
+        onChange={e => {
+          const value = e.target.value === "" ? 0 : Math.min(100, Math.max(0, Number(e.target.value)));
+          setPdfData(prev => ({ ...prev, aDiscount: value }));
+        }}
+      />
+    </label>
+    <label className="block text-xs font-semibold text-slate-600">
+      P Input (%)
+      <input
+        className="w-full mt-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+        type="number" min="0" max="100" step="0.01" placeholder="P %"
+        value={pDiscount}
+        onChange={e => {
+          const value = e.target.value === "" ? 0 : Math.min(100, Math.max(0, Number(e.target.value)));
+          setPdfData(prev => ({ ...prev, pDiscount: value }));
+        }}
+      />
+    </label>
   </div>
 
   <h3 className="text-sm font-semibold text-blue-700 mb-3">

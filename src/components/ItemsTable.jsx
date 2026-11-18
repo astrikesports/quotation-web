@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function ItemsTable({ items, onDelete, onEdit, onUpdateItem  }) {
+export default function ItemsTable({ items, onDelete, onEdit, onUpdateItem, onPercentageTypeChange }) {
   const [editIndex, setEditIndex] = useState(null);
   const [editSize, setEditSize] = useState("");
   const [editRate, setEditRate] = useState("");
@@ -72,7 +72,7 @@ export default function ItemsTable({ items, onDelete, onEdit, onUpdateItem  }) {
         <table className="w-full text-sm">
           <thead className="bg-blue-50 text-blue-700 sticky top-0 z-10">
             <tr>
-              {["Description", "Size (Boxes)", "PCS", "Rate", "Amount", "Action"].map(h => (
+              {["Description", "Size (Boxes)", "A / P", "PCS", "Rate", "Amount", "Action"].map(h => (
                 <th key={h} className="px-4 py-3 text-center font-semibold">
                   {h}
                 </th>
@@ -83,7 +83,7 @@ export default function ItemsTable({ items, onDelete, onEdit, onUpdateItem  }) {
           <tbody>
             {items.length === 0 && (
               <tr>
-                <td colSpan="6" className="py-10 text-center text-gray-400">
+                <td colSpan="7" className="py-10 text-center text-gray-400">
                   No items added
                 </td>
               </tr>
@@ -113,6 +113,18 @@ export default function ItemsTable({ items, onDelete, onEdit, onUpdateItem  }) {
                     ) : (
                       item.size || "-"
                     )}
+                  </td>
+
+                  <td className="px-3 py-2 text-center">
+                    <select
+                      className="px-2 py-1 border rounded-md text-xs font-semibold bg-white"
+                      value={item.percentageType || "A"}
+                      onChange={e => onPercentageTypeChange?.(idx, e.target.value)}
+                      aria-label={`Percentage type for ${item.desc}`}
+                    >
+                      <option value="A">A</option>
+                      <option value="P">P</option>
+                    </select>
                   </td>
 
                   <td className="px-4 py-2 text-center font-semibold">
