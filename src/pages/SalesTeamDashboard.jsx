@@ -414,6 +414,7 @@ export default function Dashboard({
             <p className="text-gray-300 mt-4 text-lg">
               Team Performance Overview
             </p>
+            <button onClick={() => window.location.assign('/stock-lookup')} className="mt-5 h-11 px-5 rounded-xl font-bold bg-cyan-500 text-black hover:bg-cyan-400">📦 Live Stock Lookup</button>
 
           </div>
 

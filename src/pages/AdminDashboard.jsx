@@ -1656,6 +1656,8 @@ export default function AdminDashboard() {
                 ➕ Add Items
               </button>
 
+              <button onClick={() => window.location.assign('/stock-lookup')} className="h-12 px-6 rounded-2xl font-bold bg-cyan-500 text-black hover:bg-cyan-400">📦 Live Stock Lookup</button>
+
               <button
                 onClick={() =>
                   setActivePage("order-status")

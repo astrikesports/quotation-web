@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Quotation from "./pages/Quotation";
 import MobileQuotation from "./pages/MobileQuotation";
+import StockLookup from "./pages/StockLookup";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -53,6 +54,8 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/stock-lookup" element={<ProtectedRoute><StockLookup /></ProtectedRoute>} />
 
         <Route
           path="/quotation"
