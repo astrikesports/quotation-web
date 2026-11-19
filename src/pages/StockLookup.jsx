@@ -26,7 +26,10 @@ export default function StockLookup() {
   }, []);
   useEffect(() => { fetchStock(); const timer = setInterval(fetchStock, 30000); return () => clearInterval(timer); }, [fetchStock]);
   const rows = useMemo(() => parseCSV(csv), [csv]);
-  const filtered = useMemo(() => { const q = search.trim().toLowerCase(); if (!q) return rows; return rows.filter(row => row.some(cell => String(cell).toLowerCase().includes(q))); }, [rows, search]);
+  // Keep the sheet's first row as a stable header; search only data rows.
+  const headerRow = useMemo(() => rows[0] || [], [rows]);
+  const dataRows = useMemo(() => rows.slice(1), [rows]);
+  const filtered = useMemo(() => { const q = search.trim().toLowerCase(); if (!q) return dataRows; return dataRows.filter(row => row.some(cell => String(cell).toLowerCase().includes(q))); }, [dataRows, search]);
   const fmt = updated ? new Date(updated).toLocaleString() : '—';
   return <div className="min-h-screen bg-slate-100 p-3 md:p-7">
     <div className="max-w-7xl mx-auto bg-white rounded-2xl shadow-sm overflow-hidden">
@@ -41,7 +44,7 @@ export default function StockLookup() {
       {error && <div className="mx-4 mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-amber-800 text-sm">{error} — Showing last successfully loaded data if available. <button onClick={fetchStock} className="underline font-bold ml-1">Retry</button></div>}
       {loading && !csv && <div className="p-10 text-center text-slate-500">Loading live stock data…</div>}
       {!loading && !csv && !error && <div className="p-10 text-center text-slate-500">No stock data returned from sheet.</div>}
-      {filtered.length > 0 && <div className="overflow-auto max-h-[75vh]"><table className="min-w-full text-sm"><tbody>{filtered.map((row, ri) => <tr key={ri} className={ri % 2 ? 'bg-slate-50' : 'bg-white'}>{row.map((cell, ci) => <td key={ci} className={`border border-slate-200 px-3 py-2 whitespace-nowrap ${ri === 0 ? 'font-bold bg-slate-100 text-slate-700' : ''}`}>{cell}</td>)}</tr>)}</tbody></table></div>}
+      {headerRow.length > 0 && <div className="overflow-auto max-h-[75vh]"><table className="min-w-full text-sm border-collapse"><thead className="sticky top-0 z-10"><tr>{headerRow.map((cell, ci) => <th key={ci} className="border border-slate-200 px-3 py-2 whitespace-nowrap text-left font-bold bg-slate-100 text-slate-700">{cell}</th>)}</tr></thead><tbody>{filtered.map((row, ri) => <tr key={ri} className={ri % 2 ? 'bg-slate-50' : 'bg-white'}>{headerRow.map((_, ci) => <td key={ci} className="border border-slate-200 px-3 py-2 whitespace-nowrap">{row[ci] ?? ''}</td>)}</tr>)}</tbody></table></div>}
       <footer className="px-4 py-3 text-xs text-slate-500 flex justify-between"><span>Live sheet view · Read-only</span><a className="text-blue-700 underline" target="_blank" rel="noreferrer" href={`https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit?gid=${GID}`}>Open Google Sheet ↗</a></footer>
     </div></div>;
 }
