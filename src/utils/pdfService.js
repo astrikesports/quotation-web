@@ -518,7 +518,7 @@ export async function generateQuotationPDF(
     {
       text: remark || "-",
       fontSize: 8,
-      color: "#334155"
+      color: "#000000"
     },
     {
       text: "Please verify sizes, quantities, rates and totals before confirming.",
@@ -622,13 +622,13 @@ function getPackingSizeEntries(sizeValue) {
 
 function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
   const items = Array.isArray(data.items) ? data.items : [];
-  const navy = "#10213A";
-  const border = "#CBD5E1";
+  const navy = "#000000";
+  const border = "#000000";
   let totalPcs = 0;
   let totalBoxes = 0;
 
   const headerCell = (text, alignment = "center") => ({
-    text, bold: true, color: "#FFFFFF", fillColor: navy,
+    text, bold: true, color: "#000000", fillColor: "#FFFFFF",
     fontSize: 8, alignment, margin: [3, 4, 3, 4],
     noWrap: text === "S.NO." || text === "PCS/BOX"
   });
@@ -644,9 +644,9 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
     const sizeText = sizeEntries.length
       ? sizeEntries.map(({ size, qty }) => `${size} × ${qty}`).join(" | ")
       : (typeof item.size === "string" && item.size.trim() ? item.size.trim() : "-");
-    const rowFill = index % 2 === 0 ? "#F1F5F9" : "#FFFFFF";
+    const rowFill = "#FFFFFF";
     const cell = (text, alignment = "center", bold = false) => ({
-      text: String(text), fontSize: 8, color: "#172033", alignment,
+      text: String(text), fontSize: 8, color: "#000000", alignment,
       bold, fillColor: rowFill, margin: [3, 4, 3, 4]
     });
 
@@ -657,8 +657,7 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
       cell(item.MRP ?? item.mrp ?? item.mrpPrice ?? item.mrp_price ?? "-"),
       cell(item.rate ?? item.finalRate ?? item.final_rate ?? item.price ?? item.sellingRate ?? item.selling_rate ?? "-"),
       cell(pcs),
-      cell(pcsPerBox || "-"),
-      cell(boxes || (pcs > 0 ? "—" : "0"))
+      cell(pcsPerBox || "-")
     ];
   });
 
@@ -669,15 +668,13 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
     headerCell("MRP (₹)"),
     headerCell("RATE (₹)"),
     headerCell("PCS"),
-    headerCell("PCS/BOX"),
-    headerCell("BOXES")
+    headerCell("PCS/BOX")
   ], ...bodyRows];
 
   tableBody.push([
-    { text: "", colSpan: 5, fillColor: "#E2E8F0", margin: [3, 4, 3, 4] }, {}, {}, {}, {},
-    { text: String(totalPcs), bold: true, alignment: "center", fontSize: 9, fillColor: "#E2E8F0", margin: [3, 4, 3, 4] },
-    { text: "TOTAL", bold: true, alignment: "center", fontSize: 8, fillColor: "#E2E8F0", margin: [3, 4, 3, 4] },
-    { text: String(totalBoxes), bold: true, alignment: "center", fontSize: 9, fillColor: "#E2E8F0", margin: [3, 4, 3, 4] }
+    { text: "TOTAL", colSpan: 5, bold: true, alignment: "left", fillColor: "#FFFFFF", color: "#000000", margin: [3, 4, 3, 4] }, {}, {}, {}, {},
+    { text: String(totalPcs), bold: true, alignment: "center", fontSize: 9, fillColor: "#FFFFFF", color: "#000000", margin: [3, 4, 3, 4] },
+    { text: "", fillColor: "#FFFFFF", margin: [3, 4, 3, 4] }
   ]);
 
   return [
@@ -687,9 +684,9 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
       // into a very narrow vertical strip in the generated PDF.
       table: { widths: ["*"], body: [[{
         stack: [
-          { text: "ASTRIKE SPORTSWEAR PVT LTD", fontSize: 13, bold: true, color: "#FFFFFF", alignment: "center", noWrap: true },
-          { text: "PACKING DETAILS", fontSize: 9, bold: true, color: "#DCE8F7", alignment: "center", margin: [0, 2, 0, 0] }
-        ], fillColor: navy, margin: [5, 5, 5, 5], border: [false, false, false, false]
+          { text: "ASTRIKE SPORTSWEAR PVT LTD", fontSize: 13, bold: true, color: "#000000", alignment: "center", noWrap: true },
+          { text: "PACKING DETAILS", fontSize: 9, bold: true, color: "#000000", alignment: "center", margin: [0, 2, 0, 0] }
+        ], fillColor: "#FFFFFF", margin: [5, 5, 5, 5], border: [false, false, false, false]
       }]] }, layout: "noBorders", margin: [0, 0, 0, 10], ...(pageBreakBefore ? { pageBreak: "before" } : {})
     },
     {
@@ -708,7 +705,7 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
       }, layout: "noBorders", fontSize: 8, margin: [0, 0, 0, 5]
     },
     {
-      table: { headerRows: 1, widths: [22, 40, "*", 30, 34, 24, 34, 30], body: tableBody, dontBreakRows: true, keepWithHeaderRows: 1 },
+      table: { headerRows: 1, widths: [22, 40, "*", 30, 34, 24, 34], body: tableBody, dontBreakRows: true, keepWithHeaderRows: 1 },
       layout: {
         hLineWidth: () => 0.65, vLineWidth: () => 0.65,
         hLineColor: () => border, vLineColor: () => border,
@@ -718,20 +715,17 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
       margin: [0, 0, 0, 0]
     },
     {
-      columns: [
-        { text: `TOTAL PCS: ${totalPcs}`, bold: true, fontSize: 11, color: navy },
-        { text: `TOTAL BOXES: ${totalBoxes}`, bold: true, fontSize: 11, color: navy, alignment: "right" }
-      ], margin: [0, 9, 0, 0]
+      text: `TOTAL PCS: ${totalPcs}`, bold: true, fontSize: 11, color: "#000000", margin: [0, 9, 0, 0]
     },
     {
       table: {
         widths: ["*"],
         body: [[{
           stack: [
-            { text: "REMARK / SPECIAL INSTRUCTIONS", bold: true, fontSize: 8, color: "#10213A", margin: [0, 0, 0, 4] },
-            { text: String(data.remark || data.remarks || data.order_remark || "-").trim() || "-", fontSize: 8, color: "#334155", lineHeight: 1.15 }
+            { text: "REMARK / SPECIAL INSTRUCTIONS", bold: true, fontSize: 8, color: "#000000", margin: [0, 0, 0, 4] },
+            { text: String(data.remark || data.remarks || data.order_remark || "-").trim() || "-", fontSize: 8, color: "#000000", lineHeight: 1.15 }
           ],
-          fillColor: "#F1F5F9", margin: [6, 5, 6, 5]
+          fillColor: "#FFFFFF", margin: [6, 5, 6, 5]
         }]]
       },
       layout: { hLineColor: () => border, vLineColor: () => border, hLineWidth: () => 0.6, vLineWidth: () => 0.6 },
