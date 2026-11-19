@@ -655,6 +655,7 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
       cell(item.sku ?? item.code ?? item.desc ?? item.description ?? "-", "left", true),
       cell(sizeText, "left"),
       cell(item.MRP ?? item.mrp ?? item.mrpPrice ?? item.mrp_price ?? "-"),
+      cell(item.rate ?? item.finalRate ?? item.final_rate ?? item.price ?? item.sellingRate ?? item.selling_rate ?? "-"),
       cell(pcs),
       cell(pcsPerBox || "-"),
       cell(boxes || (pcs > 0 ? "—" : "0"))
@@ -666,13 +667,14 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
     headerCell("SKU", "left"),
     headerCell("SIZE BREAKUP (SIZE × QTY)", "left"),
     headerCell("MRP (₹)"),
+    headerCell("RATE (₹)"),
     headerCell("PCS"),
     headerCell("PCS/BOX"),
     headerCell("BOXES")
   ], ...bodyRows];
 
   tableBody.push([
-    { text: "", colSpan: 4, fillColor: "#E2E8F0", margin: [3, 4, 3, 4] }, {}, {}, {},
+    { text: "", colSpan: 5, fillColor: "#E2E8F0", margin: [3, 4, 3, 4] }, {}, {}, {}, {},
     { text: String(totalPcs), bold: true, alignment: "center", fontSize: 9, fillColor: "#E2E8F0", margin: [3, 4, 3, 4] },
     { text: "TOTAL", bold: true, alignment: "center", fontSize: 8, fillColor: "#E2E8F0", margin: [3, 4, 3, 4] },
     { text: String(totalBoxes), bold: true, alignment: "center", fontSize: 9, fillColor: "#E2E8F0", margin: [3, 4, 3, 4] }
@@ -685,19 +687,28 @@ function buildPackingSlipContent(data = {}, { pageBreakBefore = true } = {}) {
       // into a very narrow vertical strip in the generated PDF.
       table: { widths: ["*"], body: [[{
         stack: [
-          { text: "ASTRIKE SPORTSWEAR PVT LTD", fontSize: 15, bold: true, color: "#FFFFFF", alignment: "center", noWrap: true },
-          { text: "PACKING DETAILS", fontSize: 10, bold: true, color: "#DCE8F7", alignment: "center", margin: [0, 4, 0, 0] }
-        ], fillColor: navy, margin: [8, 8, 8, 8], border: [false, false, false, false]
+          { text: "ASTRIKE SPORTSWEAR PVT LTD", fontSize: 13, bold: true, color: "#FFFFFF", alignment: "center", noWrap: true },
+          { text: "PACKING DETAILS", fontSize: 9, bold: true, color: "#DCE8F7", alignment: "center", margin: [0, 2, 0, 0] }
+        ], fillColor: navy, margin: [5, 5, 5, 5], border: [false, false, false, false]
       }]] }, layout: "noBorders", margin: [0, 0, 0, 10], ...(pageBreakBefore ? { pageBreak: "before" } : {})
     },
     {
-      columns: [
-        { width: "50%", text: [{ text: "Quotation No.: ", bold: true }, data.quotationNo || data.quotation_no || data.id || "-"], fontSize: 9 },
-        { width: "50%", text: [{ text: "Party Name: ", bold: true }, data.party || "-"], fontSize: 9, alignment: "right" }
-      ], margin: [0, 0, 0, 8]
+      table: {
+        widths: ["*", "*"],
+        body: [
+          [
+            { text: [{ text: "Quotation No.: ", bold: true }, data.quotationNo || data.quotation_no || data.id || "-" ] },
+            { text: [{ text: "Party Name: ", bold: true }, data.party || "-"], alignment: "right" }
+          ],
+          [
+            { text: [{ text: "Sales Person: ", bold: true }, data.salesPerson || data.sales_person || "-" ] },
+            { text: [{ text: "Quotation Date: ", bold: true }, (() => { const d = data.createdAt || data.created_at || data.quotationDate || data.quotation_date || data.date; return d ? new Date(d).toLocaleDateString("en-IN") : "-"; })()], alignment: "right" }
+          ]
+        ]
+      }, layout: "noBorders", fontSize: 8, margin: [0, 0, 0, 5]
     },
     {
-      table: { headerRows: 1, widths: [27, 45, "*", 36, 29, 40, 35], body: tableBody, dontBreakRows: true, keepWithHeaderRows: 1 },
+      table: { headerRows: 1, widths: [22, 40, "*", 30, 34, 24, 34, 30], body: tableBody, dontBreakRows: true, keepWithHeaderRows: 1 },
       layout: {
         hLineWidth: () => 0.65, vLineWidth: () => 0.65,
         hLineColor: () => border, vLineColor: () => border,
